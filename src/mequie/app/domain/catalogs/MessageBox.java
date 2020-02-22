@@ -19,7 +19,7 @@ public class MessageBox {
     // mensagens do grupo
     List<Message> messages = new ArrayList<>();
 
-    public List<Message> getNewMessagesNotReadByUser(User user) {
+    /*public List<Message> getNewMessagesNotReadByUser(User user) {
         // Vai buscar ultima mensagem vista pelo user
         Message lastMessageRead = this.userIdLastMessageRead.get(user.getUserID());
         // Procura pela posicao dessa Message nas messages
@@ -31,5 +31,5 @@ public class MessageBox {
         this.userIdLastMessageRead.put(user.getUserID(), this.messages.get(lastPos));
         
         return newMessages;
-    }
+    }*/
 }

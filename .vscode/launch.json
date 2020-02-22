@@ -15,7 +15,7 @@
             "name": "Debug (Launch)-Mequie<MequieChat_6992dd82>",
             "request": "launch",
             "mainClass": "Mequie",
-            "args": "localhost:23456",
+            "args": "localhost:23456 user01",
             "projectName": "MequieChat_6992dd82"
         },
         {

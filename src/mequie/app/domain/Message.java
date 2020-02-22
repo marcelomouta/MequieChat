@@ -11,7 +11,7 @@ public class Message {
 
     /**
      * 
-     * @param id - id da messagem
+     * @param msgID - id da mensagem
      */
 	public Message(String msgID) {
 		this.msgID = msgID;
@@ -29,7 +29,7 @@ public class Message {
 	public boolean equals(Object obj) {
 		if(obj instanceof Message){
 			Message other = (Message) obj;
-			return other.msgID.equals(this.msgID)
+			return other.msgID.equals(this.msgID);
 		}
 		return false;
 	}

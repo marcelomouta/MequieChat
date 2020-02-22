@@ -14,14 +14,7 @@ public class Photo extends Message {
 	
 	private String file_path;
 	
-	/**
-	 * 
-	 * @param username - nome do curador
-	 * @param pass - password do curador
-	 */
-	public Curador(String username, String pass) {
-		super(username, pass);
-	}
+	//TODO
 	
 
 }

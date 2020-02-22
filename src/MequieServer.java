@@ -41,7 +41,7 @@ public class MequieServer{
 		    }
 		    
 		}
-		//sSoc.close();
+		// sSoc.close();
 	}
 
 

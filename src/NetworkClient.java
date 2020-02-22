@@ -59,7 +59,7 @@ public class NetworkClient {
         out.writeInt(size);
 
         byte[] buf = new byte[size];
-        inFile.read(buf);
+        inFile.read(buf, 0, size);
 
         out.write(buf, 0, size);
         System.out.println("Ficheiro '" + fileName + "' enviado.");
