@@ -56,7 +56,7 @@ public class NetworkClient {
         FileInputStream inFile = new FileInputStream(fileName);
 
         int size = inFile.available();
-        out.writeInt(size);
+        out.writeObject(size);
 
         byte[] buf = new byte[size];
         inFile.read(buf, 0, size);
@@ -71,11 +71,12 @@ public class NetworkClient {
      * A função network_close() fecha a ligação estabelecida por network_connect().
      */
     public void networkClose() throws IOException {
-        if (this.in != null)
-            this.in.close();
 
         if (this.out != null)
             this.out.close();
+
+        if (this.in != null)
+            this.in.close();
 
         this.echoSocket.close();
     }

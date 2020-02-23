@@ -5,11 +5,8 @@ import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.domain.Group;
+import mequie.app.exceptions.*;
 import mequie.app.facade.Session;
-import mequie.app.exceptions.ErrorCreatingGroupException;
-import mequie.app.exceptions.ErrorAddingUserToGroupException;
-import mequie.app.exceptions.ErrorRemovingUserOfGroupException;
-import mequie.app.exceptions.NotExistingGroupException;
 
 
 public class GroupManagementHandler{
@@ -27,7 +24,7 @@ public class GroupManagementHandler{
             throw new ErrorCreatingGroupException();
     }
 
-    public void addUserToGroup(String userID, String groupID) throws ErrorAddingUserToGroupException, NotExistingGroupException {
+    public void addUserToGroup(String userID, String groupID) throws ErrorAddingUserToGroupException, NotExistingGroupException, NotExistingUserException {
         User userToAdd = UserCatalog.getInstance().getUserById(userID);
         if (userToAdd == null)
             throw new NotExistingUserException();

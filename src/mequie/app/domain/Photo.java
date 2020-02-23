@@ -10,10 +10,10 @@ import java.util.Optional;
  * Esta classe representa um curador. Um curador eh um utilizador que pode adicionar 
  * videos e criar playlists manualmente
  */
-public class Photo extends Message {
+public class Photo /*extends Message*/ {
 	
 	private String file_path;
-	
+
 	//TODO
 	
 

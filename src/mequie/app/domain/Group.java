@@ -10,7 +10,7 @@ import java.util.Set;
  * 
  * Esta classe representa um video. Um video tanto pode ser uma Stream como um Clip.
  */
-public abstract class Group {
+public class Group {
 
 	private String id;
 	private User owner;
@@ -20,7 +20,7 @@ public abstract class Group {
 	
 	/**
 	 * 
-	 * @param dono - dono do video
+	 * @param owner - dono do video
 	 * <p>
 	 * Define o dono do video
 	 */

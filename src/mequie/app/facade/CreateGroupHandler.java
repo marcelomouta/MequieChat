@@ -7,11 +7,13 @@ public class CreateGroupHandler{
 
     private User currentUser;
 
+    /* TODO
     public CreateGroupHandler(Session s) {
         currentUser = (User) s.getUser();
     }
 
     public CreateNewGroup(String groupID) {
-        
+
     }
+    */
 }
