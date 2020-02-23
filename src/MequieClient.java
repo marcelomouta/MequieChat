@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class Mequie {
+public class MequieClient {
 
 	private static NetworkClient network = NetworkClient.getInstance();
 	private static Scanner scanner = new Scanner(System.in);
@@ -14,7 +14,7 @@ public class Mequie {
 
 		if (args.length < 2 || args.length > 3) {
 			System.out.println(
-					"Numero de parametros incorreto. Exemplo de uso:\n Mequie <serverAddress> <localUserID> [password]");
+					"Numero de parametros incorreto. Exemplo de uso:\n MequieClientClient <serverAddress> <localUserID> [password]");
 			System.exit(-1);
 		}
 
