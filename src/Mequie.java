@@ -38,7 +38,11 @@ public class Mequie {
 			System.out.println("Autenticado com sucesso!");
 
 			try {
-				network.sendAndReceive();
+				printPossibleCommands();
+
+				while (true)
+					readNextCommand();
+
 			} catch (FileNotFoundException e) {
 				System.err.println(e.getMessage());
 				System.out.println("Ficheiro nao encontrado");
@@ -59,6 +63,34 @@ public class Mequie {
 			System.err.println(e.getMessage());
 		}
 
+	}
+
+	private static void readNextCommand() throws IOException {
+		String[] command = scanner.nextLine().split(" ");
+
+		//TODO
+		switch (command[0]) {
+			case "test" :
+				network.sendAndReceive();
+				break;
+			default:
+				System.out.println("Incorrect command");
+				printPossibleCommands();
+		}
+
+	}
+
+	private static void printPossibleCommands() {
+		System.out.println("Possible Commands:\n" +
+				"\tcreate <groupID>\n" +
+				"\taddu <userID> <groupID>\n" +
+				"\tremoveu <userID> <groupID>\n" +
+				"\tginfo <groupID>\n" +
+				"\tuinfo\n" +
+				"\tmsg <groupID> <msg>\n" +
+				"\tphoto <groupID> <photo>\n" +
+				"\tcollect <groupID>\n" +
+				"\thistory <groupID>\n");
 	}
 
 	private static String getPassword(String[] args) {

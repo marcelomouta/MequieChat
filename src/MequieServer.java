@@ -58,7 +58,7 @@ public class MequieServer{
 
 
 	//Threads utilizadas para comunicacao com os clientes
-	class ServerThread extends Thread {
+	private class ServerThread extends Thread {
 
 		private Socket socket = null;
 
