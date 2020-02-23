@@ -1,8 +1,6 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import mequie.app.facade.Session;
+
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -50,18 +48,23 @@ public class NetworkClient {
      * De-serializar a mensagem de resposta; - Retornar a mensagem de-serializada ou
      * NULL em caso de erro.
      */
-    public void sendAndReceive() throws IOException, FileNotFoundException {
-        String fileName = "src/file.txt";
+    public void sendTestFile() throws IOException, FileNotFoundException {
+
+        out.writeObject("test");
+
+        String fileName = "file.txt";
 
         FileInputStream inFile = new FileInputStream(fileName);
 
-        int size = inFile.available();
+        //TODO decide if long file is unsupported OR send through several byte[] if necessary
+        int size = (int) new File(fileName).length();
         out.writeObject(size);
 
         byte[] buf = new byte[size];
         inFile.read(buf, 0, size);
 
         out.write(buf, 0, size);
+        out.flush();
         System.out.println("Ficheiro '" + fileName + "' enviado.");
 
         inFile.close();
@@ -81,12 +84,12 @@ public class NetworkClient {
         this.echoSocket.close();
     }
 
-    public Boolean autenticaUser(String username, String password) {
+    public Boolean autenticaUser(Session session) {
         try {
-            out.writeObject(username);
-            out.writeObject(password);
+            out.writeObject(session);
 
             return (Boolean) in.readObject();
+
         } catch (ClassNotFoundException | IOException e) {
             System.err.println(e.getMessage());
             return false;

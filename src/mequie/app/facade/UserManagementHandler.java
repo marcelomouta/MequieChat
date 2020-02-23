@@ -11,7 +11,8 @@ public class UserManagementHandler {
     private User currentUser;
 
     public UserManagementHandler(Session s) {
-        this.currentUser = (User) s.getUser();
+        //TODO
+        //this.currentUser = (User) s.getUser();
     }
 
     // mostrar grupos a que pertence e de que eh dono

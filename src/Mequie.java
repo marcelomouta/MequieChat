@@ -1,4 +1,6 @@
 
+import mequie.app.facade.Session;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -10,15 +12,15 @@ public class Mequie {
 	private static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		System.out.println("cliente: myClient");
 
 		if (args.length < 2 || args.length > 3) {
 			System.out.println(
-					"Numero de parametros incorreto. Exemplo de uso:\n Mequie <serverAddress> <localUserID> [password]");
+					"Incorrect usage of arguments. Example of use:\n\tMequie <serverAddress> <localUserID> [password]");
 			System.exit(-1);
 		}
 
 		try {
+            System.out.println("Establishing connection to server...");
 			network.connectToServer(args[0]);
 		} catch (NumberFormatException | UnknownHostException e) {
 			System.err.println(e.getMessage());
@@ -30,15 +32,15 @@ public class Mequie {
             System.exit(-1);
 		}
 		
-		String username = args[1];
-		String password = getPassword(args);
+		Session session = new Session(args[1], getPassword(args));
 
-		Boolean auth = network.autenticaUser(username, password);
+		Boolean auth = network.autenticaUser(session);
 		if (auth) {
-			System.out.println("Autenticado com sucesso!");
+			System.out.println("Authentication successful!");
 
-			try {
-				printPossibleCommands();
+            printPossibleCommands();
+
+            try {
 
 				while (true)
 					readNextCommand();
@@ -52,27 +54,37 @@ public class Mequie {
 			}
 
 		} else {
-			System.out.println("Autenticacao falhou.");
+			System.out.println("Authentication failed. Ending program...");
 		}
 
-		scanner.close();
-		
-		try {
-			network.networkClose();
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
+        close();
 
-	}
+    }
 
-	private static void readNextCommand() throws IOException {
+    private static void close() {
+        scanner.close();
+
+        try {
+            network.networkClose();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static void readNextCommand() throws IOException {
 		String[] command = scanner.nextLine().split(" ");
 
 		//TODO
 		switch (command[0]) {
-			case "test" :
-				network.sendAndReceive();
-				break;
+
+		    case "test" :
+			    network.sendTestFile();
+			    break;
+			case "exit":
+                System.out.println("Exiting program...");
+			    close();
+			    System.exit(0);
+			    break;
 			default:
 				System.out.println("Incorrect command");
 				printPossibleCommands();
@@ -90,7 +102,8 @@ public class Mequie {
 				"\tmsg <groupID> <msg>\n" +
 				"\tphoto <groupID> <photo>\n" +
 				"\tcollect <groupID>\n" +
-				"\thistory <groupID>\n");
+				"\thistory <groupID>\n" +
+                "\texit\n");
 	}
 
 	private static String getPassword(String[] args) {

@@ -1,9 +1,22 @@
 package mequie.app.facade;
 
-public class Session {
+import java.io.Serializable;
 
-    public Object getUser() {
-        //TODO
-        return null;
+public class Session implements Serializable {
+
+    private String username;
+    private String password;
+
+    public Session(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
