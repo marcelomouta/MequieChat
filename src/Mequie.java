@@ -8,8 +8,10 @@ import java.util.Scanner;
 
 public class Mequie {
 
-	private static NetworkClient network = NetworkClient.getInstance();
 	private static Scanner scanner = new Scanner(System.in);
+	private static NetworkClient network = NetworkClient.getInstance();
+	private static CommandHandler cHandler = new CommandHandler(network);
+
 
 	public static void main(String[] args) {
 
@@ -20,8 +22,14 @@ public class Mequie {
 		}
 
 		try {
+
             System.out.println("Establishing connection to server...");
-			network.connectToServer(args[0]);
+
+			String host = args[0].split(":")[0];
+			int port = Integer.parseInt(args[0].split(":")[1]);
+
+			network.connectToServer(host,port);
+
 		} catch (NumberFormatException | UnknownHostException e) {
 			System.err.println(e.getMessage());
 			System.out.println("Nao foi possivel resolver o endereco IP indicado. A terminar...");
@@ -31,7 +39,7 @@ public class Mequie {
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor. A terminar...");
             System.exit(-1);
 		}
-		
+
 		Session session = new Session(args[1], getPassword(args));
 
 		Boolean auth = network.autenticaUser(session);
@@ -43,7 +51,7 @@ public class Mequie {
             try {
 
 				while (true)
-					readNextCommand();
+					doNextCommand();
 
 			} catch (FileNotFoundException e) {
 				System.err.println(e.getMessage());
@@ -71,25 +79,73 @@ public class Mequie {
         }
     }
 
-    private static void readNextCommand() throws IOException {
-		String[] command = scanner.nextLine().split(" ");
+    private static void doNextCommand() throws IOException {
 
-		//TODO
-		switch (command[0]) {
+		//reads command from cli
+		String[] command = scanner.nextLine().split(" ",3);
 
-		    case "test" :
-			    network.sendTestFile();
-			    break;
-			case "exit":
-                System.out.println("Exiting program...");
-			    close();
-			    System.exit(0);
-			    break;
-			default:
-				System.out.println("Incorrect command");
-				printPossibleCommands();
+		try {
+			//TODO
+			switch (command[0]) {
+				case "create":
+					if (cHandler.createGroup(command[1]))
+						System.out.println("Group" + command[1] + "created.");
+					else
+						System.out.println("Error creating group.");
+					break;
+				case "addu":
+					cHandler.add(command[1],command[2]);
+					break;
+				case "removeu":
+					cHandler.remove(command[1],command[2]);
+					break;
+				case "ginfo":
+					String groupInfo = cHandler.groupInfo();
+					if (groupInfo != null)
+						System.out.println(groupInfo);
+					else
+						System.out.println("Error retrieving group info");
+					break;
+				case "uinfo":
+					String userInfo = cHandler.userInfo();
+					if (userInfo != null)
+						System.out.println(userInfo);
+					else
+						System.out.println("Error retrieving user info");
+					break;
+				case "msg":
+					cHandler.message(command[1],command[2]);
+					break;
+				case "photo":
+					cHandler.photo(command[1],command[2]);
+					break;
+				case "collect":
+					cHandler.collect(command[1]);
+					break;
+				case "history":
+					cHandler.history(command[1]);
+					break;
+				case "test":
+					cHandler.test();
+					break;
+				case "exit":
+					System.out.println("Exiting program...");
+					close();
+					System.exit(0);
+					break;
+				default:
+					incorrectCommand();
+			}
+
+		} catch (ArrayIndexOutOfBoundsException e) {
+			incorrectCommand();
 		}
 
+	}
+
+	private static void incorrectCommand() {
+		System.out.println("Incorrect command");
+		printPossibleCommands();
 	}
 
 	private static void printPossibleCommands() {

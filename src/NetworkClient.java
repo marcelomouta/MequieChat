@@ -1,5 +1,6 @@
 import mequie.app.facade.Session;
 
+
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -29,11 +30,8 @@ public class NetworkClient {
      * servidor; - Guardar toda a informação necessária (e.g., descritor do socket)
      * na estrutura rtable; - Retornar 0 (OK) ou -1 (erro).
      */
-    public void connectToServer(String serverAddress) throws NumberFormatException, UnknownHostException, IOException {
+    public void connectToServer(String host, int port) throws UnknownHostException, IOException {
 
-        String[] serverHostnamePort = serverAddress.split(":");
-        String host = serverHostnamePort[0];
-        int port = Integer.parseInt(serverHostnamePort[1]);
 
         this.echoSocket = new Socket(host, port);
 
@@ -48,16 +46,9 @@ public class NetworkClient {
      * De-serializar a mensagem de resposta; - Retornar a mensagem de-serializada ou
      * NULL em caso de erro.
      */
-    public void sendTestFile() throws IOException, FileNotFoundException {
-
+    public void sendTestFile(FileInputStream inFile, int size) throws IOException {
         out.writeObject("test");
 
-        String fileName = "file.txt";
-
-        FileInputStream inFile = new FileInputStream(fileName);
-
-        //TODO decide if long file is unsupported OR send through several byte[] if necessary
-        int size = (int) new File(fileName).length();
         out.writeObject(size);
 
         byte[] buf = new byte[size];
@@ -65,15 +56,14 @@ public class NetworkClient {
 
         out.write(buf, 0, size);
         out.flush();
-        System.out.println("Ficheiro '" + fileName + "' enviado.");
-
-        inFile.close();
     }
 
     /*
      * A função network_close() fecha a ligação estabelecida por network_connect().
      */
     public void networkClose() throws IOException {
+
+        out.writeObject("exit");
 
         if (this.out != null)
             this.out.close();

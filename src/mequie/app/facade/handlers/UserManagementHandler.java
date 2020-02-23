@@ -1,4 +1,4 @@
-package mequie.app.facade;
+package mequie.app.facade.handlers;
 
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;

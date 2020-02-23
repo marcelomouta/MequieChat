@@ -1,4 +1,4 @@
-package mequie.app.exceptions;
+package mequie.app.facade.exceptions;
 
 /**
  * 
@@ -8,9 +8,9 @@ package mequie.app.exceptions;
  * um erro ao criar um grupo
  */
 @SuppressWarnings("serial")
-public class ErrorRemovingUserOfGroupException extends MequieException {
+public class ErrorCreatingGroupException extends MequieException {
 
-	public ErrorRemovingUserOfGroupException(){
-		super("ERROR ao remover o utilizador ao grupo");
+	public ErrorCreatingGroupException(){
+		super("ERROR ao criar o grupo");
 	}
 }

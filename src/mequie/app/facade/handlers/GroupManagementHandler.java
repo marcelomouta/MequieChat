@@ -1,12 +1,12 @@
-package mequie.app.facade;
+package mequie.app.facade.handlers;
 
 import java.util.List;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.domain.Group;
-import mequie.app.exceptions.*;
 import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.*;
 
 
 public class GroupManagementHandler{

@@ -1,4 +1,4 @@
-package mequie.app.exceptions;
+package mequie.app.facade.exceptions;
 
 /**
  * 
@@ -8,9 +8,9 @@ package mequie.app.exceptions;
  * um erro ao criar um grupo
  */
 @SuppressWarnings("serial")
-public class NotExistingGroupException extends MequieException {
+public class NotExistingUserException extends MequieException {
 
-	public NotExistingGroupException(){
-		super("ERROR nao existe o grupo especificado");
+	public NotExistingUserException(){
+		super("ERROR nao existe esse utilizador");
 	}
 }
