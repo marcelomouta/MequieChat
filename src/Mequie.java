@@ -48,18 +48,9 @@ public class Mequie {
 
             printPossibleCommands();
 
-            try {
 
-				while (true)
-					doNextCommand();
-
-			} catch (FileNotFoundException e) {
-				System.err.println(e.getMessage());
-				System.out.println("Ficheiro nao encontrado");
-			} catch ( IOException e) {
-				System.err.println(e.getMessage());
-				System.out.println("Erro ao enviar ficheiro");
-			}
+            while (true)
+            	doNextCommand();
 
 		} else {
 			System.out.println("Authentication failed. Ending program...");
@@ -79,7 +70,7 @@ public class Mequie {
         }
     }
 
-    private static void doNextCommand() throws IOException {
+    private static void doNextCommand() {
 
 		//reads command from cli
 		String[] command = scanner.nextLine().split(" ",3);
@@ -88,10 +79,7 @@ public class Mequie {
 			//TODO
 			switch (command[0]) {
 				case "create":
-					if (cHandler.createGroup(command[1]))
-						System.out.println("Group" + command[1] + "created.");
-					else
-						System.out.println("Error creating group.");
+					System.out.println(cHandler.createGroup(command[1]));
 					break;
 				case "addu":
 					cHandler.add(command[1],command[2]);
@@ -138,14 +126,26 @@ public class Mequie {
 			}
 
 		} catch (ArrayIndexOutOfBoundsException e) {
-			incorrectCommand();
+			incorrectCommand("That command requires more arguments");
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
+			System.out.println("File unavailable");
+		} catch (ArithmeticException e) {
+			System.out.println("File size is too large");
+		} catch (IOException e) {
+			System.out.println("Error executing command");
 		}
 
 	}
 
-	private static void incorrectCommand() {
-		System.out.println("Incorrect command");
+	private static void incorrectCommand(String message) {
+		System.out.println(message);
 		printPossibleCommands();
+	}
+
+	private static void incorrectCommand() {
+		incorrectCommand("Incorrect command");
+
 	}
 
 	private static void printPossibleCommands() {
@@ -159,7 +159,7 @@ public class Mequie {
 				"\tphoto <groupID> <photo>\n" +
 				"\tcollect <groupID>\n" +
 				"\thistory <groupID>\n" +
-                "\texit\n");
+                "\texit");
 	}
 
 	private static String getPassword(String[] args) {

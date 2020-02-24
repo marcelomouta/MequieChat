@@ -11,16 +11,14 @@ public class CommandHandler {
         this.network = network;
     }
 
-    public void test() throws IOException {
+    public void test() throws IOException, ArithmeticException {
 
 
         String fileName = "file.txt";
 
         FileInputStream inFile = new FileInputStream(fileName);
 
-
-        //TODO decide if long file is unsupported OR send through several byte[] if necessary
-        int size = (int) new File(fileName).length();
+        int size = Math.toIntExact(new File(fileName).length());
 
         network.sendTestFile(inFile, size);
         System.out.println("Ficheiro '" + fileName + "' enviado.");
@@ -28,9 +26,9 @@ public class CommandHandler {
         inFile.close();
     }
 
-    public boolean createGroup(String s) {
+    public String createGroup(String s) {
         //TODO
-        return false;
+        return null;
     }
 
     public void add(String s, String s1) {
