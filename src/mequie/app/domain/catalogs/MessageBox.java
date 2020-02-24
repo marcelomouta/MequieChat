@@ -14,22 +14,22 @@ import mequie.app.domain.Message;
  */
 public class MessageBox {
 
-    // userIdLastMessageRead.get(USER_ID) = ULTMA_MENSAGEM_LIDA
-    Map<String, Message> userlastMessageRead = new HashMap<>();
+	// Pega num id de user e devolve a ultima msg lida por esse user
+    Map<String, Message> userLastMessageRead = new HashMap<>();
     // mensagens do grupo
     List<Message> messages = new ArrayList<>();
 
-    /*public List<Message> getNewMessagesNotReadByUser(User user) {
+    public List<Message> getNewMessagesNotReadByUser(User user) {
         // Vai buscar ultima mensagem vista pelo user
-        Message lastMessageRead = this.userIdLastMessageRead.get(user.getUserID());
+        Message lastMessageRead = this.userLastMessageRead.get(user.getUserID());
         // Procura pela posicao dessa Message nas messages
         int pos = this.messages.indexOf(lastMessageRead);
         // Devolve apenas as mensagens a seguir a essa = tds as msgs n lidas
         List<Message> newMessages = this.messages.subList(pos + 1, this.messages.size());
         // Atualiza a ultima mensagem lida
         int lastPos = this.messages.size() - 1;
-        this.userIdLastMessageRead.put(user.getUserID(), this.messages.get(lastPos));
+        this.userLastMessageRead.put(user.getUserID(), this.messages.get(lastPos));
         
         return newMessages;
-    }*/
+    }
 }
