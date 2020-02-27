@@ -64,7 +64,7 @@ public class Mequie {
         scanner.close();
 
         try {
-            network.networkClose();
+            network.closeConnection();
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

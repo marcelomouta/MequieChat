@@ -1,5 +1,7 @@
 package mequie.app.domain;
 
+import java.io.Serializable;
+
 import mequie.app.domain.Group;
 
 /**
@@ -8,7 +10,7 @@ import mequie.app.domain.Group;
  * 
  * Esta classe representa um utilizador do sistema.
  */
-public class User {
+public class User implements Serializable{
 
 	private String userID;
     private String password;
@@ -28,6 +30,14 @@ public class User {
 	 */
 	public String getUserID() {
 		return userID;
+	}
+	
+	/**
+	 * 
+	 * @return a password do utilizador
+	 */
+	public String getPassword() {
+		return password;
 	}
 
 	public Group createGroup(String groupID) {

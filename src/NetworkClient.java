@@ -39,6 +39,15 @@ public class NetworkClient {
         this.out = new ObjectOutputStream(this.echoSocket.getOutputStream());
     }
 
+    
+    
+//    // ideia de SD
+//    public Resposta sendReceive(Pedido p)  {
+//    	// TODO
+//    }
+    
+    
+
     /*
      * Esta função deve: - Obter o descritor da ligação (socket) da estrutura
      * rtable_t; - Serializar a mensagem contida em msg; - Enviar a mensagem
@@ -59,9 +68,9 @@ public class NetworkClient {
     }
 
     /*
-     * A função network_close() fecha a ligação estabelecida por network_connect().
+     * A função closeConnection() fecha a ligação estabelecida por network_connect().
      */
-    public void networkClose() throws IOException {
+    public void closeConnection() throws IOException {
 
         out.writeObject("exit");
 

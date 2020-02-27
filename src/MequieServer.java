@@ -85,10 +85,10 @@ public class MequieServer{
 				}
 
 
-				if (sessao.getUsername().equals("user01") && sessao.getPassword().equals("passwd")){
+				if (sessao.getUser().getUserID().equals("user01") && sessao.getUser().getPassword().equals("passwd")){
 					outStream.writeObject(true);
 
-					System.out.println("User " + sessao.getUsername() + " was successfully authenticated");
+					System.out.println("User " + sessao.getUser().getUserID() + " was successfully authenticated");
 
 					while (inStream.readObject().equals("test"))
 						receiveFile();
@@ -105,7 +105,7 @@ public class MequieServer{
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} finally {
-				System.out.println("User " + sessao.getUsername() + " disconnected from server.");
+				System.out.println("User " + sessao.getUser().getUserID() + " disconnected from server.");
 				try {
 					outStream.close();
 					inStream.close();
