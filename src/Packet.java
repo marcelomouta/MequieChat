@@ -5,7 +5,7 @@ import java.util.Optional;
 /*
  * Classe comum ao Servidor e Cliente para troca de pedido e reposta
  */
-public class Pacote implements Serializable {
+public class Packet implements Serializable {
 	enum Opcode {
 		ADD_USER_TO_GROUP,
 		COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
@@ -25,6 +25,24 @@ public class Pacote implements Serializable {
 	private CType type;
 	private List<?> arguments;
 	private Optional<?> result;
+	
+	// PEDIDO
+	public Packet(Opcode op, CType type, List<?> arguments) {
+		super();
+		this.op = op;
+		this.type = type;
+		this.arguments = arguments;
+		this.result = Optional.empty();
+	}
+	
+	//RESPOSTA
+	public Packet(Opcode op, CType type, Optional<?> result) {
+		super();
+		this.op = op;
+		this.type = type;
+		this.arguments = null;
+		this.result = result;
+	}
 	
 	public Opcode getOp() {
 		return op;
