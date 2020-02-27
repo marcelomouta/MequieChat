@@ -4,4 +4,6 @@
 /MequieServer.class
 /NetworkClient.class
 /mequie/
-/group_management/
+/Pacote.class
+/Pacote$Opcode.class
+/Pacote$CType.class
