@@ -1,6 +1,8 @@
 package mequie.app.domain.catalogs;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import mequie.app.domain.Group;
 
@@ -37,5 +39,9 @@ import mequie.app.domain.Group;
         }
 
         return null;
+    }
+    
+    public List<Group> getAllGroups() {
+    	return new ArrayList<>(groups);
     }
  }
