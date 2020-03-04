@@ -1,6 +1,8 @@
 package mequie.app.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import mequie.app.domain.Group;
 
@@ -14,6 +16,8 @@ public class User implements Serializable{
 
 	private String userID;
     private String password;
+    
+    private List<Group> groups = new ArrayList<>();
 
     /**
      * 
