@@ -30,9 +30,6 @@ public class CreateGroupHandler{
     
     public void saveGroup() throws ErrorSavingGroupInDiskException {
     	try {
-    		// podemos gravar o numero de user dum grupo para no futuro ter uma mais facil gestao
-    		// notar que se assim o fizer e se por algum motivo um hacker adicionar (nao sei como)
-    		// um novo utilizador (adicionar no fim) ele nota e nao le esse falso utilizador
 			WriteInDisk write = new WriteInDisk("Data/group");
 			write.saveStringSeparatedBy(currentGroup.toString(), ":");
 			write.saveStringSeparatedBy(currentUser.getUserID(), ":");
