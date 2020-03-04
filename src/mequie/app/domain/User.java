@@ -53,6 +53,10 @@ public class User implements Serializable{
 	public boolean addGroupToBelongedGroups(Group g) {
 		return groups.add(g);
 	}
+	
+	public boolean removeGroupFromBelongedGroups(Group g) {
+		return groups.remove(g);
+	}
 
 	public List<Group> getAllGroups() {
 		return groups;
