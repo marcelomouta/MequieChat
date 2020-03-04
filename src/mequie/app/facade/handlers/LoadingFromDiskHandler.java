@@ -41,7 +41,7 @@ public class LoadingFromDiskHandler {
 		return users;
 	}
 	
-	public List<Group> getAllGroupsFromDisk() throws FileNotFoundException, Exception {
+	public static List<Group> getAllGroupsFromDisk() throws FileNotFoundException, Exception {
 		ReadFromDisk reader = new ReadFromDisk("Data/group.txt");
 		
 		List<String> idOfGroupsAndOwners = reader.readAllLines();
@@ -64,7 +64,7 @@ public class LoadingFromDiskHandler {
 		return groups;
 	}
 	
-	public List<Message> getAllMessagesFromDisk(Group g) throws FileNotFoundException {
+	public static List<Message> getAllMessagesFromDisk(Group g) throws FileNotFoundException {
 		ReadFromDisk reader = new ReadFromDisk("Data/group" + g.getGoupID() + "_msgs.txt");
 		
 		List<String> msgsIDandTexts = reader.readAllLines();
