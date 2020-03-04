@@ -14,25 +14,30 @@ import mequie.app.facade.exceptions.NotExistingUserException;
 public class GetGroupInfoHandler{
 
     private User currentUser;
+    
+    private Group currentGroup;
 
     public GetGroupInfoHandler(Session s) {
         currentUser = s.getUser();
     }
 
     // mostrar dono do grupo, numero de utilizadores (se for o dono do grupo, os utilizadores tmb)
-    public String indicateGroupID(String groupID) throws NotExistingGroupException {
-        Group currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
+    public void indicateGroupID(String groupID) throws NotExistingGroupException {
+    	currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
         if  (currentGroup == null) 
             throw new NotExistingGroupException();
-
-        User owner = currentGroup.getOwner();
-        int user_num = currentGroup.getNumberOfUsers();
-        List<User> users = null;
-        if (currentUser.equals(owner))
-            users = currentGroup.getAllUsers();
-          
-        return null; // falta empactorar e enviar a info
-        
+    }
+    
+    public String getInfo() {
+    	int user_num = currentGroup.getNumberOfUsers();
+    	
+    	List<User> users = null;
+    	
+    	if ( currentGroup.getOwner().equals(currentUser) ) {
+    		users = currentGroup.getAllUsers();
+    	}
+    	
+    	return null; // falta empactorar e enviar a info
     }
 
 }
