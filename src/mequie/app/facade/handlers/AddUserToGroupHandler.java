@@ -37,7 +37,7 @@ public class AddUserToGroupHandler{
             throw new NotExistingGroupException();
     }
     
-    public void addNewUserToGroup() throws ErrorAddingUserToGroupException {
+    public void addNewUserToGroup() throws ErrorAddingUserToGroupException, Exception {
     	if ( !currentGroup.addUserByID(currentUserToAdd) )
             throw new ErrorAddingUserToGroupException();
     }

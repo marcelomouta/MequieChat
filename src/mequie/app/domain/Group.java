@@ -46,11 +46,29 @@ public class Group {
 		return new ArrayList<>(this.users);
 	}
 
-	public boolean addUserByID(User userToAdd) {
-		return this.users.add(userToAdd);
+	public boolean addUserByID(User userToAdd) throws Exception {
+		boolean doneCorrectly = this.users.add(userToAdd);
+		
+		if (!doneCorrectly) return false;
+		
+		doneCorrectly = userToAdd.addGroupToBelongedGroups(this);
+		
+		// reverter o processo
+		if (!doneCorrectly) removeUserByID(userToAdd);
+
+		return doneCorrectly;
 	}
 
 	public boolean removeUserByID(User userToRemove) throws Exception{
-		return this.users.remove(userToRemove);
+		boolean doneCorrectly = this.users.remove(userToRemove);
+		
+		if (!doneCorrectly) return false;
+		
+		doneCorrectly = userToRemove.removeGroupFromBelongedGroups(this);
+		
+		// reverter o processo
+		if (!doneCorrectly) this.users.add(userToRemove);
+		
+		return doneCorrectly;
 	}
 }
