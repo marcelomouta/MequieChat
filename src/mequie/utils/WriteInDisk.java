@@ -12,8 +12,9 @@ public class WriteInDisk {
 		writer = new FileWriter(fileLocation, true);
 	}
 	
-	public boolean saveStringSeparatedBy(String toSave) {
+	public boolean saveStringSeparatedBy(String toSave, String sep) {
 		try {
+			writer.write(sep);
 			writer.write(toSave);
 			return true;
 		} catch (IOException e) {
