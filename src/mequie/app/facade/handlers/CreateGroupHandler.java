@@ -1,10 +1,14 @@
 package mequie.app.facade.handlers;
 
+import java.io.IOException;
+
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.ErrorCreatingGroupException;
+import mequie.app.facade.exceptions.ErrorSavingGroupInDiskException;
+import mequie.utils.WriteInDisk;
 
 public class CreateGroupHandler{
 
@@ -24,8 +28,17 @@ public class CreateGroupHandler{
             throw new ErrorCreatingGroupException();
     }
     
-    public void saveGroup() {
-    	// chamar o handler de escrever e escrever em disco no ficheiro group.txt
+    public void saveGroup() throws ErrorSavingGroupInDiskException {
+    	try {
+    		// podemos gravar o numero de user dum grupo para no futuro ter uma mais facil gestao
+    		// notar que se assim o fizer e se por algum motivo um hacker adicionar (nao sei como)
+    		// um novo utilizador (adicionar no fim) ele nota e nao le esse falso utilizador
+			WriteInDisk write = new WriteInDisk("Data/group");
+			write.saveStringSeparatedBy(currentGroup.toString(), ":");
+			write.saveStringSeparatedBy(currentUser.getUserID(), ":");
+		} catch (IOException e) {
+			throw new ErrorSavingGroupInDiskException();
+		}
     }
 
 }
