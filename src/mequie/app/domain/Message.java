@@ -8,12 +8,13 @@ package mequie.app.domain;
 public class Message {
 
 	private String msgID;
+	private String text;
 
     /**
      * 
      * @param msgID - id da mensagem
      */
-	public Message(String msgID) {
+	public Message(String msgID, String text) {
 		this.msgID = msgID;
 	}
 
