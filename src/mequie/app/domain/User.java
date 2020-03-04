@@ -45,7 +45,17 @@ public class User implements Serializable{
 	}
 
 	public Group createGroup(String groupID) {
-		return new Group(groupID, this);
+		Group g = new Group(groupID, this);
+		groups.add(g);
+		return g;
+	}
+	
+	public boolean addGroupToBelongedGroups(Group g) {
+		return groups.add(g);
+	}
+
+	public List<Group> getAllGroups() {
+		return groups;
 	}
 	
 	@Override
