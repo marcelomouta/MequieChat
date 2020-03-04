@@ -28,7 +28,7 @@ public class CreateGroupHandler{
             throw new ErrorCreatingGroupException();
     }
     
-    public void saveGroup() throws ErrorSavingGroupInDiskException {
+    public void save() throws ErrorSavingGroupInDiskException {
     	try {
 			WriteInDisk write = new WriteInDisk("Data/group");
 			write.saveStringSeparatedBy(currentGroup.toString(), ":");
