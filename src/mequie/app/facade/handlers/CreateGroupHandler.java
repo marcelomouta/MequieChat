@@ -9,16 +9,23 @@ import mequie.app.facade.exceptions.ErrorCreatingGroupException;
 public class CreateGroupHandler{
 
     private User currentUser;
+    private Group currentGroup;
 
     public CreateGroupHandler(Session s) {
         currentUser = s.getUser();
     }
 
-    public void indicateGrupID(String groupID) throws ErrorCreatingGroupException {
-        Group currentGroup = currentUser.createGroup(groupID);
-
-        if ( !GroupCatalog.getInstance().addGroup(currentGroup) )
+    public void makeGrupByID(String groupID) {
+    	currentGroup = currentUser.createGroup(groupID);
+    }
+    
+    public void addGroup() throws ErrorCreatingGroupException {
+    	if ( !GroupCatalog.getInstance().addGroup(currentGroup) )
             throw new ErrorCreatingGroupException();
+    }
+    
+    public void saveGroup() {
+    	// chamar o handler de escrever e escrever em disco no ficheiro group.txt
     }
 
 }
