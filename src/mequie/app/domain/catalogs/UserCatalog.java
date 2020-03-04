@@ -1,6 +1,8 @@
 package mequie.app.domain.catalogs;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import mequie.app.domain.User;
 
@@ -43,5 +45,9 @@ public class UserCatalog {
         }
 
         return null;
+    }
+    
+    public List<User> getAllUsers() {
+    	return new ArrayList<>(users);
     }
 }
