@@ -71,4 +71,9 @@ public class Group {
 		
 		return doneCorrectly;
 	}
+	
+	@Override
+	public String toString() {
+		return id;
+	}
 }
