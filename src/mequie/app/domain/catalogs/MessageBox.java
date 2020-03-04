@@ -9,7 +9,7 @@ import mequie.app.domain.User;
 import mequie.app.domain.Message;
 
 /**
- * 
+ * Classe. Que. Representa. As. Mensagems. De. Um. Grupo
  * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
  */
 public class MessageBox {
