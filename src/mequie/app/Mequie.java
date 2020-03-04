@@ -1,5 +1,9 @@
 package mequie.app;
 
+import mequie.app.facade.Session;
+import mequie.app.facade.handlers.AddUserToGroupHandler;
+import mequie.app.facade.handlers.CreateGroupHandler;
+import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
 
 /**
@@ -7,8 +11,20 @@ import mequie.app.facade.handlers.LoadingFromDiskHandler;
  */
 public class Mequie {
 	
-	public LoadingFromDiskHandler getauthenticateHandler() {
+	public LoadingFromDiskHandler getLoaderHandler() {
 		return LoadingFromDiskHandler.getInstance();
+	}
+	
+	public CreateGroupHandler getCreateGroupHandler(Session s) {
+		return new CreateGroupHandler(s);
+	}
+	
+	public AddUserToGroupHandler getAddUserToGroupHandler(Session s) {
+		return new AddUserToGroupHandler(s);
+	}
+	
+	public CreateUserHandler getCreateUserHandler() {
+		return new CreateUserHandler();
 	}
 
 }
