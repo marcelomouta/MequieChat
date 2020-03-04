@@ -23,15 +23,15 @@ public class GetGroupInfoHandler{
 
     // mostrar dono do grupo, numero de utilizadores (se for o dono do grupo, os utilizadores tmb)
     public void indicateGroupID(String groupID) throws NotExistingGroupException {
-    	currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
-        if  (currentGroup == null) 
+    	this.currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
+        if  (this.currentGroup == null)
             throw new NotExistingGroupException();
     }
     
     public String getInfo() {
-    	int user_num = currentGroup.getNumberOfUsers();
+    	int user_num = this.currentGroup.getNumberOfUsers();
     	
-    	List<User> users = null;
+    	List<User> users = this.currentGroup.getAllUsers();
     	
     	if ( currentGroup.getOwner().equals(currentUser) ) {
     		users = currentGroup.getAllUsers();
