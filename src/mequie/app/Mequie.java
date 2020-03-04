@@ -1,14 +1,14 @@
 package mequie.app;
 
-import mequie.app.facade.handlers.authenticateHandler;
+import mequie.app.facade.handlers.LoadingFromDiskHandler;
 
 /**
  * This class is the System class
  */
 public class Mequie {
 	
-	public authenticateHandler getauthenticateHandler() {
-		return new authenticateHandler();
+	public LoadingFromDiskHandler getauthenticateHandler() {
+		return LoadingFromDiskHandler.getInstance();
 	}
 
 }
