@@ -130,8 +130,12 @@ public class Group {
 		return msgs;
 	}
 
-	public Message createMessage(String text, User currentUser) {
+	public TextMessage createTextMessage(String text, User currentUser) {
 		return new TextMessage(generateMsgID(), currentUser, new ArrayList<>(users), text);
+	}
+	
+	public PhotoMessage createPhotoMessage(byte[] photo, User currentUser) {
+		return new PhotoMessage(getGoupID(), currentUser, new ArrayList<>(users), photo);
 	}
 	
 	private String generateMsgID() {
