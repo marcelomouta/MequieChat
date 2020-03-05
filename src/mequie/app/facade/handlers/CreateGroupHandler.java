@@ -20,7 +20,7 @@ public class CreateGroupHandler{
     	currentGroup = currentUser.createGroup(groupID);
     }
     
-    public void addGroup() throws ErrorCreatingGroupException {
+    public void groupAssociation() throws ErrorCreatingGroupException {
     	if ( !GroupCatalog.getInstance().addGroup(currentGroup) )
             throw new ErrorCreatingGroupException();
     }

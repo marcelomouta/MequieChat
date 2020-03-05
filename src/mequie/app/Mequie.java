@@ -5,6 +5,7 @@ import mequie.app.facade.handlers.AddUserToGroupHandler;
 import mequie.app.facade.handlers.CreateGroupHandler;
 import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
+import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 
 /**
  * This class is the System class
@@ -21,6 +22,10 @@ public class Mequie {
 	
 	public CreateUserHandler getCreateUserHandler() {
 		return new CreateUserHandler();
+	}
+	
+	public RemoveUserOfGroupHandler getRemoveUserOfGroupHandler(Session s) {
+		return new RemoveUserOfGroupHandler(s);
 	}
 
 }

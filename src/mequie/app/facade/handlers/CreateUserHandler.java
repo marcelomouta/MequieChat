@@ -14,7 +14,7 @@ public class CreateUserHandler {
 		currentUser = UserCatalog.getInstance().createUser(username, pass);
 	}
 	
-	public void associaUser() {
+	public void userAssociation() {
 		UserCatalog.getInstance().addUser(currentUser);
 	}
 	
