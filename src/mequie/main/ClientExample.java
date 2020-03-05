@@ -1,11 +1,8 @@
 package mequie.main;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 
 import mequie.app.Mequie;
-import mequie.app.domain.Group;
-import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.Session;
@@ -19,10 +16,8 @@ public class ClientExample {
 		
 		Mequie m = new Mequie();
 		
-		LoadingFromDiskHandler loader = m.getLoaderHandler();
-		
 		try {
-			loader.load();
+			LoadingFromDiskHandler.load();
 			
 			CreateUserHandler cuh = m.getCreateUserHandler();
 			
