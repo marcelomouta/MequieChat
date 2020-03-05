@@ -1,6 +1,7 @@
 package mequie.app.domain;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,15 +15,16 @@ public abstract class Message {
 	protected User sender;
 	protected String msgID;
 	
-	protected Set<User> usersWhoNotReadMessages = new HashSet<>();
+	protected Set<User> usersWhoNotReadMessages;
 
     /**
      * 
      * @param msgID - id da mensagem
      */
-	protected Message(String msgID, User sender) {
+	protected Message(String msgID, User sender, List<User> userNotSeenMsg) {
 		this.msgID = msgID;
 		this.sender = sender;
+		this.usersWhoNotReadMessages = new HashSet<>(userNotSeenMsg);
 	}
 
 	/**
@@ -52,6 +54,8 @@ public abstract class Message {
 	public void messageReadByUser(User u) {
 		usersWhoNotReadMessages.remove(u);
 	}
+	
+	public abstract String getInfo();
 
 	@Override
 	public int hashCode() {
