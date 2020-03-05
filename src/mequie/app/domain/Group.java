@@ -108,6 +108,14 @@ public class Group {
 	public void saveMessage(Message msg) {
 		messages.add(msg);
 	}
+	
+	public boolean isUserOfGroup(User u) {
+		return users.contains(u);
+	}
+
+	public List<Message> getHistory() {
+		return history;
+	}
 
 //	public Message createMessage(String text, User currentUser) {
 //		Message msg = new TextMessage(msgID, text);
