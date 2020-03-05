@@ -49,7 +49,7 @@ public abstract class Message {
 	 * 
 	 * user u read message
 	 */
-	public void userReadMessage(User u) {
+	public void messageReadByUser(User u) {
 		usersWhoNotReadMessages.remove(u);
 	}
 
