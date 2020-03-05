@@ -1,31 +1,24 @@
 package mequie.app.facade.handlers;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import mequie.app.domain.Group;
 import mequie.app.domain.Message;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
-import mequie.app.facade.Session;
 import mequie.utils.ReadFromDisk;
+
+/**
+ * Classe para fazer load dos dados que 
+ * 
+ */
 
 public class LoadingFromDiskHandler {
 	
-	private static LoadingFromDiskHandler INSTANCE;
-	
 	private LoadingFromDiskHandler() {}
-	
-	public static LoadingFromDiskHandler getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new LoadingFromDiskHandler();
-		}
-		return INSTANCE;
-	}
 	
 	private static List<User> getAllUsersFromDisk() throws IOException {
 		ReadFromDisk reader = new ReadFromDisk("Data/passwd.txt");
