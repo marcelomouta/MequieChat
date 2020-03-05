@@ -74,6 +74,6 @@ public class Group {
 	
 	@Override
 	public String toString() {
-		return id;
+		return id + ":" + users.toString();
 	}
 }
