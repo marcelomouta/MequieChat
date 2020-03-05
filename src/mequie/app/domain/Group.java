@@ -21,6 +21,8 @@ public class Group {
 	private List<Message> messages = new ArrayList<>();
 	private List<Message> history = new ArrayList<>();
 	
+	private int msgNumberID = 0;
+	
 	/**
 	 * 
 	 * @param owner - dono do video
@@ -128,8 +130,11 @@ public class Group {
 		return msgs;
 	}
 
-//	public Message createMessage(String text, User currentUser) {
-//		Message msg = new TextMessage(msgID, text);
-//		return null;
-//	}
+	public Message createMessage(String text, User currentUser) {
+		return new TextMessage(generateMsgID(), currentUser, new ArrayList<>(users), text);
+	}
+	
+	private String generateMsgID() {
+		return "" + msgNumberID++;
+	}
 }
