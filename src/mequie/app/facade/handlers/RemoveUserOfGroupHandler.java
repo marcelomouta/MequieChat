@@ -9,7 +9,7 @@ import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.ErrorCreatingGroupException;
 import mequie.app.facade.exceptions.ErrorRemovingUserOfGroupException;
-import mequie.app.facade.exceptions.ErrorSavingGroupInDiskException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.NotExistingUserException;
 import mequie.utils.WriteInDisk;

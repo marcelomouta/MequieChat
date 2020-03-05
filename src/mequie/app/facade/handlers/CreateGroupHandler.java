@@ -7,7 +7,7 @@ import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.ErrorCreatingGroupException;
-import mequie.app.facade.exceptions.ErrorSavingGroupInDiskException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.utils.WriteInDisk;
 
 public class CreateGroupHandler{
@@ -28,13 +28,13 @@ public class CreateGroupHandler{
             throw new ErrorCreatingGroupException();
     }
     
-    public void save() throws ErrorSavingGroupInDiskException {
+    public void save() throws ErrorSavingInDiskException {
     	try {
 			WriteInDisk write = new WriteInDisk("Data/group.txt");
 			write.saveStringSeparatedBy(currentGroup.getGoupID(), ":");
 			write.saveStringSeparatedBy(currentUser.getUserID(), ":");
 		} catch (IOException e) {
-			throw new ErrorSavingGroupInDiskException();
+			throw new ErrorSavingInDiskException();
 		}
     }
 
