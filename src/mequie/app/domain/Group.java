@@ -18,6 +18,9 @@ public class Group {
 	//private List<User> users = new ArrayList<>();
 	private Set<User> users = new HashSet<>();
 	
+	private List<Message> messages = new ArrayList<>();
+	private List<Message> history = new ArrayList<>();
+	
 	/**
 	 * 
 	 * @param owner - dono do video
@@ -101,4 +104,13 @@ public class Group {
 			return false;
 		return true;
 	}
+
+	public void saveMessage(Message msg) {
+		messages.add(msg);
+	}
+
+//	public Message createMessage(String text, User currentUser) {
+//		Message msg = new TextMessage(msgID, text);
+//		return null;
+//	}
 }

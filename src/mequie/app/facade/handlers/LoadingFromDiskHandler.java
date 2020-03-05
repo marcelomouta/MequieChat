@@ -75,7 +75,7 @@ public class LoadingFromDiskHandler {
 			String[] msgIDandTextSplited = msgIDandText.split(":");
 			String msgID = msgIDandTextSplited[0];
 			String text = msgIDandTextSplited[1];			
-			msgs.add(new Message(msgID, text));
+//			msgs.add(new Message(msgID, text));
 		}
 		
 		return msgs;
