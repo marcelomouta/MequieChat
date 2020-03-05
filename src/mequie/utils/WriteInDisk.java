@@ -13,7 +13,6 @@ public class WriteInDisk {
 	}
 	
 	public boolean saveStringSeparatedBy(String toSave, String sep) {
-		StringBuilder sb = new StringBuilder();
 		try {
 			writer.write(":" + toSave);
 			return true;
@@ -23,7 +22,6 @@ public class WriteInDisk {
 	}
 	
 	public boolean saveTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) {
-		StringBuilder sb = new StringBuilder();
 		try {
 			writer.write(toSave1 + ":" + toSave2);
 			return true;
