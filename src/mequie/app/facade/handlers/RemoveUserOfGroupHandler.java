@@ -43,15 +43,9 @@ public class RemoveUserOfGroupHandler{
             throw new ErrorRemovingUserOfGroupException();
     }
     
-    public void save() {
-    	try {
-    		// ler as linhas e ver o grupo que foi alterado e remover do disco
-    		// depois escrever a alteracao ao grupo no disco
-			WriteInDisk write = new WriteInDisk("Data/group");
-			
-		} catch (IOException e) {
-			// throw new 
-		}
+    public void save() throws ErrorSavingInDiskException {
+    	if ( !SaveToDiskHandler.saveRemoveUserFromGroup(currentUserToRemove, currentGroup) )
+    		throw new ErrorSavingInDiskException();
     
     }
 

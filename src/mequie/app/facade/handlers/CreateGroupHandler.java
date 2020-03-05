@@ -1,14 +1,11 @@
 package mequie.app.facade.handlers;
 
-import java.io.IOException;
-
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.ErrorCreatingGroupException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
-import mequie.utils.WriteInDisk;
 
 public class CreateGroupHandler{
 
@@ -29,12 +26,8 @@ public class CreateGroupHandler{
     }
     
     public void save() throws ErrorSavingInDiskException {
-    	try {
-			WriteInDisk write = new WriteInDisk("Data/group.txt");
-			write.saveTwoStringsSeparatedBy(currentGroup.getGoupID(), currentUser.getUserID(), ":");
-		} catch (IOException e) {
-			throw new ErrorSavingInDiskException();
-		}
+    	if ( !SaveToDiskHandler.saveGroupInDisk(currentGroup) )
+    		throw new ErrorSavingInDiskException();
     }
 
 }
