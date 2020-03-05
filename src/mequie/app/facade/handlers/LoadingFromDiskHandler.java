@@ -1,6 +1,7 @@
 package mequie.app.facade.handlers;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import mequie.app.domain.Group;
 import mequie.app.domain.Message;
 import mequie.app.domain.User;
+import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.Session;
 import mequie.utils.ReadFromDisk;
@@ -25,7 +27,7 @@ public class LoadingFromDiskHandler {
 		return INSTANCE;
 	}
 	
-	public static List<User> getAllUsersFromDisk() throws FileNotFoundException {
+	private static List<User> getAllUsersFromDisk() throws IOException {
 		ReadFromDisk reader = new ReadFromDisk("Data/passwd.txt");
 		
 		List<String> idOfUsersAndPass = reader.readAllLines();
@@ -41,7 +43,7 @@ public class LoadingFromDiskHandler {
 		return users;
 	}
 	
-	public static List<Group> getAllGroupsFromDisk() throws FileNotFoundException, Exception {
+	private static List<Group> getAllGroupsFromDisk() throws IOException, Exception {
 		ReadFromDisk reader = new ReadFromDisk("Data/group.txt");
 		
 		List<String> idOfGroupsAndOwners = reader.readAllLines();
@@ -63,7 +65,7 @@ public class LoadingFromDiskHandler {
 		return groups;
 	}
 	
-	public static List<Message> getAllMessagesFromDisk(Group g) throws FileNotFoundException {
+	private static List<Message> getAllMessagesFromDisk(Group g) throws IOException {
 		ReadFromDisk reader = new ReadFromDisk("Data/group" + g.getGoupID() + "_msgs.txt");
 		
 		List<String> msgsIDandTexts = reader.readAllLines();
@@ -77,6 +79,21 @@ public class LoadingFromDiskHandler {
 		}
 		
 		return msgs;
+	}
+	
+	public static void load() throws IOException, Exception {
+		List<User> users = getAllUsersFromDisk();
+		for (User u : users) {
+			UserCatalog.getInstance().addUser(u);
+		}
+		
+		List<Group> groups = getAllGroupsFromDisk();
+		
+		for (Group g : groups) {
+			GroupCatalog.getInstance().addGroup(g);
+		}
+		
+		// load das mensagens
 	}
 	
 	

@@ -2,7 +2,9 @@ package mequie.app.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mequie.app.domain.Group;
 
@@ -17,7 +19,7 @@ public class User implements Serializable{
 	private String userID;
     private String password;
     
-    private List<Group> groups = new ArrayList<>();
+    private Set<Group> groups = new HashSet<>();
 
     /**
      * 
@@ -59,22 +61,37 @@ public class User implements Serializable{
 	}
 
 	public List<Group> getAllGroups() {
-		return groups;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj instanceof User){
-			User other = (User) obj;
-			return other.userID.equals(this.userID)
-					&& other.password.equals(this.password);
-		}
-		return false;
+		return new ArrayList<>(groups);
 	}
 	
 	@Override
 	public String toString() {
 		return this.userID;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((userID == null) ? 0 : userID.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (userID == null) {
+			if (other.userID != null)
+				return false;
+		} else if (!userID.equals(other.userID))
+			return false;
+		return true;
 	}
 
 }

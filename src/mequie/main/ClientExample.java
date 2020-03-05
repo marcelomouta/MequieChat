@@ -22,17 +22,7 @@ public class ClientExample {
 		LoadingFromDiskHandler loader = m.getLoaderHandler();
 		
 		try {
-			List<User> users = LoadingFromDiskHandler.getAllUsersFromDisk();
-			
-			for (User u : users) {
-				UserCatalog.getInstance().addUser(u);
-			}
-			
-			List<Group> groups = LoadingFromDiskHandler.getAllGroupsFromDisk();
-			
-			for (Group g : groups) {
-				GroupCatalog.getInstance().addGroup(g);
-			}
+			loader.load();
 			
 			CreateUserHandler cuh = m.getCreateUserHandler();
 			

@@ -17,10 +17,7 @@ public class UserCatalog {
     private static UserCatalog INSTANCE;
     private Set<User> users = new HashSet<>();
 
-    private UserCatalog(){
-    	// TODO Apagar isto qd tiver leitura do disco a funcionar. Só foi feito por motivo de teste
-    	this.users.add(new User("user01", "passwd"));
-    }
+    private UserCatalog(){}
 
     public static UserCatalog getInstance(){
 		if(INSTANCE == null){
