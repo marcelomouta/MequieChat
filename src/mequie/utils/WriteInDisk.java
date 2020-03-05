@@ -6,14 +6,14 @@ import java.util.List;
 
 public class WriteInDisk {
 
-	private FileWriter writer;
+	private String fileLocation;
 	
 	public WriteInDisk(String fileLocation) throws IOException {
-		writer = new FileWriter(fileLocation, true);
+		this.fileLocation = fileLocation;
 	}
 	
 	public boolean saveStringSeparatedBy(String toSave, String sep) {
-		try {
+		try(FileWriter writer = new FileWriter(fileLocation, true)) {
 			writer.write(":" + toSave);
 			return true;
 		} catch (IOException e) {
@@ -22,7 +22,7 @@ public class WriteInDisk {
 	}
 	
 	public boolean saveTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) {
-		try {
+		try(FileWriter writer = new FileWriter(fileLocation, true)) {
 			writer.write(toSave1 + ":" + toSave2);
 			return true;
 		} catch (IOException e) {
@@ -32,7 +32,7 @@ public class WriteInDisk {
 	
 	public boolean saveListOfStringsSeparatedBy(List<String> itemsToSave, String sep) {
 		StringBuilder sb = new StringBuilder();
-		try {
+		try(FileWriter writer = new FileWriter(fileLocation, true)) {
 			for (String item : itemsToSave) {
 				sb.append(item + ":");
 			}

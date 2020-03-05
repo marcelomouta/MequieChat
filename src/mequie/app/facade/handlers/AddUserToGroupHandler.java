@@ -25,7 +25,7 @@ public class AddUserToGroupHandler{
         currentUser = s.getUser();
     }
 
-    public void getUserByIDAndGroupID(String userID, String groupID) throws NotExistingUserException {
+    public void getUserByID(String userID) throws NotExistingUserException {
     	currentUserToAdd = UserCatalog.getInstance().getUserById(userID);
         if (currentUserToAdd == null)
             throw new NotExistingUserException();
@@ -44,7 +44,7 @@ public class AddUserToGroupHandler{
     
     public void save() throws ErrorSavingGroupInDiskException {
     	try {
-			WriteInDisk write = new WriteInDisk("Data/group");
+			WriteInDisk write = new WriteInDisk("Data/group.txt");
 			write.saveStringSeparatedBy(currentUserToAdd.getUserID(), ":");
 		} catch (IOException e) {
 			throw new ErrorSavingGroupInDiskException();

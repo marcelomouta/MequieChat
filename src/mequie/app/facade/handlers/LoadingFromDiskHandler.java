@@ -33,8 +33,8 @@ public class LoadingFromDiskHandler {
 		
 		for (String userIDandPass : idOfUsersAndPass) {
 			String[] userIDandPassSplited = userIDandPass.split(":");
-			String userID = userIDandPassSplited[1];
-			String pass =  userIDandPassSplited[2];
+			String userID = userIDandPassSplited[0];
+			String pass =  userIDandPassSplited[1];
 			users.add(new User(userID, pass));
 		}
 		
@@ -49,16 +49,15 @@ public class LoadingFromDiskHandler {
 		
 		for (String groupIDandUserID : idOfGroupsAndOwners) {
 			String[] groupIDandUsersIDSplited = groupIDandUserID.split(":");
-			String groupID = groupIDandUsersIDSplited[1];
-			String ownerID = groupIDandUsersIDSplited[2];
+			String groupID = groupIDandUsersIDSplited[0];
+			String ownerID = groupIDandUsersIDSplited[1];
 			Group g = new Group(groupID, UserCatalog.getInstance().getUserById(ownerID));
 			
-			for (int i = 3; i < groupIDandUsersIDSplited.length; i++) {
+			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
 				String userID = groupIDandUsersIDSplited[i];
 				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
+				groups.add(g);
 			}
-			
-			groups.add(g);
 		}
 		
 		return groups;
@@ -72,8 +71,8 @@ public class LoadingFromDiskHandler {
 		
 		for (String msgIDandText : msgsIDandTexts) {
 			String[] msgIDandTextSplited = msgIDandText.split(":");
-			String msgID = msgIDandTextSplited[1];
-			String text = msgIDandTextSplited[2];			
+			String msgID = msgIDandTextSplited[0];
+			String text = msgIDandTextSplited[1];			
 			msgs.add(new Message(msgID, text));
 		}
 		

@@ -30,7 +30,7 @@ public class CreateGroupHandler{
     
     public void save() throws ErrorSavingGroupInDiskException {
     	try {
-			WriteInDisk write = new WriteInDisk("Data/group");
+			WriteInDisk write = new WriteInDisk("Data/group.txt");
 			write.saveStringSeparatedBy(currentGroup.getGoupID(), ":");
 			write.saveStringSeparatedBy(currentUser.getUserID(), ":");
 		} catch (IOException e) {
