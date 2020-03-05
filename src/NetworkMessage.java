@@ -1,9 +1,6 @@
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Classe comum ao Servidor e Cliente para troca de pedido e reposta

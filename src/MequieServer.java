@@ -9,6 +9,8 @@ import mequie.app.facade.Session;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 //Servidor myServer
 
@@ -90,8 +92,11 @@ public class MequieServer{
 
 					System.out.println("User " + sessao.getUser().getUserID() + " was successfully authenticated");
 
-					while (inStream.readObject().equals("test"))
-						receiveFile();
+					while(true) {
+						NetworkMessage msg = (NetworkMessage) inStream.readObject();
+						System.out.println(msg.toString());
+						receiveFile(msg);
+					}
 				}
 				else {
 					outStream.writeObject(false);
@@ -116,12 +121,12 @@ public class MequieServer{
 			}
 		}
 
-		private void receiveFile() throws IOException, ClassNotFoundException {
+		private void receiveFile(NetworkMessage msg) throws IOException, ClassNotFoundException {
 			System.out.println("A receber ficheiro...");
-			int fileSize = (Integer) inStream.readObject();
 
-			byte[] fileBuf = new byte[fileSize];
-			inStream.read(fileBuf,0,fileSize);
+			byte[] file = msg.getArguments().get(0).getBytes(StandardCharsets.UTF_8);
+			
+			System.out.println("Recebeu o conteudo do ficheiro: " + msg.getArguments().get(0));
 
 			System.out.println("Ficheiro recebido.");
 		}

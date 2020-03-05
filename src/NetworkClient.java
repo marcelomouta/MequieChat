@@ -4,6 +4,8 @@ import mequie.app.facade.Session;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class NetworkClient {
 
@@ -56,14 +58,23 @@ public class NetworkClient {
      * NULL em caso de erro.
      */
     public void sendTestFile(FileInputStream inFile, int size) throws IOException {
-        out.writeObject("test");
+    	
+        //out.writeObject("test");
 
-        out.writeObject(size);
+        //out.writeObject(size);
 
         byte[] buf = new byte[size];
         inFile.read(buf, 0, size);
 
-        out.write(buf, 0, size);
+        //out.write(buf, 0, size);
+        //out.flush();
+        
+        NetworkMessage msg = NetworkMessage.ofRequest(NetworkMessage.Opcode.TEST, 
+    			NetworkMessage.CType.NORMAL,
+    			new ArrayList(Arrays.asList(new String(buf))));
+        
+        out.writeObject(msg);
+        
         out.flush();
     }
 
