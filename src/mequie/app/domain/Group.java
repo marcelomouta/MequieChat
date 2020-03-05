@@ -21,6 +21,8 @@ public class Group {
 	private List<Message> messages = new ArrayList<>();
 	private List<Message> history = new ArrayList<>();
 	
+	private int msgNumberID = 0;
+	
 	/**
 	 * 
 	 * @param owner - dono do video
@@ -116,9 +118,27 @@ public class Group {
 	public List<Message> getHistory() {
 		return history;
 	}
+	
+	public List<Message> collectMessagesUnseenByUser(User u) {
+		List<Message> msgs = new ArrayList<>();
+		for (Message m : messages) {
+			if (!m.userHasReadMessage(u)) {
+				m.messageReadByUser(u);
+				msgs.add(m);
+			}
+		}
+		return msgs;
+	}
 
-//	public Message createMessage(String text, User currentUser) {
-//		Message msg = new TextMessage(msgID, text);
-//		return null;
-//	}
+	public TextMessage createTextMessage(String text, User currentUser) {
+		return new TextMessage(generateMsgID(), currentUser, new ArrayList<>(users), text);
+	}
+	
+	public PhotoMessage createPhotoMessage(byte[] photo, User currentUser) {
+		return new PhotoMessage(getGoupID(), currentUser, new ArrayList<>(users), photo);
+	}
+	
+	private String generateMsgID() {
+		return "" + msgNumberID++;
+	}
 }

@@ -8,9 +8,9 @@ package mequie.app.facade.exceptions;
  * um erro ao escrever no disco
  */
 @SuppressWarnings("serial")
-public class ErrorSavingGroupInDiskException extends MequieException {
+public class ErrorSavingInDiskException extends MequieException {
 	
-	public ErrorSavingGroupInDiskException(){
-		super("ERROR ao gravar o grupo no disco");
+	public ErrorSavingInDiskException(){
+		super("ERROR ao gravar no disco");
 	}
 }

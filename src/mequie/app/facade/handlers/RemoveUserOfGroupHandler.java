@@ -9,7 +9,7 @@ import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.ErrorCreatingGroupException;
 import mequie.app.facade.exceptions.ErrorRemovingUserOfGroupException;
-import mequie.app.facade.exceptions.ErrorSavingGroupInDiskException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.NotExistingUserException;
 import mequie.utils.WriteInDisk;
@@ -43,15 +43,9 @@ public class RemoveUserOfGroupHandler{
             throw new ErrorRemovingUserOfGroupException();
     }
     
-    public void save() {
-    	try {
-    		// ler as linhas e ver o grupo que foi alterado e remover do disco
-    		// depois escrever a alteracao ao grupo no disco
-			WriteInDisk write = new WriteInDisk("Data/group");
-			
-		} catch (IOException e) {
-			// throw new 
-		}
+    public void save() throws ErrorSavingInDiskException {
+    	if ( !SaveToDiskHandler.saveRemoveUserFromGroup(currentUserToRemove, currentGroup) )
+    		throw new ErrorSavingInDiskException();
     
     }
 
