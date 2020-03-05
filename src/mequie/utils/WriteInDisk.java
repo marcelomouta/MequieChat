@@ -12,6 +12,16 @@ public class WriteInDisk {
 		writer = new FileWriter(fileLocation, true);
 	}
 	
+	public boolean saveStringSeparatedBy(String toSave, String sep) {
+		StringBuilder sb = new StringBuilder();
+		try {
+			writer.write(":" + toSave);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
 	public boolean saveTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) {
 		StringBuilder sb = new StringBuilder();
 		try {
