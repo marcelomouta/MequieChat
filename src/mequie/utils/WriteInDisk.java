@@ -12,6 +12,15 @@ public class WriteInDisk {
 		this.fileLocation = fileLocation;
 	}
 	
+	public boolean saveSimpleString(String info) {
+		try(FileWriter writer = new FileWriter(fileLocation, true)) {
+			writer.write(info);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+		
 	public boolean saveStringSeparatedBy(String toSave, String sep) {
 		try(FileWriter writer = new FileWriter(fileLocation, true)) {
 			writer.write(sep + toSave);
@@ -44,6 +53,5 @@ public class WriteInDisk {
 			return false;
 		}
 	}
-	
 	
 }
