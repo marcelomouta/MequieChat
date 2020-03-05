@@ -12,10 +12,10 @@ public class WriteInDisk {
 		writer = new FileWriter(fileLocation, true);
 	}
 	
-	public boolean saveStringSeparatedBy(String toSave, String sep) {
+	public boolean saveTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) {
+		StringBuilder sb = new StringBuilder();
 		try {
-			writer.write(sep);
-			writer.write(toSave);
+			writer.write(toSave1 + ":" + toSave2);
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -23,11 +23,14 @@ public class WriteInDisk {
 	}
 	
 	public boolean saveListOfStringsSeparatedBy(List<String> itemsToSave, String sep) {
+		StringBuilder sb = new StringBuilder();
 		try {
 			for (String item : itemsToSave) {
-				writer.write(sep);
-				writer.write(item);
+				sb.append(item + ":");
 			}
+			sb.deleteCharAt(sb.length() - 1); //remove the last ':'
+			
+			writer.write(sb.toString());
 			return true;
 		} catch (IOException e) {
 			return false;
