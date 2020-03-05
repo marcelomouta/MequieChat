@@ -14,7 +14,7 @@ public class WriteInDisk {
 	
 	public boolean saveStringSeparatedBy(String toSave, String sep) {
 		try(FileWriter writer = new FileWriter(fileLocation, true)) {
-			writer.write(":" + toSave);
+			writer.write(sep + toSave);
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -23,7 +23,7 @@ public class WriteInDisk {
 	
 	public boolean saveTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) {
 		try(FileWriter writer = new FileWriter(fileLocation, true)) {
-			writer.write(toSave1 + ":" + toSave2);
+			writer.write(toSave1 + sep + toSave2);
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -34,7 +34,7 @@ public class WriteInDisk {
 		StringBuilder sb = new StringBuilder();
 		try(FileWriter writer = new FileWriter(fileLocation, true)) {
 			for (String item : itemsToSave) {
-				sb.append(item + ":");
+				sb.append(item + sep);
 			}
 			sb.deleteCharAt(sb.length() - 1); //remove the last ':'
 			
