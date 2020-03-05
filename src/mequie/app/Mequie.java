@@ -11,10 +11,6 @@ import mequie.app.facade.handlers.LoadingFromDiskHandler;
  */
 public class Mequie {
 	
-	public LoadingFromDiskHandler getLoaderHandler() {
-		return LoadingFromDiskHandler.getInstance();
-	}
-	
 	public CreateGroupHandler getCreateGroupHandler(Session s) {
 		return new CreateGroupHandler(s);
 	}
