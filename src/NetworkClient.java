@@ -49,7 +49,14 @@ public class NetworkClient {
 //    }
     
     
-
+    public NetworkMessage sendAndReceive(NetworkMessage msg) throws IOException, ClassNotFoundException {
+    	
+        out.writeObject(msg);
+        out.flush();
+        NetworkMessage msgResponse = (NetworkMessage) this.in.readObject();
+        return msgResponse;
+    }
+    
     /*
      * Esta função deve: - Obter o descritor da ligação (socket) da estrutura
      * rtable_t; - Serializar a mensagem contida em msg; - Enviar a mensagem
