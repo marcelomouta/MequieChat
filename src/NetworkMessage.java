@@ -2,13 +2,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import mequie.app.facade.exceptions.MequieException;
+
 /**
  * Classe comum ao Servidor e Cliente para troca de pedido e reposta
  * Esta classe auto envia-se para a rede
  */
 public class NetworkMessage implements Serializable{
 
-	
+
 	public enum Opcode {
 		ADD_USER_TO_GROUP,
 		COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
@@ -29,23 +31,30 @@ public class NetworkMessage implements Serializable{
 	private CType type;
 	private ArrayList<String> arguments; // Tem de ser ArrayList porque List nao eh Serializable
 	private String result;
+	private MequieException exception;
 	
-	private NetworkMessage(Opcode op, CType type, ArrayList<String> arguments, String result) {
+	private NetworkMessage(Opcode op, CType type, ArrayList<String> arguments, String result, MequieException exception) {
 		super();
 		this.op = op;
 		this.type = type;
 		this.arguments = arguments;
 		this.result = result;
+		this.exception = exception;
 	}
 	
 	// PEDIDO factoryMethod
-	public static NetworkMessage ofRequest(Opcode op, CType type, ArrayList<String> arguments) {
-		return new NetworkMessage(op, type, arguments, "");
+	public static NetworkMessage ofRequest(Opcode op, ArrayList<String> arguments) {
+		return new NetworkMessage(op, CType.NORMAL, arguments, "", null);
 	}
 	
 	// RESPOSTA factoryMethod
-	public static NetworkMessage ofResponse(Opcode op, CType type, String result) {
-		return new NetworkMessage(op, type, null, result);
+	public static NetworkMessage ofResponse(Opcode op, String result) {
+		return new NetworkMessage(op, CType.NORMAL, null, result, null);
+	}
+	
+	// ERRO VINDO DO SERVIDOR factoryMethod
+	public static NetworkMessage ofError(Opcode op, MequieException exception) {
+		return new NetworkMessage(op, CType.ERROR, null, "", exception);
 	}
 
 	public Opcode getOp() {
@@ -59,6 +68,9 @@ public class NetworkMessage implements Serializable{
 	}
 	public String getResult() {
 		return result;
+	}
+	public MequieException getException() {
+		return exception;
 	}
 	
 	public String toString() {
