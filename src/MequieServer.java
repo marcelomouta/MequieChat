@@ -93,7 +93,7 @@ public class MequieServer{
 					System.out.println("User " + sessao.getUser().getUserID() + " was successfully authenticated");
 
 					while(true) {
-						NetworkMessage msg = (NetworkMessage) inStream.readObject();
+						NetworkMessageRequest msg = (NetworkMessageRequest) inStream.readObject();
 						System.out.println(msg.toString());
 						receiveFile(msg);
 					}
@@ -121,7 +121,7 @@ public class MequieServer{
 			}
 		}
 
-		private void receiveFile(NetworkMessage msg) throws IOException, ClassNotFoundException {
+		private void receiveFile(NetworkMessageRequest msg) throws IOException, ClassNotFoundException {
 			System.out.println("A receber ficheiro...");
 
 			byte[] file = msg.getArguments().get(0).getBytes(StandardCharsets.UTF_8);

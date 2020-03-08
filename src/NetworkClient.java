@@ -76,7 +76,7 @@ public class NetworkClient {
         //out.write(buf, 0, size);
         //out.flush();
         
-        NetworkMessage msg = NetworkMessage.ofRequest(NetworkMessage.Opcode.TEST,
+        NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.TEST,
     			new ArrayList(Arrays.asList(new String(buf))));
         
         out.writeObject(msg);
