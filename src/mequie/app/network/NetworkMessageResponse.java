@@ -1,3 +1,4 @@
+package mequie.app.network;
 import mequie.app.facade.exceptions.MequieException;
 
 /**

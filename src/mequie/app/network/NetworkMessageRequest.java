@@ -1,3 +1,4 @@
+package mequie.app.network;
 import java.util.ArrayList;
 import java.util.Arrays;
 
