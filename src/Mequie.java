@@ -12,7 +12,6 @@ public class Mequie {
 	private static NetworkClient network = NetworkClient.getInstance();
 	private static CommandHandler cHandler = new CommandHandler(network);
 
-
 	public static void main(String[] args) {
 
 		if (args.length < 2 || args.length > 3) {
@@ -88,7 +87,7 @@ public class Mequie {
 					cHandler.remove(command[1],command[2]);
 					break;
 				case "ginfo":
-					String groupInfo = cHandler.groupInfo();
+					String groupInfo = cHandler.groupInfo(command[1]);
 					if (groupInfo != null)
 						System.out.println(groupInfo);
 					else
