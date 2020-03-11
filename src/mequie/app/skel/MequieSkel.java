@@ -1,4 +1,4 @@
-package mequie.skel;
+package mequie.app.skel;
 
 import java.util.List;
 
