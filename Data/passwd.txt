@@ -1,3 +1,4 @@
 bfreitas:123123123
 pedro:123123123
 marcelo:123123123
+user01:passwd
