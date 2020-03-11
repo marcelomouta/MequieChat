@@ -9,6 +9,7 @@ import mequie.app.facade.exceptions.ErrorAddingUserToGroupException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.NotExistingUserException;
+import mequie.app.facade.exceptions.UserNotHavePermissionException;
 
 public class AddUserToGroupHandler{
 
@@ -34,7 +35,10 @@ public class AddUserToGroupHandler{
             throw new NotExistingGroupException();
     }
     
-    public void addNewUserToGroup() throws ErrorAddingUserToGroupException, Exception {
+    public void addNewUserToGroup() throws ErrorAddingUserToGroupException, UserNotHavePermissionException, Exception {
+    	if (!currentGroup.getOwner().equals(currentUser))
+    		throw new UserNotHavePermissionException();
+    	
     	if ( !currentGroup.addUserByID(currentUserToAdd) )
             throw new ErrorAddingUserToGroupException();
     }

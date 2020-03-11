@@ -12,6 +12,7 @@ import mequie.app.facade.exceptions.ErrorRemovingUserOfGroupException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.NotExistingUserException;
+import mequie.app.facade.exceptions.UserNotHavePermissionException;
 import mequie.utils.WriteInDisk;
 
 public class RemoveUserOfGroupHandler{
@@ -38,7 +39,10 @@ public class RemoveUserOfGroupHandler{
             throw new NotExistingGroupException();
     }
     
-    public void removeUserFromGroup() throws ErrorRemovingUserOfGroupException, Exception {
+    public void removeUserFromGroup() throws ErrorRemovingUserOfGroupException, UserNotHavePermissionException, Exception {
+    	if (!currentGroup.getOwner().equals(currentUser))
+    		throw new UserNotHavePermissionException();
+    	
     	if ( !currentGroup.removeUserByID(currentUserToRemove) )
             throw new ErrorRemovingUserOfGroupException();
     }
