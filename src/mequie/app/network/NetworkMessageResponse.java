@@ -1,4 +1,6 @@
 package mequie.app.network;
+import java.util.ArrayList;
+
 import mequie.app.facade.exceptions.MequieException;
 
 /**
@@ -8,13 +10,22 @@ import mequie.app.facade.exceptions.MequieException;
 public class NetworkMessageResponse extends NetworkMessage {
 	
 	private String result;
+	private ArrayList<String> photos;
 	
 	public NetworkMessageResponse(Opcode op, String result) {
 		super(op);
 		this.result = result;
 	}
+	
+	public NetworkMessageResponse(Opcode op, String msgs, ArrayList<String> photos) {
+		this(op, msgs);
+		this.photos = photos;
+	}
 	public String getResult() {
 		return result;
+	}
+	public ArrayList<String> getPhotos() {
+		return photos;
 	}
 	
 	public String toString() {
