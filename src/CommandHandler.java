@@ -3,6 +3,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import javafx.util.Pair;
 
 import mequie.app.facade.exceptions.MequieException;
 import mequie.app.network.NetworkMessage;
@@ -32,16 +35,13 @@ public class CommandHandler {
         inFile.close();
     }
 
-    public String createGroup(String newGroupID) throws ClassNotFoundException, IOException, MequieException {
+    public void createGroup(String newGroupID) throws ClassNotFoundException, IOException, MequieException {
     	
         NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.CREATE_GROUP,
     			new ArrayList(Arrays.asList(newGroupID)));
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
-        
-        NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
-        return msgResponse.getResult();
     }
 
 
@@ -106,8 +106,15 @@ public class CommandHandler {
         checkIfMessageIsAnError(msgServer);
     }
 
-    public void collect(String groupID) {
-        //TODO
+    public Pair<String, List<String>> collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
+        NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
+        		new ArrayList());
+        NetworkMessage msgServer = network.sendAndReceive(msg);
+        
+        checkIfMessageIsAnError(msgServer);
+        
+        NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer; 
+		return new Pair<>(msgResponse.getResult(), msgResponse.getPhotos());
     }
 
     public String history(String groupID) throws MequieException, ClassNotFoundException, IOException {
