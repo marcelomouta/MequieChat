@@ -1,5 +1,6 @@
 
 import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.MequieException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -78,7 +79,7 @@ public class Mequie {
 			//TODO
 			switch (command[0]) {
 				case "create":
-					System.out.println(cHandler.createGroup(command[1]));
+					cHandler.createGroup(command[1]);
 					break;
 				case "addu":
 					cHandler.add(command[1],command[2]);
@@ -133,6 +134,12 @@ public class Mequie {
 			System.out.println("File size is too large");
 		} catch (IOException e) {
 			System.out.println("Error executing command");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MequieException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
 		}
 
 	}
