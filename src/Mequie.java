@@ -5,7 +5,10 @@ import mequie.app.facade.exceptions.MequieException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Scanner;
+
+import javafx.util.Pair;
 
 public class Mequie {
 
@@ -88,18 +91,10 @@ public class Mequie {
 					cHandler.remove(command[1],command[2]);
 					break;
 				case "ginfo":
-					String groupInfo = cHandler.groupInfo(command[1]);
-					if (groupInfo != null)
-						System.out.println(groupInfo);
-					else
-						System.out.println("Error retrieving group info");
+					System.out.println(cHandler.groupInfo(command[1]));
 					break;
 				case "uinfo":
-					String userInfo = cHandler.userInfo();
-					if (userInfo != null)
-						System.out.println(userInfo);
-					else
-						System.out.println("Error retrieving user info");
+					System.out.println(cHandler.userInfo());
 					break;
 				case "msg":
 					cHandler.message(command[1],command[2]);
@@ -108,7 +103,7 @@ public class Mequie {
 					cHandler.photo(command[1],command[2]);
 					break;
 				case "collect":
-					cHandler.collect(command[1]);
+					System.out.println(cHandler.collect(command[1]));
 					break;
 				case "history":
 					cHandler.history(command[1]);

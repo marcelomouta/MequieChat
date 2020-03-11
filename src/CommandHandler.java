@@ -106,7 +106,7 @@ public class CommandHandler {
         checkIfMessageIsAnError(msgServer);
     }
 
-    public Pair<String, List<String>> collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
+    public String collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
         NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
         		new ArrayList());
         NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -114,7 +114,10 @@ public class CommandHandler {
         checkIfMessageIsAnError(msgServer);
         
         NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer; 
-		return new Pair<>(msgResponse.getResult(), msgResponse.getPhotos());
+        
+        // TODO: Salvar todas as fotos em msgResponse.getPhotos() numa pasta à parte
+        
+		return msgResponse.getResult();
     }
 
     public String history(String groupID) throws MequieException, ClassNotFoundException, IOException {
