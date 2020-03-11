@@ -10,6 +10,7 @@ import mequie.app.facade.exceptions.ErrorCreatingGroupException;
 import mequie.app.facade.exceptions.ErrorInsufficientArgumentsException;
 import mequie.app.facade.exceptions.ErrorRemovingUserOfGroupException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
+import mequie.app.facade.exceptions.MequieException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.NotExistingUserException;
 import mequie.app.facade.exceptions.UserNotHavePermissionException;
@@ -19,12 +20,14 @@ import mequie.app.facade.handlers.CreateGroupHandler;
 import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.GetGroupInfoHandler;
 import mequie.app.facade.handlers.GetUserInfoHandler;
-import mequie.app.facade.handlers.LoadingFromDiskHandler;
 import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequie.app.facade.handlers.SendPhotoMessageHandler;
 import mequie.app.facade.handlers.SendTextMessageHandler;
+import mequie.app.network.NetworkMessage;
+import mequie.app.network.NetworkMessageError;
 import mequie.app.network.NetworkMessageRequest;
+import mequie.app.network.NetworkMessageResponse;
 
 public class MequieSkel {
 	
@@ -36,58 +39,62 @@ public class MequieSkel {
 		this.currentSession = s;
 	}
 	
-	public void invoke(NetworkMessageRequest msg) {
-		List<String> args = msg.getArguments();
+	public NetworkMessage invoke(NetworkMessageRequest msg) {
+		NetworkMessage response;
 
 		switch (msg.getOp()) {
 		case CREATE_GROUP:
-			createGroup(currentSession, args);
+			response = createGroup(msg);
 			break;
 		case ADD_USER_TO_GROUP:
-			addUserToGroup(currentSession, args);
+			response = addUserToGroup(msg);
 			break;
 		case REMOVE_USER_FROM_GROUP:
-			removeUserFromGroup(currentSession, args);
+			response = removeUserFromGroup(msg);
 			break;
 		case GET_GROUP_INFO:
-			getGroupInfo(currentSession, args);
+			response = getGroupInfo(msg);
 			break;
 		case GET_USER_INFO:
-			getUserInfo(currentSession);
+			response = getUserInfo(msg);
 			break;
 		case SEND_TEXT_MESSAGE:
-			sendMsg(currentSession, args);
+			response = sendMsg(msg);
 			break;
 		case SEND_PHOTO_MESSAGE:
-			sendPhoto(currentSession, args);
+			response = sendPhoto(msg);
 			break;
 		case COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP:
-			collectMsgs(currentSession, args);
+			response = collectMsgs(msg);
 			break;
 		case MESSAGE_HISTORY_OF_GROUP:
-			history(currentSession, args);
+			response = history(msg);
 			break;
 		default:
-			break;
+			return null;
 		}
+		
+		return response;
 	}
 	
 	private void createNewUser(String u, String p) {
 		CreateUserHandler cuh = system.getCreateUserHandler();
 		
-		try {
+//		try {
 			cuh.makeUser(u, p);
 			cuh.userAssociation();
-			cuh.save();
+			//cuh.save();
 			
-		} catch (ErrorSavingInDiskException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (ErrorSavingInDiskException e) {
+//			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
+//		}
 	}
 	
-	private void createGroup(Session s, List<String> args) {
-		CreateGroupHandler cgh = system.getCreateGroupHandler(s);
+	private NetworkMessage createGroup(NetworkMessageRequest msg) {
+		CreateGroupHandler cgh = system.getCreateGroupHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String g = args.get(0);
@@ -96,22 +103,24 @@ public class MequieSkel {
 			
 			cgh.makeGrupByID(g);
 			cgh.groupAssociation();
-			cgh.save();
+			//cgh.save();
+			
+			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (ErrorCreatingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ErrorSavingInDiskException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorCreatingGroupException());
+//		} catch (ErrorSavingInDiskException e) {
+//			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
 	}
 	
-	private void addUserToGroup(Session s, List<String> args) {
-		AddUserToGroupHandler augh = system.getAddUserToGroupHandler(s);
+	private NetworkMessage addUserToGroup(NetworkMessageRequest msg) {
+		AddUserToGroupHandler augh = system.getAddUserToGroupHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String u = args.get(0);
@@ -126,25 +135,30 @@ public class MequieSkel {
 			
 			augh.getGroupByID(g);
 			augh.addNewUserToGroup();
-			augh.save();
+			//augh.save();
+			
+			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (NotExistingUserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingUserException());
 		} catch (NotExistingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
 		} catch (ErrorAddingUserToGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorAddingUserToGroupException());
+		} catch (UserNotHavePermissionException e) {
+			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
+		} catch (ErrorInsufficientArgumentsException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
 	}
 	
-	private void removeUserFromGroup(Session s, List<String> args) {
-		RemoveUserOfGroupHandler rugh = system.getRemoveUserOfGroupHandler(s);
+	private NetworkMessage removeUserFromGroup(NetworkMessageRequest msg) {
+		RemoveUserOfGroupHandler rugh = system.getRemoveUserOfGroupHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String u = args.get(0);
@@ -159,25 +173,30 @@ public class MequieSkel {
 			
 			rugh.indicateGroupID(g);
 			rugh.removeUserFromGroup();
-			rugh.save();
+			//rugh.save();
+			
+			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (NotExistingUserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingUserException());
 		} catch (NotExistingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
 		} catch (ErrorRemovingUserOfGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorRemovingUserOfGroupException());
+		} catch (UserNotHavePermissionException e) {
+			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
+		} catch (ErrorInsufficientArgumentsException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
 	}
 	
-	private void getGroupInfo(Session s, List<String> args) {
-		GetGroupInfoHandler gih = system.getGetGroupInfoHandler(s);
+	private NetworkMessage getGroupInfo(NetworkMessageRequest msg) {
+		GetGroupInfoHandler gih = system.getGetGroupInfoHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String g = args.get(0);
@@ -187,23 +206,28 @@ public class MequieSkel {
 			gih.indicateGroupID(g);
 			String info = gih.getInfo();
 			
+			return new NetworkMessageResponse(msg.getOp(),info);
+			
 		} catch (NotExistingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
 		} catch (ErrorInsufficientArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
 	}
 	
-	private void getUserInfo(Session s) {
-		GetUserInfoHandler uih = system.getGetUserInfoHandler(s);
+	private NetworkMessage getUserInfo(NetworkMessageRequest msg) {
+		GetUserInfoHandler uih = system.getGetUserInfoHandler(currentSession);
 		
 		uih.getUserInfo();
+		
+		return new NetworkMessageResponse(msg.getOp(), "TODO");
 	}
 	
-	private void sendMsg(Session s, List<String> args) {
-		SendTextMessageHandler stmh = system.getSendTextMessageHandler(s);
+	private NetworkMessage sendMsg(NetworkMessageRequest msg) {
+		SendTextMessageHandler stmh = system.getSendTextMessageHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String g = args.get(0);
@@ -218,22 +242,24 @@ public class MequieSkel {
 			
 			stmh.createMessage(m);
 			stmh.sendMessageToGroup();
-			stmh.save();
+			//stmh.save();
+			
+			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (NotExistingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ErrorSavingInDiskException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
+//		} catch (ErrorSavingInDiskException e) {
+//			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
 	}
 	
-	private void sendPhoto(Session s, List<String> args) {
-		SendPhotoMessageHandler spmh = system.getSendPhotoMessageHandler(s);
+	private NetworkMessage sendPhoto(NetworkMessageRequest msg) {
+		SendPhotoMessageHandler spmh = system.getSendPhotoMessageHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String g = args.get(0);
@@ -248,22 +274,24 @@ public class MequieSkel {
 			
 			spmh.createMessage(photo);
 			spmh.sendMessageToGroup();
-			spmh.save();
+			//spmh.save();
+			
+			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (NotExistingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ErrorSavingInDiskException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
+//		} catch (ErrorSavingInDiskException e) {
+//			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
 	}
 	
-	private void collectMsgs(Session s, List<String> args) {
-		CollectMessagesHandler cmh = system.getCollectMessagesHandler(s);
+	private NetworkMessage collectMsgs(NetworkMessageRequest msg) {
+		CollectMessagesHandler cmh = system.getCollectMessagesHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String g = args.get(0);
@@ -273,17 +301,20 @@ public class MequieSkel {
 			cmh.indicateGroupID(g);
 			List<String> msgs = cmh.getNotSeenMessages();
 			
+			return null; //TODO
+			
 		} catch (NotExistingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
 		} catch (ErrorInsufficientArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
 	}
 	
-	private void history(Session s, List<String> args) {
-		MessageHistoryOfGroupHandler mhgh = system.getMessageHistoryOfGroupHandler(s);
+	private NetworkMessage history(NetworkMessageRequest msg) {
+		MessageHistoryOfGroupHandler mhgh = system.getMessageHistoryOfGroupHandler(currentSession);
+		
+		// list of arguments
+		List<String> args = msg.getArguments();
 		
 		try {
 			String g = args.get(0);
@@ -293,15 +324,14 @@ public class MequieSkel {
 			mhgh.indicateGroupID(g);
 			mhgh.getHistory(); // TODO
 			
+			return null; //TODO
+			
 		} catch (NotExistingGroupException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
 		} catch (UserNotHavePermissionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorInsufficientArgumentsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
 	}
 
