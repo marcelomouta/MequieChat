@@ -1,11 +1,13 @@
 package mequie.app.skel;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import mequie.app.Mequie;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.ErrorAddingUserToGroupException;
 import mequie.app.facade.exceptions.ErrorCreatingGroupException;
+import mequie.app.facade.exceptions.ErrorInsufficientArgumentsException;
 import mequie.app.facade.exceptions.ErrorRemovingUserOfGroupException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
@@ -35,34 +37,35 @@ public class MequieSkel {
 	}
 	
 	public void invoke(NetworkMessageRequest msg) {
-		// ver as operacoes e chamar as funcoes apropriadas
+		List<String> args = msg.getArguments();
+
 		switch (msg.getOp()) {
 		case CREATE_GROUP:
-			createGroup(currentSession);
+			createGroup(currentSession, args);
 			break;
 		case ADD_USER_TO_GROUP:
-			addUserToGroup(currentSession);
+			addUserToGroup(currentSession, args);
 			break;
 		case REMOVE_USER_FROM_GROUP:
-			removeUserFromGroup(currentSession);
+			removeUserFromGroup(currentSession, args);
 			break;
 		case GET_GROUP_INFO:
-			getGroupInfo(currentSession);
+			getGroupInfo(currentSession, args);
 			break;
 		case GET_USER_INFO:
 			getUserInfo(currentSession);
 			break;
 		case SEND_TEXT_MESSAGE:
-			sendMsg(currentSession);
+			sendMsg(currentSession, args);
 			break;
 		case SEND_PHOTO_MESSAGE:
-			sendPhoto(currentSession);
+			sendPhoto(currentSession, args);
 			break;
 		case COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP:
-			collectMsgs(currentSession);
+			collectMsgs(currentSession, args);
 			break;
 		case MESSAGE_HISTORY_OF_GROUP:
-			history(currentSession);
+			history(currentSession, args);
 			break;
 		default:
 			break;
@@ -76,36 +79,55 @@ public class MequieSkel {
 			cuh.makeUser(u, p);
 			cuh.userAssociation();
 			cuh.save();
+			
 		} catch (ErrorSavingInDiskException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void createGroup(Session s) {
+	private void createGroup(Session s, List<String> args) {
 		CreateGroupHandler cgh = system.getCreateGroupHandler(s);
 		
-		cgh.makeGrupByID("TODO");
 		try {
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			cgh.makeGrupByID(g);
 			cgh.groupAssociation();
 			cgh.save();
+			
 		} catch (ErrorCreatingGroupException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ErrorSavingInDiskException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ErrorInsufficientArgumentsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	private void addUserToGroup(Session s) {
+	private void addUserToGroup(Session s, List<String> args) {
 		AddUserToGroupHandler augh = system.getAddUserToGroupHandler(s);
 		
 		try {
-			augh.getUserByID("TODO");
-			augh.getGroupByID("TODO");
+			String u = args.get(0);
+			if (u == null || u.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			augh.getUserByID(u);
+			
+			String g = args.get(1);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			augh.getGroupByID(g);
 			augh.addNewUserToGroup();
 			augh.save();
+			
 		} catch (NotExistingUserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,14 +143,24 @@ public class MequieSkel {
 		}
 	}
 	
-	private void removeUserFromGroup(Session s) {
+	private void removeUserFromGroup(Session s, List<String> args) {
 		RemoveUserOfGroupHandler rugh = system.getRemoveUserOfGroupHandler(s);
 		
 		try {
-			rugh.indicateUserID("TODO");
-			rugh.indicateGroupID("TODO");
+			String u = args.get(0);
+			if (u == null || u.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			rugh.indicateUserID(u);
+			
+			String g = args.get(1);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			rugh.indicateGroupID(g);
 			rugh.removeUserFromGroup();
 			rugh.save();
+			
 		} catch (NotExistingUserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,13 +176,21 @@ public class MequieSkel {
 		}
 	}
 	
-	private void getGroupInfo(Session s) {
+	private void getGroupInfo(Session s, List<String> args) {
 		GetGroupInfoHandler gih = system.getGetGroupInfoHandler(s);
 		
 		try {
-			gih.indicateGroupID("TODO");
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			gih.indicateGroupID(g);
 			String info = gih.getInfo();
+			
 		} catch (NotExistingGroupException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ErrorInsufficientArgumentsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -162,62 +202,104 @@ public class MequieSkel {
 		uih.getUserInfo();
 	}
 	
-	private void sendMsg(Session s) {
+	private void sendMsg(Session s, List<String> args) {
 		SendTextMessageHandler stmh = system.getSendTextMessageHandler(s);
 		
 		try {
-			stmh.getGroupByID("TODO");
-			stmh.createMessage("TODO");
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			stmh.getGroupByID(g);
+			
+			String m = args.get(1);	
+			if (m == null || m.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			stmh.createMessage(m);
 			stmh.sendMessageToGroup();
 			stmh.save();
+			
 		} catch (NotExistingGroupException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ErrorSavingInDiskException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ErrorInsufficientArgumentsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	private void sendPhoto(Session s) {
+	private void sendPhoto(Session s, List<String> args) {
 		SendPhotoMessageHandler spmh = system.getSendPhotoMessageHandler(s);
 		
 		try {
-			spmh.getGroupByID("TODO");
-			spmh.createMessage(new byte[1]); // TODO
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			spmh.getGroupByID(g);
+			
+			byte[] photo = args.get(1).getBytes(StandardCharsets.UTF_8); // TODO: Sera a melhor maneira?! 1024 bytes de cada vez ?!
+			if (photo.length < 1)
+				throw new ErrorInsufficientArgumentsException();
+			
+			spmh.createMessage(photo);
 			spmh.sendMessageToGroup();
 			spmh.save();
+			
 		} catch (NotExistingGroupException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ErrorSavingInDiskException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-	
-	private void collectMsgs(Session s) {
-		CollectMessagesHandler cmh = system.getCollectMessagesHandler(s);
-		
-		try {
-			cmh.indicateGroupID("TODO");
-			List<String> msgs = cmh.getNotSeenMessages();
-		} catch (NotExistingGroupException e) {
+		} catch (ErrorInsufficientArgumentsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void history(Session s) {
+	private void collectMsgs(Session s, List<String> args) {
+		CollectMessagesHandler cmh = system.getCollectMessagesHandler(s);
+		
+		try {
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			cmh.indicateGroupID(g);
+			List<String> msgs = cmh.getNotSeenMessages();
+			
+		} catch (NotExistingGroupException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ErrorInsufficientArgumentsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void history(Session s, List<String> args) {
 		MessageHistoryOfGroupHandler mhgh = system.getMessageHistoryOfGroupHandler(s);
 		
 		try {
-			mhgh.indicateGroupID("TODO");
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			mhgh.indicateGroupID(g);
 			mhgh.getHistory(); // TODO
+			
 		} catch (NotExistingGroupException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UserNotHavePermissionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ErrorInsufficientArgumentsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
