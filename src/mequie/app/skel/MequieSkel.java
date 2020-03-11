@@ -28,16 +28,45 @@ public class MequieSkel {
 	
 	private Mequie system = new Mequie();
 	
-	public MequieSkel() {
-		try {
-			LoadingFromDiskHandler.load();
-		} catch (Exception e) {
-			System.out.println("Error loading the system");
-		}
+	private Session currentSession;
+	
+	public MequieSkel(Session s) {
+		this.currentSession = s;
 	}
 	
 	public void invoke(NetworkMessageRequest msg) {
 		// ver as operacoes e chamar as funcoes apropriadas
+		switch (msg.getOp()) {
+		case CREATE_GROUP:
+			createGroup(currentSession);
+			break;
+		case ADD_USER_TO_GROUP:
+			addUserToGroup(currentSession);
+			break;
+		case REMOVE_USER_FROM_GROUP:
+			removeUserFromGroup(currentSession);
+			break;
+		case GET_GROUP_INFO:
+			getGroupInfo(currentSession);
+			break;
+		case GET_USER_INFO:
+			getUserInfo(currentSession);
+			break;
+		case SEND_TEXT_MESSAGE:
+			sendMsg(currentSession);
+			break;
+		case SEND_PHOTO_MESSAGE:
+			sendPhoto(currentSession);
+			break;
+		case COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP:
+			collectMsgs(currentSession);
+			break;
+		case MESSAGE_HISTORY_OF_GROUP:
+			history(currentSession);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	private void createNewUser(String u, String p) {
