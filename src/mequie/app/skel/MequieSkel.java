@@ -22,6 +22,7 @@ import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequie.app.facade.handlers.SendPhotoMessageHandler;
 import mequie.app.facade.handlers.SendTextMessageHandler;
+import mequie.app.network.NetworkMessageRequest;
 
 public class MequieSkel {
 	
@@ -35,7 +36,7 @@ public class MequieSkel {
 		}
 	}
 	
-	public void invoke() {
+	public void invoke(NetworkMessageRequest msg) {
 		// ver as operacoes e chamar as funcoes apropriadas
 	}
 	

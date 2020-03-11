@@ -5,6 +5,7 @@
 ***************************************************************************/
 
 import mequie.app.facade.Session;
+import mequie.app.network.NetworkMessageRequest;
 
 import java.io.*;
 import java.net.ServerSocket;
