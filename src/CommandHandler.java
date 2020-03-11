@@ -84,20 +84,41 @@ public class CommandHandler {
         return msgResponse.getResult();
     }
 
-    public void message(String groupID, String msg) {
-        //TODO
+    public void message(String groupID, String txtMsg) throws ClassNotFoundException, IOException, MequieException {
+        NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
+    			new ArrayList(Arrays.asList(groupID, txtMsg)));
+        NetworkMessage msgServer = network.sendAndReceive(msg);
+        
+        checkIfMessageIsAnError(msgServer);
     }
 
-    public void photo(String userID, String fileName) {
-        //TODO
+    public void photo(String groupID, String fileName) throws IOException, ClassNotFoundException, MequieException {
+        FileInputStream inFile = new FileInputStream(fileName);
+        int size = Math.toIntExact(new File(fileName).length());
+        byte[] buf = new byte[size];
+        inFile.read(buf, 0, size);
+        inFile.close();
+    	
+        NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_PHOTO_MESSAGE,
+    			new ArrayList(Arrays.asList(groupID, new String(buf))));
+        NetworkMessage msgServer = network.sendAndReceive(msg);
+        
+        checkIfMessageIsAnError(msgServer);
     }
 
     public void collect(String groupID) {
         //TODO
     }
 
-    public void history(String groupID) {
-        //TODO
+    public String history(String groupID) throws MequieException, ClassNotFoundException, IOException {
+        NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.MESSAGE_HISTORY_OF_GROUP,
+        		new ArrayList());
+        NetworkMessage msgServer = network.sendAndReceive(msg);
+        
+        checkIfMessageIsAnError(msgServer);
+        
+        NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
+        return msgResponse.getResult();
     }    
     
     private void checkIfMessageIsAnError(NetworkMessage msgServer) throws MequieException {
