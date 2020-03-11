@@ -26,16 +26,16 @@ public class CommandHandler {
         inFile.close();
     }
 
-    public String createGroup(String s) {
+    public String createGroup(String newGroupID) {
         //TODO
         return null;
     }
 
-    public void add(String s, String s1) {
+    public void add(String userID, String groupID) {
         //TODO
     }
 
-    public void remove(String s, String s1) {
+    public void remove(String userID, String groupID) {
         //TODO
     }
 
