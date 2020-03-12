@@ -147,6 +147,11 @@ public class CommandHandler {
         
         checkIfMessageIsAnError(msgServer);
         
+        if(msgServer instanceof NetworkMessageResponse) {
+        	NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
+        	res.getMsgs().forEach(text -> System.out.println(text) );
+        }
+        
         NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
         return msgResponse.getResult();
     }    

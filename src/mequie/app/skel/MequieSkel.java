@@ -1,6 +1,7 @@
 package mequie.app.skel;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import mequie.app.Mequie;
@@ -305,6 +306,8 @@ public class MequieSkel {
 			
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
+		} catch (UserNotHavePermissionException e) {
+			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
@@ -322,9 +325,9 @@ public class MequieSkel {
 				throw new ErrorInsufficientArgumentsException();
 			
 			mhgh.indicateGroupID(g);
-			mhgh.getHistory(); // TODO
+			List<String> msgs = mhgh.getHistory();
 			
-			return null; //TODO
+			return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(msgs));
 			
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());

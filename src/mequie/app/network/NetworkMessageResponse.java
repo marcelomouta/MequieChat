@@ -32,6 +32,11 @@ public class NetworkMessageResponse extends NetworkMessage {
 	public String getResult() {
 		return result;
 	}
+	
+	public ArrayList<String> getMsgs() {
+		return msgs;
+	}
+	
 	public ArrayList<String> getPhotos() {
 		return photos;
 	}
