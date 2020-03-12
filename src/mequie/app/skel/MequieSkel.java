@@ -98,8 +98,11 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
+			if (args.isEmpty())
+				throw new ErrorInsufficientArgumentsException();
+			
 			String g = args.get(0);
-			if (g == null || g.equals(""))
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			cgh.makeGrupByID(g);
@@ -124,14 +127,17 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
+			if (args.size() < 2)
+				throw new ErrorInsufficientArgumentsException();
+			
 			String u = args.get(0);
-			if (u == null || u.equals(""))
+			if (u.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			augh.getUserByID(u);
 			
 			String g = args.get(1);
-			if (g == null || g.equals(""))
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			augh.getGroupByID(g);
@@ -162,14 +168,17 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
+			if (args.size() < 2)
+				throw new ErrorInsufficientArgumentsException();
+			
 			String u = args.get(0);
-			if (u == null || u.equals(""))
+			if (u.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			rugh.indicateUserID(u);
 			
 			String g = args.get(1);
-			if (g == null || g.equals(""))
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			rugh.indicateGroupID(g);
@@ -200,8 +209,11 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
+			if (args.isEmpty())
+				throw new ErrorInsufficientArgumentsException();
+			
 			String g = args.get(0);
-			if (g == null || g.equals(""))
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			gih.indicateGroupID(g);
@@ -231,14 +243,17 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
+			if (args.size() < 2)
+				throw new ErrorInsufficientArgumentsException();
+			
 			String g = args.get(0);
-			if (g == null || g.equals(""))
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			stmh.getGroupByID(g);
 			
 			String m = args.get(1);	
-			if (m == null || m.equals(""))
+			if (m.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			stmh.createMessage(m);
@@ -263,8 +278,11 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
+			if (args.size() < 2)
+				throw new ErrorInsufficientArgumentsException();
+			
 			String g = args.get(0);
-			if (g == null || g.equals(""))
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			spmh.getGroupByID(g);
@@ -295,8 +313,11 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
-			String g = args.get(0); //TODO verificacao ERRADA -> da indexOutOfBoundException pois nem um elemento tem e acedemos a 0
-			if (g == null || g.equals(""))
+			if (args.isEmpty())
+				throw new ErrorInsufficientArgumentsException();
+			
+			String g = args.get(0);
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			cmh.indicateGroupID(g);
@@ -320,8 +341,11 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
+			if (args.isEmpty())
+				throw new ErrorInsufficientArgumentsException();
+			
 			String g = args.get(0);
-			if (g == null || g.equals(""))
+			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
 			mhgh.indicateGroupID(g);
