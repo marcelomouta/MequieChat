@@ -135,7 +135,11 @@ public class CommandHandler {
         
         NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer; 
         
-        // TODO: Salvar todas as fotos em msgResponse.getPhotos() numa pasta à parte
+        if(msgServer instanceof NetworkMessageResponse) {
+        	NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
+        	res.getMsgs().forEach(text -> System.out.println(text) );
+        	// TODO: Salvar todas as fotos em msgResponse.getPhotos() numa pasta à parte
+        }
         
 		return msgResponse.getResult();
     }
