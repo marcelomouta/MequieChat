@@ -88,28 +88,21 @@ public class NetworkServer {
 							
 							System.out.println("sent: " + resp.toString());
 						}
-					}
-					else {
+					} else {
 						outStream.writeObject(false);
 						System.out.println("Autenticacao falhou: username ou password incorretos");
 					}
 
 
-				} catch (ClassNotFoundException e) {
-					disconnectClient();
-					System.exit(0);
-				} catch (ClassCastException e) {
-					disconnectClient();
-					System.exit(0);
-				} catch (IOException e) {
-					disconnectClient();
-					System.exit(0);
+				} catch (Exception e) {
+					// Do nothing because finally will be called
 				} finally {
-					disconnectClient();
+					disconnect();
+					this.interrupt();
 				}
 			}
 			
-			private void disconnectClient() {
+			public void disconnect() {
 				System.out.println("User " + sessao.getUser().getUserID() + " disconnected from server.");
 				try {
 					outStream.close();
