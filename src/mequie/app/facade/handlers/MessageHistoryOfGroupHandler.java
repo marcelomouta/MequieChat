@@ -1,5 +1,6 @@
 package mequie.app.facade.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mequie.app.domain.Group;
@@ -30,13 +31,18 @@ public class MessageHistoryOfGroupHandler{
             throw new NotExistingGroupException();
     }
     
-    public void getHistory() throws UserNotHavePermissionException {
+    public List<String> getHistory() throws UserNotHavePermissionException {
     	if (!currentGroup.isUserOfGroup(currentUser))
     		throw new UserNotHavePermissionException();
     	
+    	List<String> textOfMsgs = new ArrayList<>();
     	List<Message> msgSeen = currentGroup.getHistory();
     	
-    	// empacotar msg
+    	for (Message m : msgSeen) {
+    		textOfMsgs.add(m.toString());
+    	}
+    	
+    	return textOfMsgs;
     }
 
 }
