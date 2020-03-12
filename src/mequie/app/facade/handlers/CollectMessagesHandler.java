@@ -9,6 +9,7 @@ import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.NotExistingGroupException;
+import mequie.app.facade.exceptions.UserNotHavePermissionException;
 
 public class CollectMessagesHandler {
 	
@@ -25,7 +26,10 @@ public class CollectMessagesHandler {
             throw new NotExistingGroupException();
     }
     
-    public List<String> getNotSeenMessages() {
+    public List<String> getNotSeenMessages() throws UserNotHavePermissionException {
+    	if (!currentGroup.isUserOfGroup(currentUser))
+    		throw new UserNotHavePermissionException();
+    	
     	List<Message> msgs = currentGroup.collectMessagesUnseenByUser(currentUser);
     	// podemos passar so o texto das msg para ler mas as imagens sao gigantes!? como passamo-las?
     	return null;
