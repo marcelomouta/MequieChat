@@ -7,7 +7,6 @@ import mequie.app.facade.handlers.CreateGroupHandler;
 import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.GetGroupInfoHandler;
 import mequie.app.facade.handlers.GetUserInfoHandler;
-import mequie.app.facade.handlers.LoadingFromDiskHandler;
 import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequie.app.facade.handlers.SendPhotoMessageHandler;

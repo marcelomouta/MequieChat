@@ -17,7 +17,7 @@ public class SendPhotoMessageHandler{
     private Message currentMsg;
 
     public SendPhotoMessageHandler(Session s) {
-        currentUser = s.getUser();
+        currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
     public void getGroupByID(String groupID) throws NotExistingGroupException {

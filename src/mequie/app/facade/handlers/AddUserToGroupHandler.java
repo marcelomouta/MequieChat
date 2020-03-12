@@ -20,7 +20,7 @@ public class AddUserToGroupHandler{
     private User currentUserToAdd;
 
     public AddUserToGroupHandler(Session s) {
-        currentUser = s.getUser();
+        currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
     public void getUserByID(String userID) throws NotExistingUserException {

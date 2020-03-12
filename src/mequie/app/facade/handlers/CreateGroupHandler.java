@@ -13,7 +13,7 @@ public class CreateGroupHandler{
     private Group currentGroup;
 
     public CreateGroupHandler(Session s) {
-        currentUser = s.getUser();
+        currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
     public void makeGrupByID(String groupID) {

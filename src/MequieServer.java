@@ -11,7 +11,6 @@ public class MequieServer{
 
 	public static void main(String[] args) {
 		System.out.println("servidor: main");
-		MequieServer server = new MequieServer();
 		
 		try {
 			LoadingFromDiskHandler.load();

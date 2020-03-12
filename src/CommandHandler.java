@@ -7,6 +7,7 @@ import java.util.List;
 
 import javafx.util.Pair;
 
+import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.MequieException;
 import mequie.app.network.NetworkMessage;
 import mequie.app.network.NetworkMessageError;
@@ -33,6 +34,27 @@ public class CommandHandler {
         System.out.println("Ficheiro '" + fileName + "' enviado.");
 
         inFile.close();
+    }
+    
+    public boolean authentication(String user, String pass) {
+    	try {
+    		Session session = new Session(user, pass);
+        	NetworkMessage res;
+        	
+			res = network.autenticaUser(session);
+			
+			if (res instanceof NetworkMessageError) {
+	    		NetworkMessageError err = (NetworkMessageError) res;
+	    		System.out.println(res.toString());
+	    		return false;
+	    	} else {
+	    		System.out.println("Authentication successful!");
+	    		return true;
+	    	}
+		} catch (Exception e) {
+			return false;
+		}
+    	
     }
 
     public void createGroup(String newGroupID) throws ClassNotFoundException, IOException, MequieException {

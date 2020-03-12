@@ -1,19 +1,15 @@
 package mequie.app.facade.handlers;
 
-import java.io.IOException;
-
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.Session;
-import mequie.app.facade.exceptions.ErrorCreatingGroupException;
 import mequie.app.facade.exceptions.ErrorRemovingUserOfGroupException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.NotExistingUserException;
 import mequie.app.facade.exceptions.UserNotHavePermissionException;
-import mequie.utils.WriteInDisk;
 
 public class RemoveUserOfGroupHandler{
 
@@ -24,7 +20,7 @@ public class RemoveUserOfGroupHandler{
     private Group currentGroup;
 
     public RemoveUserOfGroupHandler(Session s) {
-        currentUser = s.getUser();
+        currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
     public void indicateUserID(String userID) throws NotExistingUserException {

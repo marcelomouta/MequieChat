@@ -1,5 +1,5 @@
 
-import mequie.app.facade.Session;
+
 import mequie.app.facade.exceptions.MequieException;
 
 import java.io.FileNotFoundException;
@@ -42,16 +42,12 @@ public class Mequie {
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor. A terminar...");
             System.exit(-1);
 		}
-
-		Session session = new Session(args[1], getPassword(args));
-
-		Boolean auth = network.autenticaUser(session);
+		
+		Boolean auth = cHandler.authentication(args[1], getPassword(args));
 		if (auth) {
-			System.out.println("Authentication successful!");
-
+			
             printPossibleCommands();
-
-
+            
             while (true)
             	doNextCommand();
 

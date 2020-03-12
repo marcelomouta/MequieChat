@@ -19,7 +19,7 @@ public class CollectMessagesHandler {
     private Group currentGroup;
 
     public CollectMessagesHandler(Session s) {
-        currentUser = s.getUser();
+        currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
     
     public void indicateGroupID(String groupID) throws NotExistingGroupException {

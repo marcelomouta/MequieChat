@@ -15,7 +15,7 @@ public class SendTextMessageHandler{
     private Message currentMsg;
 
     public SendTextMessageHandler(Session s) {
-        currentUser = s.getUser();
+        currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
     
     public void getGroupByID(String groupID) throws NotExistingGroupException {

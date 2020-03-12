@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.AuthenticationFailedException;
 import mequie.app.skel.MequieSkel;
 
 public class NetworkServer {
@@ -67,33 +68,40 @@ public class NetworkServer {
 					
 					sessao = (Session) inStream.readObject();
 					System.out.println("thread: depois de receber a password e o user");
+					
+					System.out.println(sessao.getUsername() + " : " + sessao.getPassword());
+					
+					MequieSkel skel = new MequieSkel(sessao);
+					
+					skel.autentication();
+					sendMessage(new NetworkMessageResponse(NetworkMessage.Opcode.TEST, "OK"));
 
+//					if (sessao.getUsername().equals("user01") && sessao.getPassword().equals("passwd")){
+//						outStream.writeObject(true);
 
-					if (sessao.getUser().getUserID().equals("user01") && sessao.getUser().getPassword().equals("passwd")){
-						outStream.writeObject(true);
-
-						System.out.println("User " + sessao.getUser().getUserID() + " was successfully authenticated");
+						System.out.println("User " + sessao.getUsername() + " was successfully authenticated");
 
 						while(true) {
 							NetworkMessageRequest msg = (NetworkMessageRequest) inStream.readObject();
 							System.out.println(msg.toString());
 //							receiveFile(msg);
-							MequieSkel skel = new MequieSkel(sessao);
+							
 							NetworkMessage resp = skel.invoke(msg);
+							sendMessage(resp);
 							
-							System.out.println("done invoke");
-							
-							outStream.writeObject(resp);
-							outStream.flush();
-							
-							System.out.println("sent: " + resp.toString());
 						}
-					} else {
-						outStream.writeObject(false);
+//					} else {
+//						outStream.writeObject(false);
+//						System.out.println("Autenticacao falhou: username ou password incorretos");
+//					}
+
+				} catch (AuthenticationFailedException e) {
+					try {
 						System.out.println("Autenticacao falhou: username ou password incorretos");
+						sendMessage(new NetworkMessageError(NetworkMessage.Opcode.TEST, new AuthenticationFailedException()));
+					} catch (IOException e1) {
+						// Do nothing because finally will be called
 					}
-
-
 				} catch (Exception e) {
 					// Do nothing because finally will be called
 				} finally {
@@ -102,8 +110,15 @@ public class NetworkServer {
 				}
 			}
 			
+			private void sendMessage(NetworkMessage resp) throws IOException {
+				outStream.writeObject(resp);
+				outStream.flush();
+				
+				System.out.println("sent: " + resp.toString());
+			}
+			
 			private void disconnect() {
-				System.out.println("User " + sessao.getUser().getUserID() + " disconnected from server.");
+				System.out.println("User " + sessao.getUsername() + " disconnected from server.");
 				try {
 					outStream.close();
 					inStream.close();

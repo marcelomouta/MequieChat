@@ -1,6 +1,5 @@
 package mequie.app.domain;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +13,7 @@ import mequie.app.domain.Group;
  * 
  * Esta classe representa um utilizador do sistema.
  */
-public class User implements Serializable{
+public class User {
 
 	private String userID;
     private String password;
