@@ -128,7 +128,7 @@ public class CommandHandler {
 
     public String collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
         NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
-        		new ArrayList());
+        		new ArrayList(Arrays.asList(groupID)));
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
@@ -146,7 +146,7 @@ public class CommandHandler {
 
     public String history(String groupID) throws MequieException, ClassNotFoundException, IOException {
         NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.MESSAGE_HISTORY_OF_GROUP,
-        		new ArrayList());
+        		new ArrayList(Arrays.asList(groupID)));
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
