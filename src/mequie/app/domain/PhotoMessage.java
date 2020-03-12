@@ -1,7 +1,9 @@
 package mequie.app.domain;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Scanner;
 
 public class PhotoMessage extends Message {
 	
@@ -14,12 +16,20 @@ public class PhotoMessage extends Message {
 
 	@Override
 	public String toString() {
-		return null;
+		return photo.toString();
 	}
 
 	@Override
 	public String getInfo() {
-		return photo.toString();
+		StringBuilder sb = new StringBuilder();
+		try(Scanner sc = new Scanner(photo)) {
+			if (sc.hasNext()) {
+				sb.append(sc.next());
+			}
+		} catch (FileNotFoundException e) {
+			// TODO 
+		}
+		return sb.toString();
 	}
 
 }
