@@ -12,7 +12,7 @@ public class TextMessage extends Message {
 	}
 	
 	public String getInfo() {
-		return text;
+		return toString();
 	}
 
 	@Override
