@@ -90,7 +90,7 @@ public class NetworkClient {
      */
     public void closeConnection() throws IOException {
 
-        out.writeObject("exit");
+        //out.writeObject("exit");
 
         if (this.out != null)
             this.out.close();
