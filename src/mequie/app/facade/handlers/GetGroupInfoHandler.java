@@ -37,7 +37,7 @@ public class GetGroupInfoHandler{
     		users = currentGroup.getAllUsers();
     	}
     	
-    	return null; // falta empactorar e enviar a info
+    	return this.currentGroup.getGoupID() + " num: " + user_num; // falta empactorar e enviar a info
     }
 
 }
