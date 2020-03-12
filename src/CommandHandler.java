@@ -42,6 +42,10 @@ public class CommandHandler {
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
+        
+        if(msgServer instanceof NetworkMessageResponse) {
+        	System.out.println(((NetworkMessageResponse) msgServer).getResult());
+        }
     }
 
 
@@ -52,6 +56,10 @@ public class CommandHandler {
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
+        
+        if(msgServer instanceof NetworkMessageResponse) {
+        	System.out.println(((NetworkMessageResponse) msgServer).getResult());
+        }
     }
 
     public void remove(String userID, String groupID) throws ClassNotFoundException, IOException, MequieException {
@@ -60,6 +68,10 @@ public class CommandHandler {
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
+        
+        if(msgServer instanceof NetworkMessageResponse) {
+        	System.out.println(((NetworkMessageResponse) msgServer).getResult());
+        }
     }
 
     public String groupInfo(String groupID) throws ClassNotFoundException, IOException, MequieException {
@@ -90,6 +102,10 @@ public class CommandHandler {
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
+        
+        if(msgServer instanceof NetworkMessageResponse) {
+        	System.out.println(((NetworkMessageResponse) msgServer).getResult());
+        }
     }
 
     public void photo(String groupID, String fileName) throws IOException, ClassNotFoundException, MequieException {
@@ -104,6 +120,10 @@ public class CommandHandler {
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
+        
+        if(msgServer instanceof NetworkMessageResponse) {
+        	System.out.println(((NetworkMessageResponse) msgServer).getResult());
+        }
     }
 
     public String collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
