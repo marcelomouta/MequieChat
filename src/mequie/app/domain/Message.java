@@ -49,6 +49,14 @@ public abstract class Message {
 	
 	/**
 	 * 
+	 * @return true if all members of group read the message
+	 */
+	public boolean allHaveSeenMessage() {
+		return usersWhoNotReadMessages.isEmpty();
+	}
+	
+	/**
+	 * 
 	 * user u read message
 	 */
 	public void messageReadByUser(User u) {
