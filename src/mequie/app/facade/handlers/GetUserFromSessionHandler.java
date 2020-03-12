@@ -27,8 +27,7 @@ public class GetUserFromSessionHandler {
     	if (user == null) {
     		CreateUserHandler  cuh = new CreateUserHandler();
     		
-    		cuh.makeUser(session.getUsername(), session.getPassword());
-    		cuh.userAssociation();
+    		user = cuh.makeUser(session.getUsername(), session.getPassword());
     		// cuh.save();
     		
     	}

@@ -10,12 +10,10 @@ public class CreateUserHandler {
 	
 	public CreateUserHandler() {}
 	
-	public void makeUser(String username, String pass) {
+	public User makeUser(String username, String pass) {
 		currentUser = UserCatalog.getInstance().createUser(username, pass);
-	}
-	
-	public void userAssociation() {
 		UserCatalog.getInstance().addUser(currentUser);
+		return currentUser;
 	}
 	
 	public void save() throws ErrorSavingInDiskException {

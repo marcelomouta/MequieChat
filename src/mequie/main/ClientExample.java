@@ -64,7 +64,6 @@ public class ClientExample {
 			
 			CreateUserHandler cuh = m.getCreateUserHandler();
 			cuh.makeUser("admin", "123123123");
-			cuh.userAssociation();
 			//cuh.save();
 			
 			System.out.println(GroupCatalog.getInstance().getAllGroups().toString());
