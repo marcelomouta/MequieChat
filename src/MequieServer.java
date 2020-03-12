@@ -6,7 +6,9 @@
 
 import mequie.app.facade.Session;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
+import mequie.app.network.NetworkMessage;
 import mequie.app.network.NetworkMessageRequest;
+import mequie.app.skel.MequieSkel;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -103,7 +105,16 @@ public class MequieServer{
 					while(true) {
 						NetworkMessageRequest msg = (NetworkMessageRequest) inStream.readObject();
 						System.out.println(msg.toString());
-						receiveFile(msg);
+//						receiveFile(msg);
+						MequieSkel skel = new MequieSkel(sessao);
+						NetworkMessage resp = skel.invoke(msg);
+						
+						System.out.println("done invoke");
+						
+						outStream.writeObject(resp);
+						outStream.flush();
+						
+						System.out.println("sent: " + resp.toString());
 					}
 				}
 				else {
