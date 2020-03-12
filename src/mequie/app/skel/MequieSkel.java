@@ -321,9 +321,9 @@ public class MequieSkel {
 				throw new ErrorInsufficientArgumentsException();
 			
 			cmh.indicateGroupID(g);
-			List<String> msgs = cmh.getNotSeenMessages();
+			List<List<String>> msgs = cmh.getNotSeenMessages();
 			
-			return null; //TODO
+			return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(msgs.get(0)), new ArrayList<String>(msgs.get(1)));
 			
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
