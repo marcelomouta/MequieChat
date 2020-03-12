@@ -102,7 +102,7 @@ public class NetworkServer {
 				}
 			}
 			
-			public void disconnect() {
+			private void disconnect() {
 				System.out.println("User " + sessao.getUser().getUserID() + " disconnected from server.");
 				try {
 					outStream.close();
