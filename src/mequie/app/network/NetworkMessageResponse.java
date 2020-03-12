@@ -10,6 +10,7 @@ import mequie.app.facade.exceptions.MequieException;
 public class NetworkMessageResponse extends NetworkMessage {
 	
 	private String result;
+	private ArrayList<String> msgs;
 	private ArrayList<String> photos;
 	
 	public NetworkMessageResponse(Opcode op, String result) {
@@ -17,10 +18,17 @@ public class NetworkMessageResponse extends NetworkMessage {
 		this.result = result;
 	}
 	
-	public NetworkMessageResponse(Opcode op, String msgs, ArrayList<String> photos) {
-		this(op, msgs);
+	public NetworkMessageResponse(Opcode op, String result, ArrayList<String> msgs) {
+		this(op, result);
+		this.msgs = msgs;
+	}
+	
+	public NetworkMessageResponse(Opcode op, String result, ArrayList<String> msgs, ArrayList<String> photos) {
+		this(op, result);
+		this.msgs = msgs;
 		this.photos = photos;
 	}
+
 	public String getResult() {
 		return result;
 	}
