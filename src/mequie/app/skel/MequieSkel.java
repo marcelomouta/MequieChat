@@ -294,7 +294,7 @@ public class MequieSkel {
 		List<String> args = msg.getArguments();
 		
 		try {
-			String g = args.get(0);
+			String g = args.get(0); //TODO verificacao ERRADA -> da indexOutOfBoundException pois nem um elemento tem e acedemos a 0
 			if (g == null || g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 			
