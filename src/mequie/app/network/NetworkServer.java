@@ -58,11 +58,10 @@ public class NetworkServer {
 				outStream = new ObjectOutputStream(socket.getOutputStream());
 				inStream = new ObjectInputStream(socket.getInputStream());
 
+				// Receive the session to authenticate client
 				sessao = (Session) inStream.readObject();
-				System.out.println("thread: depois de receber a password e o user");
 
-				System.out.println(sessao.getUsername() + " : " + sessao.getPassword());
-
+				// Initialization of Skell
 				MequieSkel skel = new MequieSkel(sessao);
 
 				// Make authentication and send the Msg Packet to client
