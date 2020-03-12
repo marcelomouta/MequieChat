@@ -217,9 +217,9 @@ public class MequieSkel {
 				throw new ErrorInsufficientArgumentsException();
 			
 			gih.indicateGroupID(g);
-			String info = gih.getInfo();
+			List<String> info = gih.getInfo();
 			
-			return new NetworkMessageResponse(msg.getOp(),info);
+			return new NetworkMessageResponse(msg.getOp(),"OK", new ArrayList<>(info));
 			
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
@@ -231,9 +231,9 @@ public class MequieSkel {
 	private NetworkMessage getUserInfo(NetworkMessageRequest msg) {
 		GetUserInfoHandler uih = system.getGetUserInfoHandler(currentSession);
 		
-		uih.getUserInfo();
+		List<List<String>> groups = uih.getUserInfo();
 		
-		return new NetworkMessageResponse(msg.getOp(), "TODO");
+		return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(groups.get(0)), new ArrayList<String>(groups.get(1)));
 	}
 	
 	private NetworkMessage sendMsg(NetworkMessageRequest msg) {

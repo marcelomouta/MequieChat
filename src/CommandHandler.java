@@ -81,6 +81,11 @@ public class CommandHandler {
         
         checkIfMessageIsAnError(msgServer);
         
+        if(msgServer instanceof NetworkMessageResponse) {
+        	NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
+        	res.getMsgs().forEach(text -> System.out.println(text) );
+        }
+        
         NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
         return msgResponse.getResult();
     }
@@ -91,6 +96,14 @@ public class CommandHandler {
         NetworkMessage msgServer = network.sendAndReceive(msg);
         
         checkIfMessageIsAnError(msgServer);
+        
+        if(msgServer instanceof NetworkMessageResponse) {
+        	NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
+        	System.out.println("Grupos a que pertence:");
+        	res.getMsgs().forEach(text -> System.out.println(text) );
+        	System.out.println("Grupos a que e dono:");
+        	res.getPhotos().forEach(text -> System.out.println(text) );
+        }
         
         NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
         return msgResponse.getResult();

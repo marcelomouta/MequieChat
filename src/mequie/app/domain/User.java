@@ -20,6 +20,7 @@ public class User implements Serializable{
     private String password;
     
     private Set<Group> groups = new HashSet<>();
+    private Set<Group> groupsOwned = new HashSet<>();
 
     /**
      * 
@@ -49,6 +50,7 @@ public class User implements Serializable{
 	public Group createGroup(String groupID) {
 		Group g = new Group(groupID, this);
 		groups.add(g);
+		groupsOwned.add(g);
 		return g;
 	}
 	
@@ -62,6 +64,10 @@ public class User implements Serializable{
 
 	public List<Group> getAllGroups() {
 		return new ArrayList<>(groups);
+	}
+	
+	public List<Group> getGroupsWhoUserIsLeader() {
+		return new ArrayList<>(groupsOwned);
 	}
 	
 	@Override

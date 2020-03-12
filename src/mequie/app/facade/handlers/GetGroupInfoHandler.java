@@ -1,5 +1,6 @@
 package mequie.app.facade.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mequie.app.domain.Group;
@@ -28,16 +29,22 @@ public class GetGroupInfoHandler{
             throw new NotExistingGroupException();
     }
     
-    public String getInfo() {
-    	int user_num = this.currentGroup.getNumberOfUsers();
+    public List<String> getInfo() {
+    	List<String> info = new ArrayList<String>();
     	
-    	List<User> users = this.currentGroup.getAllUsers();
+    	info.add(this.currentGroup.getGoupID());
+    	
+    	int user_num = this.currentGroup.getNumberOfUsers();
+    	info.add(String.valueOf(user_num));
     	
     	if ( currentGroup.getOwner().equals(currentUser) ) {
-    		users = currentGroup.getAllUsers();
+    		List<User> users = currentGroup.getAllUsers();
+    		
+    		// add them to info to send it to the client
+    		users.forEach(u -> info.add(u.toString()));
     	}
     	
-    	return this.currentGroup.getGoupID() + " num: " + user_num; // falta empactorar e enviar a info
+    	return  info;
     }
 
 }

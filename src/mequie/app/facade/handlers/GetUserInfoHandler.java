@@ -15,17 +15,28 @@ import mequie.app.facade.exceptions.NotExistingUserException;
 public class GetUserInfoHandler{
 
     private User currentUser;
-    
-    private List<Group> groupsOfCurrentUser = new ArrayList<>();
 
     public GetUserInfoHandler(Session s) {
         currentUser = s.getUser();
     }
 
-    public void getUserInfo() {
-    	groupsOfCurrentUser = currentUser.getAllGroups();
+    public List<List<String>> getUserInfo() {
+    	List<List<String>> groupsAndOwnedGroupsSeparated = new ArrayList<>(2);
+    	
+    	// inicializacao da lista de msgs
+    	groupsAndOwnedGroupsSeparated.add(new ArrayList<>());
+    	// inicializacao da lista de photos
+    	groupsAndOwnedGroupsSeparated.add(new ArrayList<>());
+    	
+    	for (Group g : currentUser.getAllGroups()) {
+    		groupsAndOwnedGroupsSeparated.get(0).add(g.toString());
+    	}
+
+    	for (Group g : currentUser.getGroupsWhoUserIsLeader()) {
+    		groupsAndOwnedGroupsSeparated.get(1).add(g.toString());
+    	}
+    	
+    	return groupsAndOwnedGroupsSeparated;
     }
-    
-    // mostrar grupos a que pertence e de que eh dono?! Como organizar info?!
 
 }
