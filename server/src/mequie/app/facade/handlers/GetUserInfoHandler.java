@@ -5,7 +5,7 @@ import java.util.List;
 
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
-import mequieClient.app.facade.Session;
+import mequieclient.app.facade.Session;
 
 public class GetUserInfoHandler{
 

@@ -1,17 +1,17 @@
-package mequieClient.app.skel;
+package mequieclient.app.skel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import mequieClient.app.facade.Session;
-import mequieClient.app.facade.exceptions.MequieException;
-import mequieClient.app.network.NetworkClient;
-import mequieClient.app.network.NetworkMessage;
-import mequieClient.app.network.NetworkMessageError;
-import mequieClient.app.network.NetworkMessageRequest;
-import mequieClient.app.network.NetworkMessageResponse;
+import mequieclient.app.facade.Session;
+import mequieclient.app.facade.exceptions.MequieException;
+import mequieclient.app.network.NetworkClient;
+import mequieclient.app.network.NetworkMessage;
+import mequieclient.app.network.NetworkMessageError;
+import mequieclient.app.network.NetworkMessageRequest;
+import mequieclient.app.network.NetworkMessageResponse;
 
 public class CommandHandler {
 

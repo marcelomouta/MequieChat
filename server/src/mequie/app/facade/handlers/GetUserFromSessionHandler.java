@@ -3,8 +3,8 @@ package mequie.app.facade.handlers;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.handlers.CreateUserHandler;
-import mequieClient.app.facade.Session;
-import mequieClient.app.facade.exceptions.AuthenticationFailedException;
+import mequieclient.app.facade.Session;
+import mequieclient.app.facade.exceptions.AuthenticationFailedException;
 
 public class GetUserFromSessionHandler {
 	

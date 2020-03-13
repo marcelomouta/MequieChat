@@ -1,9 +1,9 @@
-package mequieClient.main;
+package mequieclient.main;
 
 
-import mequieClient.app.facade.exceptions.MequieException;
-import mequieClient.app.network.NetworkClient;
-import mequieClient.app.skel.CommandHandler;
+import mequieclient.app.facade.exceptions.MequieException;
+import mequieclient.app.network.NetworkClient;
+import mequieclient.app.skel.CommandHandler;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

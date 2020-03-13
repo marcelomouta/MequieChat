@@ -3,7 +3,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import mequieClient.app.facade.exceptions.MequieException;
+import mequieclient.app.facade.exceptions.MequieException;
 
 /**
  * Classe comum ao Servidor e Cliente para troca de pedido e reposta

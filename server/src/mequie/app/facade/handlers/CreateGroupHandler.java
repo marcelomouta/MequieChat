@@ -3,9 +3,9 @@ package mequie.app.facade.handlers;
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
-import mequieClient.app.facade.Session;
-import mequieClient.app.facade.exceptions.ErrorCreatingGroupException;
-import mequieClient.app.facade.exceptions.ErrorSavingInDiskException;
+import mequieclient.app.facade.Session;
+import mequieclient.app.facade.exceptions.ErrorCreatingGroupException;
+import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 
 public class CreateGroupHandler{
 

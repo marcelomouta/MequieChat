@@ -1,8 +1,8 @@
 package mequie.app.network;
 import java.util.ArrayList;
 
-import mequieClient.app.facade.exceptions.MequieException;
-import mequieClient.app.network.NetworkMessage;
+import mequieclient.app.facade.exceptions.MequieException;
+import mequieclient.app.network.NetworkMessage;
 
 /**
  * Classe comum ao Servidor e Cliente para troca de pedido e reposta

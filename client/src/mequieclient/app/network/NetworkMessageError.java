@@ -1,6 +1,6 @@
-package mequieClient.app.network;
+package mequieclient.app.network;
 
-import mequieClient.app.facade.exceptions.MequieException;
+import mequieclient.app.facade.exceptions.MequieException;
 
 /**
  * Classe comum ao Servidor e Cliente para troca de pedido e reposta

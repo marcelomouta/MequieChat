@@ -1,6 +1,6 @@
-package mequieClient.app.facade.exceptions;
+package mequieclient.app.facade.exceptions;
 
-import mequieClient.app.facade.exceptions.MequieException;
+import mequieclient.app.facade.exceptions.MequieException;
 
 /**
  * 

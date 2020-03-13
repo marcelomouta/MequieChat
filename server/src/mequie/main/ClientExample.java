@@ -10,7 +10,7 @@ import mequie.app.facade.handlers.CreateGroupHandler;
 import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
-import mequieClient.app.facade.Session;
+import mequieclient.app.facade.Session;
 
 public class ClientExample {
 	

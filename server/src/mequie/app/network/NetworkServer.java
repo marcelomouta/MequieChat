@@ -8,12 +8,12 @@ import java.net.Socket;
 //import java.nio.charset.StandardCharsets;
 
 import mequie.app.skel.MequieSkel;
-import mequieClient.app.facade.Session;
-import mequieClient.app.facade.exceptions.AuthenticationFailedException;
-import mequieClient.app.network.NetworkMessage;
-import mequieClient.app.network.NetworkMessageError;
-import mequieClient.app.network.NetworkMessageRequest;
-import mequieClient.app.network.NetworkMessageResponse;
+import mequieclient.app.facade.Session;
+import mequieclient.app.facade.exceptions.AuthenticationFailedException;
+import mequieclient.app.network.NetworkMessage;
+import mequieclient.app.network.NetworkMessageError;
+import mequieclient.app.network.NetworkMessageRequest;
+import mequieclient.app.network.NetworkMessageResponse;
 
 public class NetworkServer {
 

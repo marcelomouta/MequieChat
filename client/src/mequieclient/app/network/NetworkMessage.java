@@ -1,4 +1,4 @@
-package mequieClient.app.network;
+package mequieclient.app.network;
 
 import java.io.Serializable;
 

@@ -10,7 +10,7 @@ import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequie.app.facade.handlers.SendPhotoMessageHandler;
 import mequie.app.facade.handlers.SendTextMessageHandler;
-import mequieClient.app.facade.Session;
+import mequieclient.app.facade.Session;
 
 /**
  * This class is the System class

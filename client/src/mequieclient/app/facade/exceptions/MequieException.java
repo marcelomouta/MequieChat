@@ -1,4 +1,4 @@
-package mequieClient.app.facade.exceptions;
+package mequieclient.app.facade.exceptions;
 
 /**
  * 

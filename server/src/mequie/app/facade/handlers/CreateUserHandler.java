@@ -2,7 +2,7 @@ package mequie.app.facade.handlers;
 
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.UserCatalog;
-import mequieClient.app.facade.exceptions.ErrorSavingInDiskException;
+import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 
 public class CreateUserHandler {
 	

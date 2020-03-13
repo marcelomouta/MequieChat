@@ -1,4 +1,4 @@
-package mequieClient.app.facade;
+package mequieclient.app.facade;
 
 import java.io.Serializable;
 

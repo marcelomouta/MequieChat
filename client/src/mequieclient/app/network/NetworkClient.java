@@ -1,8 +1,8 @@
-package mequieClient.app.network;
+package mequieclient.app.network;
 
-import mequieClient.app.network.NetworkMessage;
-import mequieClient.app.network.NetworkMessageRequest;
-import mequieClient.app.facade.Session;
+import mequieclient.app.facade.Session;
+import mequieclient.app.network.NetworkMessage;
+import mequieclient.app.network.NetworkMessageRequest;
 
 import java.io.*;
 import java.net.Socket;

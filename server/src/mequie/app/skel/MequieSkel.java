@@ -16,21 +16,21 @@ import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequie.app.facade.handlers.SendPhotoMessageHandler;
 import mequie.app.facade.handlers.SendTextMessageHandler;
-import mequieClient.app.facade.Session;
-import mequieClient.app.facade.exceptions.AuthenticationFailedException;
-import mequieClient.app.facade.exceptions.ErrorAddingUserToGroupException;
-import mequieClient.app.facade.exceptions.ErrorCreatingGroupException;
-import mequieClient.app.facade.exceptions.ErrorInsufficientArgumentsException;
-import mequieClient.app.facade.exceptions.ErrorRemovingUserOfGroupException;
-import mequieClient.app.facade.exceptions.ErrorSavingInDiskException;
-import mequieClient.app.facade.exceptions.MequieException;
-import mequieClient.app.facade.exceptions.NotExistingGroupException;
-import mequieClient.app.facade.exceptions.NotExistingUserException;
-import mequieClient.app.facade.exceptions.UserNotHavePermissionException;
-import mequieClient.app.network.NetworkMessage;
-import mequieClient.app.network.NetworkMessageError;
-import mequieClient.app.network.NetworkMessageRequest;
-import mequieClient.app.network.NetworkMessageResponse;
+import mequieclient.app.facade.Session;
+import mequieclient.app.facade.exceptions.AuthenticationFailedException;
+import mequieclient.app.facade.exceptions.ErrorAddingUserToGroupException;
+import mequieclient.app.facade.exceptions.ErrorCreatingGroupException;
+import mequieclient.app.facade.exceptions.ErrorInsufficientArgumentsException;
+import mequieclient.app.facade.exceptions.ErrorRemovingUserOfGroupException;
+import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
+import mequieclient.app.facade.exceptions.MequieException;
+import mequieclient.app.facade.exceptions.NotExistingGroupException;
+import mequieclient.app.facade.exceptions.NotExistingUserException;
+import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
+import mequieclient.app.network.NetworkMessage;
+import mequieclient.app.network.NetworkMessageError;
+import mequieclient.app.network.NetworkMessageRequest;
+import mequieclient.app.network.NetworkMessageResponse;
 
 public class MequieSkel {
 	

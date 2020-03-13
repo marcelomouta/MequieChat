@@ -7,9 +7,9 @@ import mequie.app.domain.Group;
 import mequie.app.domain.Message;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
-import mequieClient.app.facade.Session;
-import mequieClient.app.facade.exceptions.NotExistingGroupException;
-import mequieClient.app.facade.exceptions.UserNotHavePermissionException;
+import mequieclient.app.facade.Session;
+import mequieclient.app.facade.exceptions.NotExistingGroupException;
+import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
 public class MessageHistoryOfGroupHandler{
 
