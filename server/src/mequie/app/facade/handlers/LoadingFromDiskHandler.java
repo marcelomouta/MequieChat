@@ -51,8 +51,8 @@ public class LoadingFromDiskHandler {
 			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
 				String userID = groupIDandUsersIDSplited[i];
 				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
-				groups.add(g);
 			}
+			groups.add(g);
 		}
 		
 		return groups;
