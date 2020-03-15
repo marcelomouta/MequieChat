@@ -20,7 +20,7 @@ public class SaveToDiskHandler {
 	public static boolean saveTextMessageInDisk(Message m, Group g) {
 		try {
 			// prepare
-			List<String> stringsToWrite = new ArrayList<String>();
+			List<String> stringsToWrite = new ArrayList<>();
 			stringsToWrite.add(m.getMsgID());
 			stringsToWrite.add(m.getSender().getUserID());
 			stringsToWrite.add(m.getInfo());
@@ -28,6 +28,7 @@ public class SaveToDiskHandler {
 			// save
 			WriteInDisk writer = new WriteInDisk("Data/" + g.getGoupID() + "/messages.txt");			
 			writer.saveListOfStringsSeparatedBy(stringsToWrite, ":");
+			
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -38,6 +39,7 @@ public class SaveToDiskHandler {
 		try {
 			WriteInDisk writer = new WriteInDisk("Data/" + g.getGoupID() + "/" + m.getMsgID() + ".txt");		
 			writer.saveSimpleString(m.getInfo()); //esta a escrever a path e nao o conteudo em si REVER
+			
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -48,6 +50,7 @@ public class SaveToDiskHandler {
 		try {
 			WriteInDisk write = new WriteInDisk(PASSWDFILE);
 			write.saveTwoStringsSeparatedBy(u.getUserID(), u.getPassword(), ":");
+			
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -58,6 +61,7 @@ public class SaveToDiskHandler {
 		try {
 			WriteInDisk write = new WriteInDisk(GROUPFILE);
 			write.saveTwoStringsSeparatedBy(g.getGoupID(), g.getOwner().getUserID(), ":");
+			
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -66,9 +70,16 @@ public class SaveToDiskHandler {
 	
 	public static boolean saveUserToGroupInDisk(User u, Group g) {
 		try {
+			// ler as linhas e ver o grupo que foi alterado e adicionar ao grupo
+    		ReadFromDisk reader = new ReadFromDisk(GROUPFILE);
+			List<String> lines = reader.readAllLines();
+
+			lines.replaceAll(s -> s.equals(g.getGoupID()) ? s + ":" + u.getUserID() : s );
+			
 			WriteInDisk write = new WriteInDisk(GROUPFILE);
 			// ir buscar toda a info e reescrever toda mas com a correcao
 			write.saveStringSeparatedBy(u.getUserID(), ":");
+			
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -78,8 +89,15 @@ public class SaveToDiskHandler {
 	public static boolean saveRemoveUserFromGroup(User u, Group g) {
 		try {
     		// ler as linhas e ver o grupo que foi alterado e remover do disco
-    		// depois escrever a alteracao ao grupo no disco
-			WriteInDisk write = new WriteInDisk(GROUPFILE);
+    		ReadFromDisk reader = new ReadFromDisk(GROUPFILE);
+			List<String> lines = reader.readAllLines();
+			
+			lines.replaceAll(s -> s.equals(g.getGoupID()) ? s.replaceAll(u.getUserID(), "") : s );
+			
+			// depois escrever a alteracao ao grupo no disco
+			WriteInDisk writer = new WriteInDisk(GROUPFILE);
+			writer.saveListOfStringsSeparatedBy(lines, "\n");
+			
 			return true;
 		} catch (IOException e) {
 			return false;
