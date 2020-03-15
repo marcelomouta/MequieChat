@@ -59,5 +59,13 @@ public class WriteInDisk {
 	public String getFileLocation() throws IOException {
 		return this.fileToWrite.getPath();
 	}
+
+	public boolean emptyFile() {
+		try (FileWriter writer = new FileWriter(fileToWrite)) {
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
 	
 }

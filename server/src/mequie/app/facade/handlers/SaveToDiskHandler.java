@@ -23,7 +23,7 @@ public class SaveToDiskHandler {
 			List<String> stringsToWrite = new ArrayList<>();
 			stringsToWrite.add(m.getMsgID());
 			stringsToWrite.add(m.getSender().getUserID());
-			stringsToWrite.add(m.getInfo());
+			stringsToWrite.add(m.getInfo() + "\n");
 			
 			// save
 			WriteInDisk writer = new WriteInDisk("Data/" + g.getGoupID() + "/messages.txt");			
@@ -49,7 +49,7 @@ public class SaveToDiskHandler {
 	public static boolean saveUserInDisk(User u) {
 		try {
 			WriteInDisk write = new WriteInDisk(PASSWDFILE);
-			write.saveTwoStringsSeparatedBy(u.getUserID(), u.getPassword(), ":");
+			write.saveTwoStringsSeparatedBy(u.getUserID(), u.getPassword() + "\n", ":");
 			
 			return true;
 		} catch (IOException e) {
@@ -60,7 +60,7 @@ public class SaveToDiskHandler {
 	public static boolean saveGroupInDisk(Group g) {
 		try {
 			WriteInDisk write = new WriteInDisk(GROUPFILE);
-			write.saveTwoStringsSeparatedBy(g.getGoupID(), g.getOwner().getUserID(), ":");
+			write.saveTwoStringsSeparatedBy(g.getGoupID(), g.getOwner().getUserID() + "\n", ":");
 			
 			return true;
 		} catch (IOException e) {
@@ -74,11 +74,18 @@ public class SaveToDiskHandler {
     		ReadFromDisk reader = new ReadFromDisk(GROUPFILE);
 			List<String> lines = reader.readAllLines();
 
-			lines.replaceAll(s -> s.equals(g.getGoupID()) ? s + ":" + u.getUserID() : s );
+			List<String> toWrite = new ArrayList<>();
 			
-			WriteInDisk write = new WriteInDisk(GROUPFILE);
-			// ir buscar toda a info e reescrever toda mas com a correcao
-			write.saveStringSeparatedBy(u.getUserID(), ":");
+			lines.stream().forEach(s -> {
+				if ( s.split(":")[0].equals(g.getGoupID()) )
+					toWrite.add(s + ":" + u.getUserID());
+				else 
+					toWrite.add(s);
+			});
+			
+			WriteInDisk writer = new WriteInDisk(GROUPFILE);
+			writer.emptyFile();
+			writer.saveListOfStringsSeparatedBy(toWrite, "\n");
 			
 			return true;
 		} catch (IOException e) {
@@ -92,11 +99,19 @@ public class SaveToDiskHandler {
     		ReadFromDisk reader = new ReadFromDisk(GROUPFILE);
 			List<String> lines = reader.readAllLines();
 			
-			lines.replaceAll(s -> s.equals(g.getGoupID()) ? s.replaceAll(u.getUserID(), "") : s );
+			List<String> toWrite = new ArrayList<>();
+			
+			lines.stream().forEach(s -> {
+				if ( s.split(":")[0].equals(g.getGoupID()) )
+					toWrite.add(s.replaceAll(u.getUserID() + ":", ""));
+				else
+					toWrite.add(s);
+			});	
 			
 			// depois escrever a alteracao ao grupo no disco
 			WriteInDisk writer = new WriteInDisk(GROUPFILE);
-			writer.saveListOfStringsSeparatedBy(lines, "\n");
+			writer.emptyFile();
+			writer.saveListOfStringsSeparatedBy(toWrite, "\n");
 			
 			return true;
 		} catch (IOException e) {
