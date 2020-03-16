@@ -25,7 +25,7 @@ public class CommandHandler {
 		this.network = network;
 	}
 
-	public void test() throws IOException, ArithmeticException {
+	/*public void test() throws IOException, ArithmeticException {
 
 		String fileName = "file.txt";
 
@@ -37,7 +37,7 @@ public class CommandHandler {
 		System.out.println("Ficheiro '" + fileName + "' enviado.");
 
 		inFile.close();
-	}
+	}*/
 
 	public boolean authentication(String user, String pass) {
 		try {
@@ -178,7 +178,7 @@ public class CommandHandler {
 		List<byte[]> photos = msgResponse.getPhotos();
 		if (!photos.isEmpty()) {
 			String path = "ClientData/photos_" + groupID + "/" + (generator++);
-			System.out.println("Foto: " + path);
+			System.out.println("Fotos: " + path);
 			for (byte[] photo : photos) {
 				writePhoto(photo, path);
 			}

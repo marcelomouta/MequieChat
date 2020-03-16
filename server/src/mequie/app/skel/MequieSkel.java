@@ -1,6 +1,5 @@
 package mequie.app.skel;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,8 +41,13 @@ public class MequieSkel {
 		this.currentSession = s;
 	}
 	
-	public void autentication() throws AuthenticationFailedException {
-		GetUserFromSessionHandler.authenticateSession(currentSession);
+	public NetworkMessage autentication() throws AuthenticationFailedException {
+		try {
+			GetUserFromSessionHandler.authenticateSession(currentSession);
+			return new NetworkMessageResponse(NetworkMessage.Opcode.AUTH, "OK");
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(NetworkMessage.Opcode.AUTH, new ErrorSavingInDiskException());
+		}
 	}
 	
 	public NetworkMessage invoke(NetworkMessageRequest msg) {

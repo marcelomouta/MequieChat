@@ -42,7 +42,7 @@ public class Mequie {
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor. A terminar...");
             System.exit(-1);
 		}
-		
+
 		Boolean auth = cHandler.authentication(args[1], getPassword(args));
 		if (auth) {
 			
@@ -103,9 +103,6 @@ public class Mequie {
 					break;
 				case "history":
 					cHandler.history(command[1]);
-					break;
-				case "test":
-					cHandler.test();
 					break;
 				case "exit":
 					System.out.println("Exiting program...");
