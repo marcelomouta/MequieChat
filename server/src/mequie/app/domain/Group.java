@@ -65,6 +65,9 @@ public class Group {
 	}
 
 	public boolean removeUserByID(User userToRemove) throws Exception{
+		if (userToRemove.equals(owner))
+			return false;
+		
 		boolean doneCorrectly = this.users.remove(userToRemove);
 		
 		if (!doneCorrectly) return false;
@@ -125,23 +128,28 @@ public class Group {
 			if (!m.userHasReadMessage(u)) {
 				m.messageReadByUser(u);
 				msgs.add(m);
-				
-				if (m.allHaveSeenMessage())
-					history.add(m);
 			}
 		}
 		return msgs;
 	}
 
 	public TextMessage createTextMessage(String text, User currentUser) {
-		return new TextMessage(generateMsgID(), currentUser, new ArrayList<>(users), text);
+		return new TextMessage(getGoupID() + generateMsgID(), currentUser, new ArrayList<>(users), text);
 	}
 	
-	public PhotoMessage createPhotoMessage(byte[] photo, User currentUser) {
-		return new PhotoMessage(getGoupID(), currentUser, new ArrayList<>(users), photo);
+	public PhotoMessage createPhotoMessage(User owner, String path) {
+		String id = getGoupID() + generateMsgID();
+		return new PhotoMessage(id, owner, new ArrayList<>(users), path + id);
 	}
 	
 	private String generateMsgID() {
 		return "" + msgNumberID++;
+	}
+
+	public void moveToHistory(Message msg) {
+		if (msg instanceof TextMessage) {
+			this.history.add(msg);
+		}
+		this.messages.remove(msg);
 	}
 }

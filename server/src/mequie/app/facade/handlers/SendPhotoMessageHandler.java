@@ -26,16 +26,16 @@ public class SendPhotoMessageHandler{
             throw new NotExistingGroupException();
     }
     
-    public void createMessage(byte[] photo) {
-    	currentMsg = currentGroup.createPhotoMessage(photo, currentUser);
+    public void createMessage() {
+    	currentMsg = currentGroup.createPhotoMessage(currentUser, "Data/" + currentGroup.getGoupID() + "/");
     }
     
     public void sendMessageToGroup() {
     	currentGroup.saveMessage(currentMsg);
     }
     
-    public void save() throws ErrorSavingInDiskException {
-    	if ( !SaveToDiskHandler.savePhotoMessageInDisk(currentMsg, currentGroup) )
+    public void save(byte[] photo) throws ErrorSavingInDiskException {
+    	if ( !OperationsToDiskHandler.savePhotoMessageInDisk(photo, currentMsg.getInfo()) )
     		throw new ErrorSavingInDiskException();
     }
 

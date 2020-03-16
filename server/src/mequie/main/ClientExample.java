@@ -1,14 +1,19 @@
 package mequie.main;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 
 import mequie.app.Mequie;
+import mequie.app.domain.Group;
+import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.handlers.AddUserToGroupHandler;
 import mequie.app.facade.handlers.CreateGroupHandler;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
+import mequie.app.facade.handlers.OperationsToDiskHandler;
 import mequieclient.app.facade.Session;
 
 public class ClientExample {
@@ -66,6 +71,10 @@ public class ClientExample {
 			//cuh.save();
 			
 			System.out.println(GroupCatalog.getInstance().getAllGroups().toString());
+			
+			File f = new File("pikachu.jpg");
+//			byte[] file = msg.getArguments().get(0).getBytes(StandardCharsets.UTF_8);
+//			SaveToDiskHandler.savePhotoMessageInDisk("pikachu", data, new Group("g1", new User("user01", "passwd")));
 			
 			
 		} catch (FileNotFoundException e) {

@@ -44,7 +44,7 @@ public class AddUserToGroupHandler{
     }
     
     public void save() throws ErrorSavingInDiskException {
-  		if ( !SaveToDiskHandler.saveUserToGroupInDisk(currentUserToAdd, currentGroup) )
+  		if ( !OperationsToDiskHandler.saveUserToGroupInDisk(currentUserToAdd, currentGroup) )
   			throw new ErrorSavingInDiskException();
     }
 

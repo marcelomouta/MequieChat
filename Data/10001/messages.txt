@@ -1,0 +1,4 @@
+100010:user01: ola amigos
+100011:user01: adeus
+100010:user01: 1829379812
+100010:user01: ola meu

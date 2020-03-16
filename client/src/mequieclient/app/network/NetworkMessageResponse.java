@@ -10,23 +10,23 @@ import mequieclient.app.network.NetworkMessage;
 public class NetworkMessageResponse extends NetworkMessage {
 	
 	private String result;
-	private ArrayList<String> msgs;
-	private ArrayList<String> photos;
+	private ArrayList<String> info1;
+	private ArrayList<? extends Object> info2;
 	
 	public NetworkMessageResponse(Opcode op, String result) {
 		super(op);
 		this.result = result;
 	}
 	
-	public NetworkMessageResponse(Opcode op, String result, ArrayList<String> msgs) {
+	public NetworkMessageResponse(Opcode op, String result, ArrayList<String> info1) {
 		this(op, result);
-		this.msgs = msgs;
+		this.info1 = info1;
 	}
 	
-	public NetworkMessageResponse(Opcode op, String result, ArrayList<String> msgs, ArrayList<String> photos) {
+	public NetworkMessageResponse(Opcode op, String result, ArrayList<String> info1, ArrayList<? extends Object> info2) {
 		this(op, result);
-		this.msgs = msgs;
-		this.photos = photos;
+		this.info1 = info1;
+		this.info2 = info2;
 	}
 
 	public String getResult() {
@@ -34,11 +34,15 @@ public class NetworkMessageResponse extends NetworkMessage {
 	}
 	
 	public ArrayList<String> getMsgs() {
-		return msgs;
+		return info1;
 	}
 	
-	public ArrayList<String> getPhotos() {
-		return photos;
+	public ArrayList<String> getMsg2() {
+		return (ArrayList<String>) info2;
+	}
+	
+	public ArrayList<byte[]> getPhotos() {
+		return (ArrayList<byte[]>) info2;
 	}
 	
 	public String toString() {

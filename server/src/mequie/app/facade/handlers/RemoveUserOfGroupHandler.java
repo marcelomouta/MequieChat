@@ -44,7 +44,7 @@ public class RemoveUserOfGroupHandler{
     }
     
     public void save() throws ErrorSavingInDiskException {
-    	if ( !SaveToDiskHandler.saveRemoveUserFromGroup(currentUserToRemove, currentGroup) )
+    	if ( !OperationsToDiskHandler.saveRemoveUserFromGroup(currentUserToRemove, currentGroup) )
     		throw new ErrorSavingInDiskException();
     
     }

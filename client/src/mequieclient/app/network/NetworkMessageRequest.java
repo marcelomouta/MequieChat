@@ -11,11 +11,23 @@ import mequieclient.app.network.NetworkMessage;
 public class NetworkMessageRequest extends NetworkMessage {
 	
 	private ArrayList<String> arguments; // Tem de ser ArrayList porque List nao eh Serializable
+	private byte[] photo;
 	
 	public NetworkMessageRequest(Opcode op, ArrayList<String> arguments) {
 		super(op);
 		this.arguments = arguments;
 	}
+	
+	public NetworkMessageRequest(Opcode op, ArrayList<String> arguments, byte[] photo) {
+		super(op);
+		this.arguments = arguments;
+		this.photo = photo;
+	}
+	
+	public byte[] getPhoto() {
+		return this.photo;
+	}
+	
 	public ArrayList<String> getArguments() {
 		return arguments;
 	}

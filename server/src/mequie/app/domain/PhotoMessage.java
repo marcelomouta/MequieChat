@@ -7,29 +7,21 @@ import java.util.Scanner;
 
 public class PhotoMessage extends Message {
 	
-	private File photo;
+	private String path;
 	
-	public PhotoMessage(String msgID, User sender, List<User> userNotSeenMsg, byte[] bytePhoto) {
+	public PhotoMessage(String msgID, User sender, List<User> userNotSeenMsg, String path) {
 		super(msgID, sender, userNotSeenMsg);
-		photo = new File("Data/" + msgID);
+		this.path = path;
 	}
 
 	@Override
 	public String toString() {
-		return photo.toString();
+		return path;
 	}
 
 	@Override
 	public String getInfo() {
-		StringBuilder sb = new StringBuilder();
-		try(Scanner sc = new Scanner(photo)) {
-			if (sc.hasNext()) {
-				sb.append(sc.next());
-			}
-		} catch (FileNotFoundException e) {
-			// TODO 
-		}
-		return sb.toString();
+		return toString();
 	}
 
 }
