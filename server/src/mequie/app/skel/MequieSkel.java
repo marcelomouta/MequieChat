@@ -8,7 +8,6 @@ import mequie.app.Mequie;
 import mequie.app.facade.handlers.AddUserToGroupHandler;
 import mequie.app.facade.handlers.CollectMessagesHandler;
 import mequie.app.facade.handlers.CreateGroupHandler;
-import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.GetGroupInfoHandler;
 import mequie.app.facade.handlers.GetUserFromSessionHandler;
 import mequie.app.facade.handlers.GetUserInfoHandler;

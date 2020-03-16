@@ -7,7 +7,6 @@ import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.handlers.AddUserToGroupHandler;
 import mequie.app.facade.handlers.CreateGroupHandler;
-import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequieclient.app.facade.Session;
@@ -62,8 +61,8 @@ public class ClientExample {
 			
 			// CREATE USER
 			
-			CreateUserHandler cuh = m.getCreateUserHandler();
-			cuh.makeUser("admin", "123123123");
+//			CreateUserHandler cuh = m.getCreateUserHandler();
+//			cuh.makeUser("admin", "123123123");
 			//cuh.save();
 			
 			System.out.println(GroupCatalog.getInstance().getAllGroups().toString());

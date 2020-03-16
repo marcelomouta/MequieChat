@@ -3,7 +3,6 @@ package mequie.app;
 import mequie.app.facade.handlers.AddUserToGroupHandler;
 import mequie.app.facade.handlers.CollectMessagesHandler;
 import mequie.app.facade.handlers.CreateGroupHandler;
-import mequie.app.facade.handlers.CreateUserHandler;
 import mequie.app.facade.handlers.GetGroupInfoHandler;
 import mequie.app.facade.handlers.GetUserInfoHandler;
 import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
@@ -23,10 +22,6 @@ public class Mequie {
 	
 	public AddUserToGroupHandler getAddUserToGroupHandler(Session s) {
 		return new AddUserToGroupHandler(s);
-	}
-	
-	public CreateUserHandler getCreateUserHandler() {
-		return new CreateUserHandler();
 	}
 	
 	public RemoveUserOfGroupHandler getRemoveUserOfGroupHandler(Session s) {
