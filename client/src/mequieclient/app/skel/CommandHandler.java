@@ -195,10 +195,10 @@ public class CommandHandler {
 		// TODO: Salvar todas as fotos em msgResponse.getPhotos() numa pasta à parte
 		List<byte[]> photos = msgResponse.getPhotos();
 		if (!photos.isEmpty()) {
-			String path = "ClientData/photos_" + groupID + "/" + (generator++);
-			System.out.println("Fotos: " + path);
 			for (byte[] photo : photos) {
-				writePhoto(photo, path);
+                String path = "ClientData/photos_" + groupID + "/" + (generator++);
+                System.out.println("Foto: " + path);
+                writePhoto(photo, path);
 			}
 		}
 
