@@ -15,8 +15,8 @@ public class MequieServer{
 		
 		try {
 			LoadingFromDiskHandler.load();
-		} catch (Exception e1) {
-			System.out.println("ERROR ao fazer o loading");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (args.length != 1) {

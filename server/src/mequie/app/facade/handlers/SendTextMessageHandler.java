@@ -33,7 +33,7 @@ public class SendTextMessageHandler{
     }
     
     public void save() throws ErrorSavingInDiskException {
-    	if ( !SaveToDiskHandler.saveTextMessageInDisk(currentMsg, currentGroup) )
+    	if ( !OperationsToDiskHandler.saveTextMessageInDisk(currentMsg, currentGroup) )
     		throw new ErrorSavingInDiskException();
     }
 

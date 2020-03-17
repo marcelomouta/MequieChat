@@ -17,7 +17,7 @@ public class TextMessage extends Message {
 
 	@Override
 	public String toString() {
-		return (msgID) + "(" + sender.toString() + "): " + text;
+		return msgID + ":" + sender.toString() + ": " + text;
 	}
 
 }

@@ -13,7 +13,6 @@ import mequieclient.app.facade.exceptions.AuthenticationFailedException;
 import mequieclient.app.network.NetworkMessage;
 import mequieclient.app.network.NetworkMessageError;
 import mequieclient.app.network.NetworkMessageRequest;
-import mequieclient.app.network.NetworkMessageResponse;
 
 public class NetworkServer {
 
@@ -69,8 +68,7 @@ public class NetworkServer {
 				MequieSkel skel = new MequieSkel(sessao);
 
 				// Make authentication and send the Msg Packet to client
-				skel.autentication();
-				sendMessage(new NetworkMessageResponse(NetworkMessage.Opcode.TEST, "OK"));
+				sendMessage(skel.autentication());
 
 				System.out.println("User " + sessao.getUsername() + " was successfully authenticated");
 
@@ -78,8 +76,6 @@ public class NetworkServer {
 				while(true) {
 					NetworkMessageRequest msg = (NetworkMessageRequest) inStream.readObject();
 					System.out.println(msg.toString());
-					
-					// receiveFile(msg);
 
 					NetworkMessage resp = skel.invoke(msg);
 					sendMessage(resp);
@@ -89,7 +85,7 @@ public class NetworkServer {
 			} catch (AuthenticationFailedException e) { // username and password doesnt match
 				try {
 					System.out.println("Autenticacao falhou: username ou password incorretos");
-					sendMessage(new NetworkMessageError(NetworkMessage.Opcode.TEST, new AuthenticationFailedException()));
+					sendMessage(new NetworkMessageError(NetworkMessage.Opcode.AUTH, new AuthenticationFailedException()));
 				} catch (IOException e1) {
 					// Do nothing because finally will be called
 				}

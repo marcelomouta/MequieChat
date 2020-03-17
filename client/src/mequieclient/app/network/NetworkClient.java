@@ -1,8 +1,6 @@
 package mequieclient.app.network;
 
 import mequieclient.app.facade.Session;
-import mequieclient.app.network.NetworkMessage;
-import mequieclient.app.network.NetworkMessageRequest;
 
 import java.io.*;
 import java.net.Socket;
@@ -68,14 +66,8 @@ public class NetworkClient {
 		return  msgResponse;
 	}
 
-	/*
-	 * Esta função deve: - Obter o descritor da ligação (socket) da estrutura
-	 * rtable_t; - Serializar a mensagem contida em msg; - Enviar a mensagem
-	 * serializada para o servidor; - Esperar a resposta do servidor; -
-	 * De-serializar a mensagem de resposta; - Retornar a mensagem de-serializada ou
-	 * NULL em caso de erro.
-	 */
-	public void sendTestFile(FileInputStream inFile, int size) throws IOException {
+
+/*	public void sendTestFile(FileInputStream inFile, int size) throws IOException {
 
 		//out.writeObject("test");
 
@@ -87,13 +79,13 @@ public class NetworkClient {
 		//out.write(buf, 0, size);
 		//out.flush();
 
-		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.TEST,
+		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.AUTH,
 				new ArrayList(Arrays.asList(new String(buf))));
 
 		out.writeObject(msg);
 
 		out.flush();
-	}
+	}*/
 
 	/*
 	 * A função closeConnection() fecha a ligação estabelecida por network_connect().

@@ -1,3 +1,4 @@
+
 grant codeBase "file:bin/*" {
 	permission java.security.AllPermission;
-};
+}

@@ -26,7 +26,7 @@ public class CreateGroupHandler{
     }
     
     public void save() throws ErrorSavingInDiskException {
-    	if ( !SaveToDiskHandler.saveGroupInDisk(currentGroup) )
+    	if ( !OperationsToDiskHandler.saveGroupInDisk(currentGroup) )
     		throw new ErrorSavingInDiskException();
     }
 

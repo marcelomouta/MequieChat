@@ -1,2 +1,7 @@
-10001:bfreitas:pedro
-10002:bfreitas:pedro:marcelo
+10001:user01
+g:bfreitas
+auth:user01:marcelo:pedro
+owning:user01
+uinfos:user01
+xi:user01
+notOwner:marcelo:user01

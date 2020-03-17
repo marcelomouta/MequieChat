@@ -1,6 +1,7 @@
 package mequie.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +18,15 @@ public class WriteInDisk {
 	public boolean saveSimpleString(String info) {
 		try(FileWriter writer = new FileWriter(fileToWrite, true)) {
 			writer.write(info);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public boolean saveBytes(byte[] data) {
+		try(FileOutputStream writer = new FileOutputStream(fileToWrite)) {
+			writer.write(data);
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -56,10 +66,14 @@ public class WriteInDisk {
 		}
 	}
 	
-	public String getFileLocation() throws IOException {
+	public boolean deleteFile() {
+		return this.fileToWrite.delete();
+	}
+	
+	public String getFileLocation() {
 		return this.fileToWrite.getPath();
 	}
-
+	
 	public boolean emptyFile() {
 		try (FileWriter writer = new FileWriter(fileToWrite)) {
 			return true;

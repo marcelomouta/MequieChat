@@ -1,7 +1,7 @@
 package mequie.app.skel;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import mequie.app.Mequie;
@@ -41,8 +41,13 @@ public class MequieSkel {
 		this.currentSession = s;
 	}
 	
-	public void autentication() throws AuthenticationFailedException {
-		GetUserFromSessionHandler.authenticateSession(currentSession);
+	public NetworkMessage autentication() throws AuthenticationFailedException {
+		try {
+			GetUserFromSessionHandler.authenticateSession(currentSession);
+			return new NetworkMessageResponse(NetworkMessage.Opcode.AUTH, "OK");
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(NetworkMessage.Opcode.AUTH, new ErrorSavingInDiskException());
+		}
 	}
 	
 	public NetworkMessage invoke(NetworkMessageRequest msg) {
@@ -99,14 +104,14 @@ public class MequieSkel {
 			
 			cgh.makeGrupByID(g);
 			cgh.groupAssociation();
-			//cgh.save();
+			cgh.save();
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 		
 		} catch (ErrorCreatingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorCreatingGroupException());
-//		} catch (ErrorSavingInDiskException e) {
-//			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
@@ -134,7 +139,7 @@ public class MequieSkel {
 			
 			augh.getGroupByID(g);
 			augh.addNewUserToGroup();
-			//augh.save();
+			augh.save();
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
@@ -148,6 +153,8 @@ public class MequieSkel {
 			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (Exception e) {
 			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
@@ -175,7 +182,7 @@ public class MequieSkel {
 			
 			rugh.indicateGroupID(g);
 			rugh.removeUserFromGroup();
-			//rugh.save();
+			rugh.save();
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
@@ -189,6 +196,8 @@ public class MequieSkel {
 			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (Exception e) {
 			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
@@ -252,14 +261,14 @@ public class MequieSkel {
 			
 			stmh.createMessage(m);
 			stmh.sendMessageToGroup();
-			//stmh.save();
+			stmh.save();
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 		
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-//		} catch (ErrorSavingInDiskException e) {
-//			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
@@ -272,7 +281,7 @@ public class MequieSkel {
 			// list of arguments
 			List<String> args = msg.getArguments();
 			
-			if (args.size() < 2)
+			if (args.size() < 1)
 				throw new ErrorInsufficientArgumentsException();
 			
 			String g = args.get(0);
@@ -281,20 +290,20 @@ public class MequieSkel {
 			
 			spmh.getGroupByID(g);
 			
-			byte[] photo = args.get(1).getBytes(StandardCharsets.UTF_8); // TODO: Sera a melhor maneira?! 1024 bytes de cada vez ?!
-			if (photo.length < 1)
+			byte[] photo = msg.getPhoto();
+			if (photo == null || photo.length < 1)
 				throw new ErrorInsufficientArgumentsException();
 			
-			spmh.createMessage(photo);
+			spmh.createMessage();
 			spmh.sendMessageToGroup();
-			//spmh.save();
+			spmh.save(photo);
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-//		} catch (ErrorSavingInDiskException e) {
-//			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
 		}
@@ -315,9 +324,12 @@ public class MequieSkel {
 				throw new ErrorInsufficientArgumentsException();
 			
 			cmh.indicateGroupID(g);
-			List<List<String>> msgs = cmh.getNotSeenMessages();
+			List<List<? extends Object>> msgs = cmh.getNotSeenMessages();
+			ArrayList<String> info1 = new ArrayList<>((Collection<? extends String>) msgs.get(0));
+			ArrayList<byte[]> info2 = new ArrayList<>((Collection<? extends byte[]>) msgs.get(1));
+			cmh.save();
 			
-			return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(msgs.get(0)), new ArrayList<String>(msgs.get(1)));
+			return new NetworkMessageResponse(msg.getOp(), "OK", info1, info2);
 			
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
@@ -325,6 +337,8 @@ public class MequieSkel {
 			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		}
 	}
 	
