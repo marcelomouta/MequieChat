@@ -46,7 +46,9 @@ public class LoadingFromDiskHandler {
 			String[] groupIDandUsersIDSplited = groupIDandUserID.split(":");
 			String groupID = groupIDandUsersIDSplited[0];
 			String ownerID = groupIDandUsersIDSplited[1];
-			Group g = new Group(groupID, UserCatalog.getInstance().getUserById(ownerID));
+			User owner = UserCatalog.getInstance().getUserById(ownerID);
+			Group g = owner.createGroup(groupID);
+
 			
 			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
 				String userID = groupIDandUsersIDSplited[i];
