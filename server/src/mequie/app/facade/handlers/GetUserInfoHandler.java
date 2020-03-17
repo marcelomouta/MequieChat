@@ -18,17 +18,17 @@ public class GetUserInfoHandler{
     public List<List<String>> getUserInfo() {
     	List<List<String>> groupsAndOwnedGroupsSeparated = new ArrayList<>(2);
     	
-    	// inicializacao da lista de msgs
+    	// inicializacao da lista de grupos
     	groupsAndOwnedGroupsSeparated.add(new ArrayList<>());
-    	// inicializacao da lista de photos
+    	// inicializacao da lista de grupos de que eh dono
     	groupsAndOwnedGroupsSeparated.add(new ArrayList<>());
     	
     	for (Group g : currentUser.getAllGroups()) {
-    		groupsAndOwnedGroupsSeparated.get(0).add(g.toString());
+    		groupsAndOwnedGroupsSeparated.get(0).add(g.getGoupID());
     	}
 
     	for (Group g : currentUser.getGroupsWhoUserIsLeader()) {
-    		groupsAndOwnedGroupsSeparated.get(1).add(g.toString());
+    		groupsAndOwnedGroupsSeparated.get(1).add(g.getGoupID());
     	}
     	
     	return groupsAndOwnedGroupsSeparated;

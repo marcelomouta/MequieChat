@@ -40,6 +40,10 @@ public class CommandHandler {
 	}*/
 
 	public boolean authentication(String user, String pass) {
+		if (user.contains(":")) {
+			System.out.println("Invalid userID: ':' is a reserved symbol");
+			return false;
+		}
 		try {
 			Session session = new Session(user, pass);
 			NetworkMessage res;
@@ -61,6 +65,10 @@ public class CommandHandler {
 	}
 
 	public void createGroup(String newGroupID) throws ClassNotFoundException, IOException, MequieException {
+		if (newGroupID.contains(":")) {
+			System.out.println("Invalid groupID: ':' is a reserved symbol");
+			return;
+		}
 
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.CREATE_GROUP,
 				new ArrayList(Arrays.asList(newGroupID)));
@@ -124,10 +132,16 @@ public class CommandHandler {
 
 		if(msgServer instanceof NetworkMessageResponse) {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
+
 			System.out.println("Grupos a que pertence:");
-			res.getMsgs().forEach(text -> System.out.println(text) );
-			System.out.println("Grupos a que e dono:");
-			res.getPhotos().forEach(text -> System.out.println(text) );
+			List<String> groups = res.getMsgs();
+			if (!groups.isEmpty()) {
+				groups.forEach(text -> System.out.println("\t" + text) );
+				System.out.println("Grupos a que e dono:");
+				res.getMsg2().forEach(text -> System.out.println("\t" + text) );
+			} else {
+				System.out.println("Geral");
+			}
 		}
 
 		NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
@@ -135,6 +149,10 @@ public class CommandHandler {
 	}
 
 	public void message(String groupID, String txtMsg) throws ClassNotFoundException, IOException, MequieException {
+		if (txtMsg.contains("\\0")) {
+			System.out.println("Invalid message: '\\0' is a reserved symbol");
+			return;
+		}
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
 				new ArrayList(Arrays.asList(groupID, txtMsg)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);

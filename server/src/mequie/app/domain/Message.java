@@ -1,8 +1,7 @@
 package mequie.app.domain;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -14,11 +13,11 @@ public abstract class Message {
 
 	protected User sender;
 	protected String msgID;
-	
+
 	protected Set<User> usersWhoNotReadMessages;
 
     /**
-     * 
+     *
      * @param msgID - id da mensagem
      */
 	protected Message(String msgID, User sender, List<User> userNotSeenMsg) {
@@ -28,13 +27,24 @@ public abstract class Message {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return o username do utilizador
 	 */
 	public String getMsgID() {
 		return msgID;
 	}
-	
+
+
+	/**
+	 *
+	 * @return list of ids from users that didnt read this message
+	 */
+	public List<String> getUsersWhoNotReadMessages() {
+		return usersWhoNotReadMessages.stream()
+										.map(User::getUserID)
+										.collect(Collectors.toList());
+	}
+
 	public User getSender() {
 		return sender;
 	}

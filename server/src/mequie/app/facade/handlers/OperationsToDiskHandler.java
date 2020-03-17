@@ -22,8 +22,9 @@ public class OperationsToDiskHandler {
 
 	public static boolean saveTextMessageInDisk(Message m, Group g) {
 		try {
-			WriteInDisk writer = new WriteInDisk("Data/" + g.getGoupID() + "/messages.txt");			
-			writer.saveSimpleString(m.getInfo() + "\n");
+			WriteInDisk writer = new WriteInDisk("Data/" + g.getGoupID() + "/messages.txt");
+			String unseenUsers = m.allHaveSeenMessage() ? "" : "\\0" + String.join("\\0", m.getUsersWhoNotReadMessages());
+			writer.saveSimpleString(m.getInfo() + unseenUsers + "\n");
 
 			return true;
 		} catch (IOException e) {

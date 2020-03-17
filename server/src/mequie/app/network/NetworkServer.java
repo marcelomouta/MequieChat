@@ -76,8 +76,6 @@ public class NetworkServer {
 				while(true) {
 					NetworkMessageRequest msg = (NetworkMessageRequest) inStream.readObject();
 					System.out.println(msg.toString());
-					
-					// receiveFile(msg);
 
 					NetworkMessage resp = skel.invoke(msg);
 					sendMessage(resp);

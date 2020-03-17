@@ -51,6 +51,7 @@ public class CollectMessagesHandler {
 			}
 			if (msg instanceof TextMessage) {
 				msgsToAdd.add(msg.getInfo());
+
 			} else if (msg instanceof PhotoMessage) {
 				// ir buscar os bytes
 				byte[] data = OperationsToDiskHandler.getFileContent(msg.getInfo());

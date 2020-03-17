@@ -327,6 +327,7 @@ public class MequieSkel {
 			List<List<? extends Object>> msgs = cmh.getNotSeenMessages();
 			ArrayList<String> info1 = new ArrayList<>((Collection<? extends String>) msgs.get(0));
 			ArrayList<byte[]> info2 = new ArrayList<>((Collection<? extends byte[]>) msgs.get(1));
+			cmh.save();
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK", info1, info2);
 			
@@ -336,6 +337,8 @@ public class MequieSkel {
 			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorInsufficientArgumentsException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (ErrorSavingInDiskException e) {
+			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		}
 	}
 	
