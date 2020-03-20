@@ -1,4 +1,6 @@
-grant codeBase "file:bin/*"{
+grant codeBase "file:${user.home}/git/MequieChat/-"{
 	permission java.net.SocketPermission "*:1024-", "connect,resolve";
-	permission java.io.FilePermission "${user.home}/-", "read,write";
-}
+	permission java.io.FilePermission "Data/-","write";
+	permission java.io.FilePermission "./*","read";
+	// permission java.security.AllPermission;
+};

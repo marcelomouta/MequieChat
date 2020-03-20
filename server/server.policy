@@ -1,4 +1,5 @@
-grant codeBase "file:bin/*"{
-	permission java.net.SocketPermission "*:1024-", "listen,accept";
-	permission java.io.FilePermission "${user.home}/-", "read,write,delete";
+grant codeBase "file:${user.home}/git/MequieChat/-"{
+	permission java.net.SocketPermission "127.0.0.1:1024-", "listen,accept,resolve";
+	permission java.io.FilePermission "Data/-","read,write,delete";
+	// permission java.security.AllPermission;
 };
