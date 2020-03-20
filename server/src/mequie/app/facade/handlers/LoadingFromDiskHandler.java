@@ -12,14 +12,18 @@ import mequie.app.domain.catalogs.UserCatalog;
 import mequie.utils.ReadFromDisk;
 
 /**
- * Classe para fazer load dos dados que 
- * 
+ * Classe para fazer load dos dados que estao em disco
  */
 
 public class LoadingFromDiskHandler {
 	
 	private LoadingFromDiskHandler() {}
 	
+	/***
+	 * Buscar todos os utilizadores (gravados em disco)
+	 * Vai buscar a informacao a: passwd.txt
+	 * @return Lista de utilizadores criados a partir dos dados do disco
+	 */
 	private static List<User> getAllUsersFromDisk() throws IOException {
 		ReadFromDisk reader = new ReadFromDisk("Data/passwd.txt");
 		
@@ -36,6 +40,11 @@ public class LoadingFromDiskHandler {
 		return users;
 	}
 	
+	/**
+	 * Buscar todos os grupos (gravados em disco)
+	 * Vai buscar a informacao a: groups.txt
+	 * @return Lista de grupos criados a partir dos dados do disco
+	 */
 	private static List<Group> getAllGroupsFromDisk() throws IOException, Exception {
 		ReadFromDisk reader = new ReadFromDisk("Data/group.txt");
 		
@@ -60,6 +69,13 @@ public class LoadingFromDiskHandler {
 		return groups;
 	}
 	
+	/**
+	 * Buscar todas as mensagens enviadas em todos os grupos (gravadas em disco)
+	 * Vai buscar a informacao a 2 ficheiros:
+	 *     messages.txt: contem todas as mensagens de texto
+	 *     messages_users.txt: contem quais os utilizadores que faltam ler para a msg
+	 * @return uma lista de mensagens criadas a partir dos dados do disco
+	 */
 	private static List<Message> getAllMessagesFromDisk(Group g) throws IOException {
 		ReadFromDisk reader = new ReadFromDisk("Data/group" + g.getGoupID() + "_msgs.txt");
 		
@@ -76,6 +92,9 @@ public class LoadingFromDiskHandler {
 		return msgs;
 	}
 	
+	/**
+	 * Faz o load para memoria de todo o sistema em disco
+	 */
 	public static void load() throws IOException, Exception {
 		List<User> users = getAllUsersFromDisk();
 		for (User u : users) {
@@ -90,13 +109,5 @@ public class LoadingFromDiskHandler {
 		
 		// load das mensagens
 	}
-	
-	
-	
-//	public Optional<Session> authenticate(String username, String password) {
-//		Session maybeSession = new Session(username, password);
-//		if (maybeSession.getUser() == null) return Optional.empty();
-//		return Optional.of(maybeSession);
-//	}
 
 }
