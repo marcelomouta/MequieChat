@@ -87,10 +87,10 @@ public class Mequie {
 					cHandler.remove(command[1],command[2]);
 					break;
 				case "ginfo":
-					System.out.println(cHandler.groupInfo(command[1]));
+					cHandler.groupInfo(command[1]);
 					break;
 				case "uinfo":
-					System.out.println(cHandler.userInfo());
+					cHandler.userInfo();
 					break;
 				case "msg":
 					cHandler.message(command[1],command[2]);
@@ -99,7 +99,7 @@ public class Mequie {
 					cHandler.photo(command[1],command[2]);
 					break;
 				case "collect":
-					System.out.println(cHandler.collect(command[1]));
+					cHandler.collect(command[1]);
 					break;
 				case "history":
 					cHandler.history(command[1]);

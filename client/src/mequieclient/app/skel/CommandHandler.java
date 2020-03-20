@@ -76,9 +76,7 @@ public class CommandHandler {
 
 		checkIfMessageIsAnError(msgServer);
 
-		if(msgServer instanceof NetworkMessageResponse) {
-			System.out.println(((NetworkMessageResponse) msgServer).getResult());
-		}
+		printResult(msgServer);
 	}
 
 
@@ -90,9 +88,7 @@ public class CommandHandler {
 
 		checkIfMessageIsAnError(msgServer);
 
-		if(msgServer instanceof NetworkMessageResponse) {
-			System.out.println(((NetworkMessageResponse) msgServer).getResult());
-		}
+		printResult(msgServer);
 	}
 
 	public void remove(String userID, String groupID) throws ClassNotFoundException, IOException, MequieException {
@@ -102,12 +98,10 @@ public class CommandHandler {
 
 		checkIfMessageIsAnError(msgServer);
 
-		if(msgServer instanceof NetworkMessageResponse) {
-			System.out.println(((NetworkMessageResponse) msgServer).getResult());
-		}
+		printResult(msgServer);
 	}
 
-	public String groupInfo(String groupID) throws ClassNotFoundException, IOException, MequieException {
+	public void groupInfo(String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_GROUP_INFO,
 				new ArrayList(Arrays.asList(groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -118,12 +112,9 @@ public class CommandHandler {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
 			res.getMsgs().forEach(text -> System.out.println(text) );
 		}
-
-		NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
-		return msgResponse.getResult();
 	}
 
-	public String userInfo() throws ClassNotFoundException, IOException, MequieException {
+	public void userInfo() throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_USER_INFO,
 				new ArrayList());
 		NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -143,9 +134,6 @@ public class CommandHandler {
 				System.out.println("Geral");
 			}
 		}
-
-		NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
-		return msgResponse.getResult();
 	}
 
 	public void message(String groupID, String txtMsg) throws ClassNotFoundException, IOException, MequieException {
@@ -153,15 +141,14 @@ public class CommandHandler {
 			System.out.println("Invalid message: '\\0' is a reserved symbol");
 			return;
 		}
+		
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
 				new ArrayList(Arrays.asList(groupID, txtMsg)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
 
-		if(msgServer instanceof NetworkMessageResponse) {
-			System.out.println(((NetworkMessageResponse) msgServer).getResult());
-		}
+		printResult(msgServer);
 	}
 
 	public void photo(String groupID, String fileName) throws IOException, ClassNotFoundException, MequieException {
@@ -177,12 +164,10 @@ public class CommandHandler {
 
 		checkIfMessageIsAnError(msgServer);
 
-		if(msgServer instanceof NetworkMessageResponse) {
-			System.out.println(((NetworkMessageResponse) msgServer).getResult());
-		}
+		printResult(msgServer);
 	}
 
-	public String collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
+	public void collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
 				new ArrayList(Arrays.asList(groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -201,11 +186,9 @@ public class CommandHandler {
                 writePhoto(photo, path);
 			}
 		}
-
-		return msgResponse.getResult();
 	}
 
-	public String history(String groupID) throws MequieException, ClassNotFoundException, IOException {
+	public void history(String groupID) throws MequieException, ClassNotFoundException, IOException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.MESSAGE_HISTORY_OF_GROUP,
 				new ArrayList(Arrays.asList(groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -216,15 +199,18 @@ public class CommandHandler {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
 			res.getMsgs().forEach(text -> System.out.println(text) );
 		}
-
-		NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer;
-		return msgResponse.getResult();
 	}    
 
 	private void checkIfMessageIsAnError(NetworkMessage msgServer) throws MequieException {
 		if(msgServer instanceof NetworkMessageError) {
 			NetworkMessageError msgError = (NetworkMessageError) msgServer;
 			throw msgError.getException();
+		}
+	}
+	
+	private void printResult(NetworkMessage msgServer) {
+		if(msgServer instanceof NetworkMessageResponse) {
+			System.out.println(((NetworkMessageResponse) msgServer).getResult());
 		}
 	}
 
