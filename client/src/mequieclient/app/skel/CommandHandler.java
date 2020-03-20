@@ -137,10 +137,6 @@ public class CommandHandler {
 	}
 
 	public void message(String groupID, String txtMsg) throws ClassNotFoundException, IOException, MequieException {
-		if (txtMsg.contains("\\0")) {
-			System.out.println("Invalid message: '\\0' is a reserved symbol");
-			return;
-		}
 		
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
 				new ArrayList(Arrays.asList(groupID, txtMsg)));
