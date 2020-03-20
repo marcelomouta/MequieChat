@@ -1,4 +1,4 @@
-10001:user01
+10001:user01:bfreitas
 g:bfreitas
 auth:user01:marcelo:pedro
 owning:user01
