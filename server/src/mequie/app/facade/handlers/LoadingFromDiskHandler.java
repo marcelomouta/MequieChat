@@ -67,9 +67,9 @@ public class LoadingFromDiskHandler {
 		List<Message> msgs = new ArrayList<>();
 		
 		for (String msgIDandText : msgsIDandTexts) {
-			String[] msgIDandTextSplited = msgIDandText.split(":");
+			String[] msgIDandTextSplited = msgIDandText.split(":",3);
 			String msgID = msgIDandTextSplited[0];
-			String text = msgIDandTextSplited[1];			
+			String text = msgIDandTextSplited[1];
 //			msgs.add(new Message(msgID, text));
 		}
 		
