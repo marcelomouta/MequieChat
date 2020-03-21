@@ -20,7 +20,8 @@ public class CollectMessagesHandler {
 	private User currentUser;
 	private Group currentGroup;
 
-	private List<Message> toRemove = new ArrayList<>();
+	private List<Message> readMsgs = new ArrayList<>();
+	private List<PhotoMessage> photosToRemove = new ArrayList<>();
 
 	public CollectMessagesHandler(Session s) {
 		currentUser = GetUserFromSessionHandler.getUserFromSession(s);
@@ -43,21 +44,22 @@ public class CollectMessagesHandler {
 		// inicializacao da lista de photos
 		List<byte[]> photosToAdd = new ArrayList<>();
 
-		List<Message> msgs = currentGroup.collectMessagesUnseenByUser(currentUser);
+		readMsgs = currentGroup.collectMessagesUnseenByUser(currentUser);
 
-		for(Message msg : msgs) {
-			if (msg.allHaveSeenMessage()) {
-				currentGroup.moveToHistory(msg);
-				toRemove.add(msg);		
-			}
+		for(Message msg : readMsgs) {
+
 			if (msg instanceof TextMessage) {
 				msgsToAdd.add(msg.getInfo());
 
 			} else if (msg instanceof PhotoMessage) {
+				
 				// ir buscar os bytes
 				byte[] data = OperationsToDiskHandler.getFileContent(Configuration.getPhotoMsgPathName(currentGroup.getGoupID(), msg.getMsgID()));
-				if (data != null)
+				if (data != null) {
 					photosToAdd.add(data);
+					if (msg.allHaveSeenMessage())
+						photosToRemove.add((PhotoMessage) msg);
+				}
 			}
 		}
 		msgsAndPhotosSeparated.add(msgsToAdd);
@@ -67,7 +69,10 @@ public class CollectMessagesHandler {
 	}
 
 	public void save() throws ErrorSavingInDiskException {
-		if ( !OperationsToDiskHandler.updateSeenMessages(toRemove, currentGroup) )
+		if ( !OperationsToDiskHandler.updateSeenMessages(readMsgs, currentGroup, currentUser) )
+			throw new ErrorSavingInDiskException();
+		
+		if ( !OperationsToDiskHandler.removeSeenPhotos(photosToRemove, currentGroup) )
 			throw new ErrorSavingInDiskException();
 	}
 }

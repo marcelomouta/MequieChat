@@ -37,7 +37,7 @@ public class OperationsToDiskHandler {
 	}
 
 	public static boolean savePhotoMessageInDisk(byte[] data, PhotoMessage m, Group g) {
-		//TODO
+
 		try {
 			// write in messageInfo file
 			saveMessageInfoInDisk(m, Configuration.PHOTO_MSG_FLAG ,g);
@@ -149,7 +149,7 @@ public class OperationsToDiskHandler {
 		}
 	}
 
-	public static boolean updateSeenMessages(List<Message> toRemoveList, Group g) {
+	public static boolean updateSeenMessages(List<Message> toRemoveList, Group g, User u) {
 		//TODO
 		try {
 			for (Message toRemove : toRemoveList) {
@@ -167,9 +167,7 @@ public class OperationsToDiskHandler {
 
 				} else if (toRemove instanceof PhotoMessage) {
 					// ir buscar os bytes
-					WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), toRemove.getMsgID()));
-					if (!writer.deleteFile())
-						return false;
+					
 				}
 			}
 			
@@ -177,6 +175,20 @@ public class OperationsToDiskHandler {
 		} catch (IOException e) {
 			return false;
 		}
+	}
+
+	public static boolean removeSeenPhotos(List<PhotoMessage> photosToRemove, Group g) {
+		try {
+			WriteInDisk writer;
+			for (PhotoMessage photo : photosToRemove) {
+				 writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), photo.getMsgID()));
+				 writer.deleteFile();
+			}
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+
 	}
 
 }

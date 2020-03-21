@@ -133,6 +133,9 @@ public class Group {
 			if (!m.userHasReadMessage(u)) {
 				m.messageReadByUser(u);
 				msgs.add(m);
+				
+				if (m.allHaveSeenMessage())
+					moveToHistory(m);
 			}
 		}
 		return msgs;
