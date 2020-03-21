@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * 
  * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
  *  
- * Esta classe representa um utilizador do sistema.
+ * Esta classe representa uma mensagem enviada por um utilizador.
  */
 public abstract class Message {
 	// generic data about the message
@@ -95,6 +95,10 @@ public abstract class Message {
 		}
 	}
 	
+	/**
+	 *
+	 * @return info about the message
+	 */
 	public abstract String getInfo();
 
 	@Override
