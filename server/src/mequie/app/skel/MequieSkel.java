@@ -274,7 +274,7 @@ public class MequieSkel {
 		}
 	}
 	
-	private NetworkMessage sendPhoto(NetworkMessageRequest msg) {		
+	private NetworkMessage sendPhoto(NetworkMessageRequest msg) {	
 		try {
 			SendPhotoMessageHandler spmh = system.getSendPhotoMessageHandler(currentSession);
 			

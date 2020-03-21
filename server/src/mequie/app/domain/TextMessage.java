@@ -19,7 +19,7 @@ public class TextMessage extends Message {
 
 	@Override
 	public String toString() {
-		return msgID + ":" + sender.toString() + ": " + text;
+		return getMsgID() + ":" + sender.toString() + ": " + text;
 	}
 
 }

@@ -137,9 +137,9 @@ public class Group {
 		return new TextMessage(getGoupID() + generateMsgID(), currentUser, new ArrayList<>(users), text);
 	}
 	
-	public PhotoMessage createPhotoMessage(User owner, String path) {
+	public PhotoMessage createPhotoMessage(User owner) {
 		String id = getGoupID() + generateMsgID();
-		return new PhotoMessage(id, new ArrayList<>(users), path + id);
+		return new PhotoMessage(id, new ArrayList<>(users));
 	}
 	
 	private String generateMsgID() {

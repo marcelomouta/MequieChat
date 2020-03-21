@@ -1,7 +1,7 @@
 package mequie.app.facade.handlers;
 
 import mequie.app.domain.Group;
-import mequie.app.domain.Message;
+import mequie.app.domain.PhotoMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequieclient.app.facade.Session;
@@ -14,7 +14,7 @@ public class SendPhotoMessageHandler{
     
     private Group currentGroup;
     
-    private Message currentMsg;
+    private PhotoMessage currentMsg;
 
     public SendPhotoMessageHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
@@ -27,7 +27,7 @@ public class SendPhotoMessageHandler{
     }
     
     public void createMessage() {
-    	currentMsg = currentGroup.createPhotoMessage(currentUser, "Data/" + currentGroup.getGoupID() + "/");
+    	currentMsg = currentGroup.createPhotoMessage(currentUser);
     }
     
     public void sendMessageToGroup() {
@@ -35,7 +35,7 @@ public class SendPhotoMessageHandler{
     }
     
     public void save(byte[] photo) throws ErrorSavingInDiskException {
-    	if ( !OperationsToDiskHandler.savePhotoMessageInDisk(photo, currentMsg.getInfo()) )
+    	if ( !OperationsToDiskHandler.savePhotoMessageInDisk(photo, currentMsg, currentGroup) )
     		throw new ErrorSavingInDiskException();
     }
 

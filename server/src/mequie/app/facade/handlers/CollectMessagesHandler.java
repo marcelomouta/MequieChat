@@ -9,6 +9,7 @@ import mequie.app.domain.PhotoMessage;
 import mequie.app.domain.TextMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
+import mequie.utils.Configuration;
 import mequieclient.app.facade.Session;
 import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 import mequieclient.app.facade.exceptions.NotExistingGroupException;
@@ -54,7 +55,7 @@ public class CollectMessagesHandler {
 
 			} else if (msg instanceof PhotoMessage) {
 				// ir buscar os bytes
-				byte[] data = OperationsToDiskHandler.getFileContent(msg.getInfo());
+				byte[] data = OperationsToDiskHandler.getFileContent(Configuration.getPhotoMsgPathName(currentGroup.getGoupID(), msg.getMsgID()));
 				if (data != null)
 					photosToAdd.add(data);
 			}

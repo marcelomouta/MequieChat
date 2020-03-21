@@ -3,9 +3,11 @@ package mequie.main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import mequie.app.Mequie;
 import mequie.app.domain.Group;
+import mequie.app.domain.TextMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
@@ -75,6 +77,8 @@ public class ClientExample {
 			File f = new File("pikachu.jpg");
 //			byte[] file = msg.getArguments().get(0).getBytes(StandardCharsets.UTF_8);
 //			SaveToDiskHandler.savePhotoMessageInDisk("pikachu", data, new Group("g1", new User("user01", "passwd")));
+			
+			//OperationsToDiskHandler.saveTextMessageInDisk(new TextMessage("123", new User("user01", "passwd"), new ArrayList(), idG), "texto teste");
 			
 			
 		} catch (FileNotFoundException e) {

@@ -22,13 +22,10 @@ public class OperationsToDiskHandler {
 		try {
 			
 			// write in messageInfo file
-			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
-			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
-			String messageInfo = String.join(":", m.getMsgID(), Configuration.TXT_MSG_FLAG) + unseenUsers;
-			writer.saveSimpleString(messageInfo);
+			saveMessageInfoInDisk(m, Configuration.TXT_MSG_FLAG ,g);
 			
 			// write text message content
-			writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
+			WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
 			String messageContent = m.getInfo() + "\n";
 			writer.saveSimpleString(messageContent);
 			
@@ -39,11 +36,14 @@ public class OperationsToDiskHandler {
 		}
 	}
 
-	public static boolean savePhotoMessageInDisk(byte[] data, String path) {
+	public static boolean savePhotoMessageInDisk(byte[] data, PhotoMessage m, Group g) {
 		//TODO
 		try {
-			WriteInDisk writer = new WriteInDisk(path);		
-			writer.saveBytes(data); //esta a escrever a path e nao o conteudo em si REVER
+			// write in messageInfo file
+			saveMessageInfoInDisk(m, Configuration.PHOTO_MSG_FLAG ,g);
+			
+			WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), m.getMsgID()));
+			writer.saveBytes(data);
 
 			return true;
 		} catch (IOException e) {
@@ -51,6 +51,18 @@ public class OperationsToDiskHandler {
 		}
 	}
 
+	/**
+	 * @param m message to write in disk
+	 * @param flag message type
+	 */
+	private static void saveMessageInfoInDisk(Message m, String flag, Group g) throws IOException {
+		
+		WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+		String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
+		String messageInfo = String.join(":", m.getMsgID(), flag) + unseenUsers + "\n";
+		writer.saveSimpleString(messageInfo);
+	}
+	
 	public static boolean saveUserInDisk(User u) {
 		try {
 			WriteInDisk write = new WriteInDisk(Configuration.getPasswordPathName());
@@ -155,7 +167,7 @@ public class OperationsToDiskHandler {
 
 				} else if (toRemove instanceof PhotoMessage) {
 					// ir buscar os bytes
-					WriteInDisk writer = new WriteInDisk(toRemove.getInfo());
+					WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), toRemove.getMsgID()));
 					if (!writer.deleteFile())
 						return false;
 				}

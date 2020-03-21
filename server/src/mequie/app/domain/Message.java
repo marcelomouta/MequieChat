@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public abstract class Message {
 
 	protected User sender;
-	protected String msgID;
+	private String msgID;
 
 	protected Set<User> usersWhoNotReadMessages;
 
