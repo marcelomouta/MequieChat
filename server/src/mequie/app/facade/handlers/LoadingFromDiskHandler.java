@@ -80,59 +80,66 @@ public class LoadingFromDiskHandler {
 	 * @param g o grupo que iremos fazer o load das mensagens
 	 */
 	private static void getAllMessagesFromDisk(Group g) throws IOException {
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
-		List<String> msgsIDandTexts = reader.readAllLines();
 		
-		reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
-		List<String> allMsgsIDandUsers = reader.readAllLines();
-		
-		List<Message> msgs = new ArrayList<>();
-		
-		// text messages more info iterator
-		Iterator<String> it1 = msgsIDandTexts.iterator();
 		// all messages id and user who not read the message
-		Iterator<String> it2 = allMsgsIDandUsers.iterator();
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+		List<String> allMsgsIDandUsers = reader.readAllLines();		
+		Iterator<String> it = allMsgsIDandUsers.iterator();
 
-		while (it2.hasNext()) {
-			String[] msgIDandUsersSplited = it2.next().split(":");
+		// text messages content
+		reader = new ReadFromDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
+		List<String> msgsIDandTexts = reader.readAllLines();
+		Iterator<String> itTxt = msgsIDandTexts.iterator();
+
+		String lastMsgID = null;
+		
+		while (it.hasNext()) {
+			String[] msgIDandUsersSplited = it.next().split(":");
+			
+			Message m = null;
+			String msgID = msgIDandUsersSplited[0];
 			String flag = msgIDandUsersSplited[1];
+			
+			// users who havent read the message yet
+			List<User> usersIDs = getMsgUnseenUsers(msgIDandUsersSplited);
+			
 			if (flag.equals(Configuration.TXT_MSG_FLAG)) { // is a text message
-				if (it1.hasNext()) {
-					//get first part: msgId, sender and text
-					String[] msgIDandTextSplited = it1.next().split(":",3);
-					String msgID = msgIDandTextSplited[0];
+				if (itTxt.hasNext()) {
+					
+					//get txt msg contents: sender and text
+					String[] msgIDandTextSplited = itTxt.next().split(":",3);
+					
 					User sender = UserCatalog.getInstance().getUserById(msgIDandTextSplited[1]);
 					String text = msgIDandTextSplited[2];
 					
-					// get second part: users who not read the message
-					List<User> usersIDs = new ArrayList<>();
-					for (int i = 2; i < msgIDandUsersSplited.length; i++) {
-						User u = UserCatalog.getInstance().getUserById(msgIDandUsersSplited[i]);
-						if (u != null)
-							usersIDs.add(u);
-					}
 					
-					TextMessage m = new TextMessage(msgID, sender, usersIDs, text);
-					// add to group g
-					addMessageToGroup(m, g);
+					m = new TextMessage(msgID, sender, usersIDs, text);
 				}
 			} else if (flag.equals(Configuration.PHOTO_MSG_FLAG)) { // is a photo message
-				//get first part: msgId, path
-				String msgID = msgIDandUsersSplited[0];
 				
-				// get second part: users who not read the message
-				List<User> usersIDs = new ArrayList<>();
-				for (int i = 2; i < msgIDandUsersSplited.length; i++) {
-					User u = UserCatalog.getInstance().getUserById(msgIDandUsersSplited[i]);
-					if (u != null)
-						usersIDs.add(u);
-				}
-				
-				PhotoMessage m = new PhotoMessage(msgID, usersIDs);
-				// add to group g
-				addMessageToGroup(m, g);
+				m = new PhotoMessage(msgID, usersIDs);
 			}
+			
+			// add to group g
+			if (m != null)
+				addMessageToGroup(m, g);
+				lastMsgID = msgID;
+			
 		}
+		
+		int lastMsgIDNumber = Integer.parseInt(lastMsgID.replace(g.getGoupID(), ""));
+		g.setMsgNumberID(lastMsgIDNumber);
+	}
+	
+	
+	private static List<User> getMsgUnseenUsers(String[] msgIDandUsersSplited) {
+		List<User> usersIDs = new ArrayList<>();
+		for (int i = 2; i < msgIDandUsersSplited.length; i++) {
+			User u = UserCatalog.getInstance().getUserById(msgIDandUsersSplited[i]);
+			if (u != null)
+				usersIDs.add(u);
+		}
+		return usersIDs;
 	}
 	
 	/**

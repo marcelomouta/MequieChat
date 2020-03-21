@@ -34,6 +34,7 @@ public class Group {
 		this.owner = owner;
 		this.users.add(owner);
 	}
+	
 
 	public String getGoupID() {
 		return this.id;
@@ -51,6 +52,10 @@ public class Group {
 		return new ArrayList<>(this.users);
 	}
 
+	public void setMsgNumberID(int msgNumberID) {
+		this.msgNumberID = msgNumberID;
+	}	
+	
 	public boolean addUserByID(User userToAdd) throws Exception {
 		boolean doneCorrectly = this.users.add(userToAdd);
 		
