@@ -1,6 +1,6 @@
-grant codeBase "file:${user.home}/SegC/MequieChat/-"{ // codeBase "file:${user.home}/pasta/MequieChat/-"
+grant codeBase "file:${user.home}/git/MequieChat/-"{ // codeBase "file:${user.home}/pasta/MequieChat/-"
 	permission java.net.SocketPermission "*:1024-", "connect,resolve";
-	permission java.io.FilePermission "Data/-","write";
-	permission java.io.FilePermission "./*","read";
+	permission java.io.FilePermission "ClientData/-","write,read";
+	permission java.io.FilePermission "./*","read"; //send photos in root folder
 	// permission java.security.AllPermission;
 };

@@ -267,6 +267,8 @@ public class MequieSkel {
 		
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
+		} catch (UserNotHavePermissionException e) {
+			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorSavingInDiskException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {
@@ -302,6 +304,8 @@ public class MequieSkel {
 			
 		} catch (NotExistingGroupException e) {
 			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
+		} catch (UserNotHavePermissionException e) {
+			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
 		} catch (ErrorSavingInDiskException e) {
 			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
 		} catch (ErrorInsufficientArgumentsException e) {

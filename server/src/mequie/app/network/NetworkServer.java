@@ -89,12 +89,12 @@ public class NetworkServer {
 				} catch (IOException e1) {
 					// Do nothing because finally will be called
 				}
-			} catch (Exception e) {
+			} catch (ClassNotFoundException e) {
+				System.out.println("Invalid Message received");
+			} catch (IOException e) {
 				// Do nothing because finally will be called
-				e.printStackTrace();
 			} finally {
 				disconnect();
-				this.interrupt();
 			}
 		}
 		

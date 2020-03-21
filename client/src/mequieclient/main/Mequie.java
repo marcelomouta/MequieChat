@@ -1,6 +1,5 @@
 package mequieclient.main;
 
-
 import mequieclient.app.facade.exceptions.MequieException;
 import mequieclient.app.network.NetworkClient;
 import mequieclient.app.skel.CommandHandler;

@@ -47,6 +47,8 @@ public class CollectMessagesHandler {
 		readMsgs = currentGroup.collectMessagesUnseenByUser(currentUser);
 
 		for(Message msg : readMsgs) {
+			if (msg.allHaveSeenMessage())
+				currentGroup.moveToHistory(msg);
 
 			if (msg instanceof TextMessage) {
 				msgsToAdd.add(msg.getInfo());

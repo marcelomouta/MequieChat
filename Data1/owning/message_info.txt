@@ -1,5 +1,6 @@
 owning0:t
-owning1:p
+owning1:t
 owning2:t
 owning3:t
 owning4:t
+owning5:p

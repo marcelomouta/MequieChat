@@ -16,38 +16,45 @@ import mequie.utils.ReadFromDisk;
 
 public class OperationsToDiskHandler {
 
+	private static Object groupMutex = new Object();
+	private static Object texMessageMutex = new Object();
+	private static Object photoMessageMutex = new Object();
+	private static Object messageInfoMutex = new Object();
+
 	private OperationsToDiskHandler() {}
 
 	public static boolean saveTextMessageInDisk(TextMessage m, Group g) {
-		try {
-			
-			// write in messageInfo file
-			saveMessageInfoInDisk(m, Configuration.TXT_MSG_FLAG ,g);
-			
-			// write text message content
-			WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
-			String messageContent = m.getInfo() + "\n";
-			writer.saveSimpleString(messageContent);
-			
+		synchronized(texMessageMutex) {
+			try {
+				// write in messageInfo file
+				saveMessageInfoInDisk(m, Configuration.TXT_MSG_FLAG ,g);
 
-			return true;
-		} catch (IOException e) {
-			return false;
+				// write text message content
+				WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
+				String messageContent = m.getInfo() + "\n";
+				writer.saveSimpleString(messageContent);
+
+
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
 		}
 	}
 
 	public static boolean savePhotoMessageInDisk(byte[] data, PhotoMessage m, Group g) {
+		synchronized(photoMessageMutex) {
+			try {
+				// write in messageInfo file
+				saveMessageInfoInDisk(m, Configuration.PHOTO_MSG_FLAG ,g);
 
-		try {
-			// write in messageInfo file
-			saveMessageInfoInDisk(m, Configuration.PHOTO_MSG_FLAG ,g);
-			
-			WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), m.getMsgID()));
-			writer.saveBytes(data);
+				WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), m.getMsgID()));
+				writer.saveBytes(data);
 
-			return true;
-		} catch (IOException e) {
-			return false;
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
 		}
 	}
 
@@ -56,14 +63,15 @@ public class OperationsToDiskHandler {
 	 * @param flag message type
 	 */
 	private static void saveMessageInfoInDisk(Message m, String flag, Group g) throws IOException {
-		
-		WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
-		String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
-		String messageInfo = String.join(":", m.getMsgID(), flag) + unseenUsers + "\n";
-		writer.saveSimpleString(messageInfo);
+		synchronized(messageInfoMutex) {
+			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
+			String messageInfo = String.join(":", m.getMsgID(), flag) + unseenUsers + "\n";
+			writer.saveSimpleString(messageInfo);
+		}
 	}
-	
-	public static boolean saveUserInDisk(User u) {
+
+	public static synchronized boolean saveUserInDisk(User u) {
 		try {
 			WriteInDisk write = new WriteInDisk(Configuration.getPasswordPathName());
 			write.saveTwoStringsSeparatedBy(u.getUserID(), u.getPassword() + "\n", ":");
@@ -75,66 +83,63 @@ public class OperationsToDiskHandler {
 	}
 
 	public static boolean saveGroupInDisk(Group g) {
-		try {
-			WriteInDisk write = new WriteInDisk(Configuration.getGroupPathName());
-			write.saveTwoStringsSeparatedBy(g.getGoupID(), g.getOwner().getUserID() + "\n", ":");
-
-			return true;
-		} catch (IOException e) {
-			return false;
+		synchronized(groupMutex) {
+			try {
+				WriteInDisk write = new WriteInDisk(Configuration.getGroupPathName());
+				write.saveTwoStringsSeparatedBy(g.getGoupID(), g.getOwner().getUserID() + "\n", ":");
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
 		}
 	}
 
 	public static boolean saveUserToGroupInDisk(User u, Group g) {
-		try {
-			// ler as linhas e ver o grupo que foi alterado e adicionar ao grupo
-			ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
-			List<String> lines = reader.readAllLines();
+		synchronized(groupMutex) {
+			try {
+				// ler as linhas e ver o grupo que foi alterado e adicionar ao grupo
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
+				List<String> lines = reader.readAllLines();
 
-			List<String> toWrite = new ArrayList<>();
+				List<String> toWrite = new ArrayList<>();
 
-			lines.stream().forEach(s -> {
-				if ( s.split(":")[0].equals(g.getGoupID()) )
-					toWrite.add(s + ":" + u.getUserID());
-				else 
-					toWrite.add(s);
-			});
+				lines.stream().forEach(s -> {
+					if ( s.split(":")[0].equals(g.getGoupID()) )
+						toWrite.add(s + ":" + u.getUserID());
+					else 
+						toWrite.add(s);
+				});
 
-			WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
-			writer.emptyFile();
-			writer.saveListOfStringsSeparatedBy(toWrite, "\n");
-			writer.saveSimpleString("\n");
-
-			return true;
-		} catch (IOException e) {
-			return false;
+				WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
+				writer.emptyFile();
+				writer.saveListOfStringsSeparatedBy(toWrite, "\n");
+				writer.saveSimpleString("\n");
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
 		}
 	}
 
 	public static boolean saveRemoveUserFromGroup(User u, Group g) {
-		try {
-			// ler as linhas e ver o grupo que foi alterado e remover do disco
-			ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
-			List<String> lines = reader.readAllLines();
+		synchronized(groupMutex) {
+			try {
+				// ler as linhas e ver o grupo que foi alterado e remover do disco
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
+				List<String> lines = reader.readAllLines();
 
-			List<String> toWrite = new ArrayList<>();
+				List<String> toWrite = replaceStringInList(lines, g.getGoupID(), ":" + u.getUserID(), "");
 
-			lines.stream().forEach(s -> {
-				if ( s.split(":")[0].equals(g.getGoupID()) )
-					toWrite.add(s.replaceAll(":" + u.getUserID(), ""));
-				else
-					toWrite.add(s);
-			});
+				// depois escrever a alteracao ao grupo no disco
+				WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
+				writer.emptyFile();
+				writer.saveListOfStringsSeparatedBy(toWrite, "\n");
+				writer.saveSimpleString("\n");
 
-			// depois escrever a alteracao ao grupo no disco
-			WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
-			writer.emptyFile();
-			writer.saveListOfStringsSeparatedBy(toWrite, "\n");
-			writer.saveSimpleString("\n");
-
-			return true;
-		} catch (IOException e) {
-			return false;
+				return true;
+			} catch (IOException e) {
+				return false;
+			}
 		}
 	}
 
@@ -153,36 +158,52 @@ public class OperationsToDiskHandler {
 		//TODO
 		try {
 			for (Message toRemove : toRemoveList) {
-				if (toRemove instanceof TextMessage) {
-					ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
-					List<String> lines = reader.readAllLines();
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+				List<String> lines = reader.readAllLines();
 
-					 List<String> toWrite = lines.stream().filter(s -> !s.split(":")[0].equals(toRemove.getMsgID()))
-							 								.collect(Collectors.toList());
+				List<String> toWrite = replaceStringInList(lines, toRemove.getMsgID(), ":" + u.getUserID(), "");
 
-					// depois escrever a alteracao ao grupo no disco
-					WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
-					writer.emptyFile();
-					writer.saveListOfStringsSeparatedBy(toWrite, "\n");
-
-				} else if (toRemove instanceof PhotoMessage) {
-					// ir buscar os bytes
-					
-				}
+				// depois escrever a alteracao ao grupo no disco
+				WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+				writer.emptyFile();
+				writer.saveListOfStringsSeparatedBy(toWrite, "\n");
+				writer.saveSimpleString("\n");
 			}
-			
+
 			return true;
 		} catch (IOException e) {
 			return false;
 		}
 	}
 
+	/**
+	 * 
+	 * @param lines uma lista de Strings a verificar
+	 * @param eq o primeiro elemento da lista a encontrar
+	 * @param toReplace a String a fazer replace
+	 * @param newString a nova String para fazer o replace
+	 * @return a nova lista de Strings que ira ter substituido a String toReplace por
+	 * 			newString SE o primeiro elemento da String for igual ah String eq
+	 */
+	private static List<String> replaceStringInList(List<String> lines, String eq, String toReplace, String newString) {
+		List<String> toWrite = new ArrayList<>();
+
+		lines.stream().forEach(s -> {
+			if ( s.split(":")[0].equals(eq) )
+				toWrite.add(s.replaceAll(toReplace, newString));
+			else
+				toWrite.add(s);
+		});
+
+		return toWrite;
+	}
+
 	public static boolean removeSeenPhotos(List<PhotoMessage> photosToRemove, Group g) {
 		try {
 			WriteInDisk writer;
 			for (PhotoMessage photo : photosToRemove) {
-				 writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), photo.getMsgID()));
-				 writer.deleteFile();
+				writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), photo.getMsgID()));
+				writer.deleteFile();
 			}
 			return true;
 		} catch (IOException e) {

@@ -7,6 +7,7 @@ import mequie.app.domain.catalogs.GroupCatalog;
 import mequieclient.app.facade.Session;
 import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 import mequieclient.app.facade.exceptions.NotExistingGroupException;
+import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
 public class SendPhotoMessageHandler{
 
@@ -26,7 +27,10 @@ public class SendPhotoMessageHandler{
             throw new NotExistingGroupException();
     }
     
-    public void createMessage() {
+    public void createMessage() throws UserNotHavePermissionException {
+    	if (!currentGroup.getOwner().equals(currentUser))
+    		throw new UserNotHavePermissionException();
+    	
     	currentMsg = currentGroup.createPhotoMessage(currentUser);
     }
     
