@@ -9,6 +9,8 @@ public class Configuration {
 	private static final String PASSWDFILE = "passwd.txt";
 	private static final String MSG_USERS_FILENAME = "messages_users.txt";
 	private static final String TEXT_MSGS_FILENAME = "text_messages.txt";
+	private static final String TXT_MSG_FLAG = "t";
+	private static final String PHOTO_MSG_FLAG = "p";
 	
 	public static String getMessageUsersPathName(String groupID) {
 		return DATAPATH + groupID + MSG_USERS_FILENAME;
