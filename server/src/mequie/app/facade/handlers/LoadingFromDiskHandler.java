@@ -128,7 +128,7 @@ public class LoadingFromDiskHandler {
 						usersIDs.add(u);
 				}
 				
-				PhotoMessage m = new PhotoMessage(msgID, usersIDs, "GETDOCONFIGURATIONS"); //TODO sender
+				PhotoMessage m = new PhotoMessage(msgID, usersIDs, "GETDOCONFIGURATIONS");
 				// add to group g
 				addMessageToGroup(m, g);
 			}
