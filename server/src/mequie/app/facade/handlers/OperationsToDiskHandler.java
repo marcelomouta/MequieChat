@@ -2,7 +2,9 @@ package mequie.app.facade.handlers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import mequie.app.domain.Group;
@@ -17,44 +19,40 @@ import mequie.utils.ReadFromDisk;
 public class OperationsToDiskHandler {
 
 	private static Object groupMutex = new Object();
-	private static Object texMessageMutex = new Object();
-	private static Object photoMessageMutex = new Object();
-	private static Object messageInfoMutex = new Object();
+	private static Map<String, Object> messageInfoMutexes = new HashMap<>();
+	private static Map<String, Object> textMessageMutexes = new HashMap<>();
 
 	private OperationsToDiskHandler() {}
 
 	public static boolean saveTextMessageInDisk(TextMessage m, Group g) {
-		synchronized(texMessageMutex) {
 			try {
 				// write in messageInfo file
 				saveMessageInfoInDisk(m, Configuration.TXT_MSG_FLAG ,g);
 
-				// write text message content
-				WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
-				String messageContent = m.getInfo() + "\n";
-				writer.saveSimpleString(messageContent);
-
+				synchronized(textMessageMutexes.get(g.getGoupID())) {
+					// write text message content
+					WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
+					String messageContent = m.getInfo() + "\n";
+					writer.saveSimpleString(messageContent);
+				}
 
 				return true;
 			} catch (IOException e) {
 				return false;
 			}
-		}
 	}
 
 	public static boolean savePhotoMessageInDisk(byte[] data, PhotoMessage m, Group g) {
-		synchronized(photoMessageMutex) {
-			try {
-				// write in messageInfo file
-				saveMessageInfoInDisk(m, Configuration.PHOTO_MSG_FLAG ,g);
+		try {
+			// write in messageInfo file
+			saveMessageInfoInDisk(m, Configuration.PHOTO_MSG_FLAG ,g);
 
-				WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), m.getMsgID()));
-				writer.saveBytes(data);
+			WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), m.getMsgID()));
+			writer.saveBytes(data);
 
-				return true;
-			} catch (IOException e) {
-				return false;
-			}
+			return true;
+		} catch (IOException e) {
+			return false;
 		}
 	}
 
@@ -63,7 +61,7 @@ public class OperationsToDiskHandler {
 	 * @param flag message type
 	 */
 	private static void saveMessageInfoInDisk(Message m, String flag, Group g) throws IOException {
-		synchronized(messageInfoMutex) {
+		synchronized(messageInfoMutexes.get(g.getGoupID())) {
 			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
 			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
 			String messageInfo = String.join(":", m.getMsgID(), flag) + unseenUsers + "\n";
@@ -83,6 +81,8 @@ public class OperationsToDiskHandler {
 	}
 
 	public static boolean saveGroupInDisk(Group g) {
+		initializeGroupMutexes(g);
+		
 		synchronized(groupMutex) {
 			try {
 				WriteInDisk write = new WriteInDisk(Configuration.getGroupPathName());
@@ -92,6 +92,14 @@ public class OperationsToDiskHandler {
 				return false;
 			}
 		}
+	}
+
+	/**
+	 * Initialization of group mutexes
+	 */
+	public static void initializeGroupMutexes(Group g) {
+		messageInfoMutexes.put(g.getGoupID(), new Object());
+		textMessageMutexes.put(g.getGoupID(), new Object());
 	}
 
 	public static boolean saveUserToGroupInDisk(User u, Group g) {

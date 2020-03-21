@@ -67,6 +67,9 @@ public class LoadingFromDiskHandler {
 				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
 			}
 			groups.add(g);
+			
+			// add mutex in Operations class
+			OperationsToDiskHandler.initializeGroupMutexes(g);
 		}
 		
 		return groups;
