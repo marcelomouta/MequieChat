@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * 
  * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
  *  
- * Esta classe representa uma mensagem enviada por um utilizador.
+ * This class represents a message sent by an user.
  */
 public abstract class Message {
 	// generic data about the message
@@ -25,7 +25,7 @@ public abstract class Message {
 
     /**
      *
-     * @param msgID - id da mensagem
+     * @param msgID the id of the message
      */
 	protected Message(String msgID, List<User> userNotSeenMsg) {
 		this.msgID = msgID;
@@ -34,7 +34,7 @@ public abstract class Message {
 
 	/**
 	 *
-	 * @return o username do utilizador
+	 * @return the messageID of the message
 	 */
 	public String getMsgID() {
 		return msgID;
