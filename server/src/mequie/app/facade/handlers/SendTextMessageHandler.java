@@ -1,7 +1,7 @@
 package mequie.app.facade.handlers;
 
 import mequie.app.domain.Group;
-import mequie.app.domain.Message;
+import mequie.app.domain.TextMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequieclient.app.facade.Session;
@@ -12,7 +12,7 @@ public class SendTextMessageHandler{
 
     private User currentUser;
     private Group currentGroup;
-    private Message currentMsg;
+    private TextMessage currentMsg;
 
     public SendTextMessageHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
