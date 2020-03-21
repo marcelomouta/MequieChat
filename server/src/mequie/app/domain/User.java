@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import mequie.app.domain.Group;
 
@@ -11,20 +14,31 @@ import mequie.app.domain.Group;
  * 
  * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
  * 
- * Esta classe representa um utilizador do sistema.
+ * This class represents an user of the sistem.
  */
 public class User {
-
+	// generic data about the user
 	private String userID;
     private String password;
-    
+    // groups of this user
     private Set<Group> groups = new HashSet<>();
+    // groups owned by this user
     private Set<Group> groupsOwned = new HashSet<>();
+    
+    // Safe manipulation locks
+    // locks for groups safe manipulation
+ 	ReadWriteLock lock1 = new ReentrantReadWriteLock();
+ 	Lock groupsWriteLock = lock1.writeLock();
+ 	Lock groupsReadLock = lock1.readLock();
+ 	// locks for owned groups safe manipulation
+ 	ReadWriteLock lock2 = new ReentrantReadWriteLock();
+ 	Lock ownedGroupsWriteLock = lock2.writeLock();
+ 	Lock ownedGroupsReadLock = lock2.readLock();
 
     /**
      * 
-     * @param username - nome do utilizador
-     * @param pass - password do utilizador
+     * @param username the username of user
+     * @param pass the password of the user
      */
 	public User(String username, String pass) {
 		this.userID = username; this.password = pass;
@@ -32,7 +46,7 @@ public class User {
 
 	/**
 	 * 
-	 * @return o username do utilizador
+	 * @return the username of user
 	 */
 	public String getUserID() {
 		return userID;
@@ -40,33 +54,91 @@ public class User {
 	
 	/**
 	 * 
-	 * @return a password do utilizador
+	 * @return the password of the user
 	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * 
+	 * @param groupID a string representing the id of the group
+	 * @return a group with groupID id and this user as owner
+	 */
 	public Group createGroup(String groupID) {
 		Group g = new Group(groupID, this);
-		groups.add(g);
-		groupsOwned.add(g);
+		
+		// add to groups of this user
+		groupsWriteLock.lock();
+		try {
+			groups.add(g);
+		} finally {
+			groupsWriteLock.unlock();
+		}
+		
+		// add to groups owned by this user
+		ownedGroupsWriteLock.lock();
+		try {
+			groupsOwned.add(g);
+		} finally {
+			ownedGroupsWriteLock.unlock();
+		}
+		
 		return g;
 	}
 	
+	/**
+	 * 
+	 * @param g the group to be added
+	 * @return true if group was successfully added to groups of the user
+	 */
 	public boolean addGroupToBelongedGroups(Group g) {
-		return groups.add(g);
+		groupsReadLock.lock();
+		try {
+			return groups.add(g);
+		} finally {
+			groupsReadLock.unlock();
+		}
 	}
 	
+	/**
+	 * 
+	 * @param g the group to be added
+	 * @return true if group was successfully removed from groups of the user
+	 */
 	public boolean removeGroupFromBelongedGroups(Group g) {
-		return groups.remove(g);
+		groupsReadLock.lock();
+		try {
+			return groups.remove(g);
+		} finally {
+			groupsReadLock.unlock();
+		}
 	}
 
+	/**
+	 *
+	 * @return a list of groups the user belongs to
+	 */
 	public List<Group> getAllGroups() {
-		return new ArrayList<>(groups);
+		groupsReadLock.lock();
+		try {
+			return new ArrayList<>(groups);
+		} finally {
+			groupsReadLock.unlock();
+		}
 	}
 	
+	/**
+	 *
+	 * @return a list of groups the user owns to
+	 */
 	public List<Group> getGroupsWhoUserIsLeader() {
-		return new ArrayList<>(groupsOwned);
+		ownedGroupsReadLock.lock();
+		try {
+			return new ArrayList<>(groupsOwned);
+		} finally {
+			ownedGroupsReadLock.unlock();
+		}
 	}
 	
 	@Override
