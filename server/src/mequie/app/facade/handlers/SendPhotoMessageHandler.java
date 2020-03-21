@@ -31,7 +31,7 @@ public class SendPhotoMessageHandler{
     	if (!currentGroup.isUserOfGroup(currentUser))
 			throw new UserNotHavePermissionException();
     	
-    	currentMsg = currentGroup.createPhotoMessage(currentUser);
+    	currentMsg = currentGroup.createPhotoMessage();
     }
     
     public void sendMessageToGroup() {
