@@ -80,10 +80,10 @@ public class LoadingFromDiskHandler {
 	 * @param g o grupo que iremos fazer o load das mensagens
 	 */
 	private static void getAllMessagesFromDisk(Group g) throws IOException {
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageContentsPathName(g.getGoupID()));
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
 		List<String> msgsIDandTexts = reader.readAllLines();
 		
-		reader = new ReadFromDisk(Configuration.getMessageUsersPathName(g.getGoupID()));
+		reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
 		List<String> allMsgsIDandUsers = reader.readAllLines();
 		
 		List<Message> msgs = new ArrayList<>();
