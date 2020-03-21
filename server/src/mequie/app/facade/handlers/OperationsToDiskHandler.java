@@ -154,7 +154,7 @@ public class OperationsToDiskHandler {
 		try {
 			for (Message toRemove : toRemoveList) {
 				if (toRemove instanceof TextMessage) {
-					ReadFromDisk reader = new ReadFromDisk("Data/" + g.getGoupID() + "/messages.txt");
+					ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
 					List<String> lines = reader.readAllLines();
 
 					 List<String> toWrite = lines.stream().filter(s -> !s.split(":")[0].equals(toRemove.getMsgID()))

@@ -121,9 +121,10 @@ public class LoadingFromDiskHandler {
 			}
 			
 			// add to group g
-			if (m != null)
+			if (m != null) {
 				addMessageToGroup(m, g);
 				lastMsgID = msgID;
+			}
 			
 		}
 		
