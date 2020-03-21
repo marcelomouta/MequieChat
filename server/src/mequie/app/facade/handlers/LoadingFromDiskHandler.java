@@ -12,6 +12,7 @@ import mequie.app.domain.TextMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
+import mequie.utils.Configuration;
 import mequie.utils.ReadFromDisk;
 
 /**
@@ -21,14 +22,13 @@ import mequie.utils.ReadFromDisk;
 public class LoadingFromDiskHandler {
 	
 	private LoadingFromDiskHandler() {}
-	
 	/***
 	 * Buscar todos os utilizadores (gravados em disco)
 	 * Vai buscar a informacao a: passwd.txt
 	 * @return Lista de utilizadores criados a partir dos dados do disco
 	 */
 	private static List<User> getAllUsersFromDisk() throws IOException {
-		ReadFromDisk reader = new ReadFromDisk("Data/passwd.txt");
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getPasswordPathName());
 		
 		List<String> idOfUsersAndPass = reader.readAllLines();
 		List<User> users = new ArrayList<>();
@@ -49,7 +49,7 @@ public class LoadingFromDiskHandler {
 	 * @return Lista de grupos criados a partir dos dados do disco
 	 */
 	private static List<Group> getAllGroupsFromDisk() throws IOException, Exception {
-		ReadFromDisk reader = new ReadFromDisk("Data/group.txt");
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
 		
 		List<String> idOfGroupsAndOwners = reader.readAllLines();
 		List<Group> groups = new ArrayList<>();
@@ -80,10 +80,10 @@ public class LoadingFromDiskHandler {
 	 * @param g o grupo que iremos fazer o load das mensagens
 	 */
 	private static void getAllMessagesFromDisk(Group g) throws IOException {
-		ReadFromDisk reader = new ReadFromDisk("Data/" + g.getGoupID() + "/messages.txt");
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageContentsPathName(g.getGoupID()));
 		List<String> msgsIDandTexts = reader.readAllLines();
 		
-		reader = new ReadFromDisk("Data/" + g.getGoupID() + "/messages_users.txt");
+		reader = new ReadFromDisk(Configuration.getMessageUsersPathName(g.getGoupID()));
 		List<String> allMsgsIDandUsers = reader.readAllLines();
 		
 		List<Message> msgs = new ArrayList<>();
