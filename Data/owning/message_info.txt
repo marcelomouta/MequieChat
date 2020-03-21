@@ -1,5 +1,4 @@
 owning0:t:user01
 owning1:t:user01
-owning1:t
-owning0:p:user01
-owning1:t:user01
+owning2:t
+owning3:t:user01

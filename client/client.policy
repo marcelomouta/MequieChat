@@ -1,4 +1,4 @@
-grant codeBase "file:${user.home}/SC/MequieChat/-"{ // codeBase "file:${user.home}/pasta/MequieChat/-"
+grant codeBase "file:${user.home}/SegC/MequieChat/-"{ // codeBase "file:${user.home}/pasta/MequieChat/-"
 	permission java.net.SocketPermission "*:1024-", "connect,resolve";
 	permission java.io.FilePermission "Data/-","write";
 	permission java.io.FilePermission "./*","read";

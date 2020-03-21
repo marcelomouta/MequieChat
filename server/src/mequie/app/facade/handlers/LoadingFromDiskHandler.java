@@ -91,6 +91,7 @@ public class LoadingFromDiskHandler {
 		List<String> msgsIDandTexts = reader.readAllLines();
 		Iterator<String> itTxt = msgsIDandTexts.iterator();
 
+		// last read msg id
 		String lastMsgID = null;
 		
 		while (it.hasNext()) {
@@ -128,8 +129,11 @@ public class LoadingFromDiskHandler {
 			
 		}
 		
-		int lastMsgIDNumber = Integer.parseInt(lastMsgID.replace(g.getGoupID(), ""));
-		g.setMsgNumberID(lastMsgIDNumber);
+		// sets group MsgNumberId it has loaded messages from disk
+		if (lastMsgID != null) {
+			int lastMsgIDNumber = Integer.parseInt(lastMsgID.replace(g.getGoupID(), ""));
+			g.setMsgNumberID(lastMsgIDNumber+1);			
+		}
 	}
 	
 	
