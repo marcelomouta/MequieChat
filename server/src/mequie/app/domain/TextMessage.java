@@ -4,10 +4,12 @@ import java.util.List;
 
 public class TextMessage extends Message {
 	
+	private User sender;
 	private String text;
 	
 	public TextMessage(String msgID, User sender, List<User> userNotSeenMsg, String text) {
-		super(msgID, sender, userNotSeenMsg);
+		super(msgID, userNotSeenMsg);
+		this.sender = sender;
 		this.text = text;
 	}
 	

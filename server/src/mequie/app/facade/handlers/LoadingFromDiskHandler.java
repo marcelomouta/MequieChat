@@ -2,10 +2,13 @@ package mequie.app.facade.handlers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import mequie.app.domain.Group;
 import mequie.app.domain.Message;
+import mequie.app.domain.PhotoMessage;
+import mequie.app.domain.TextMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
@@ -70,44 +73,101 @@ public class LoadingFromDiskHandler {
 	}
 	
 	/**
-	 * Buscar todas as mensagens enviadas em todos os grupos (gravadas em disco)
+	 * Criar todas as mensagens enviadas num grupo (gravadas em disco)
 	 * Vai buscar a informacao a 2 ficheiros:
 	 *     messages.txt: contem todas as mensagens de texto
 	 *     messages_users.txt: contem quais os utilizadores que faltam ler para a msg
-	 * @return uma lista de mensagens criadas a partir dos dados do disco
+	 * @param g o grupo que iremos fazer o load das mensagens
 	 */
-	private static List<Message> getAllMessagesFromDisk(Group g) throws IOException {
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName() + g.getGoupID() + "_msgs.txt");
-		
+	private static void getAllMessagesFromDisk(Group g) throws IOException {
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageContentsPathName(g.getGoupID()));
 		List<String> msgsIDandTexts = reader.readAllLines();
+		
+		reader = new ReadFromDisk(Configuration.getMessageUsersPathName(g.getGoupID()));
+		List<String> allMsgsIDandUsers = reader.readAllLines();
+		
 		List<Message> msgs = new ArrayList<>();
 		
-		for (String msgIDandText : msgsIDandTexts) {
-			String[] msgIDandTextSplited = msgIDandText.split(":",3);
-			String msgID = msgIDandTextSplited[0];
-			String text = msgIDandTextSplited[1];
-//			msgs.add(new Message(msgID, text));
+		// text messages more info iterator
+		Iterator<String> it1 = msgsIDandTexts.iterator();
+		// all messages id and user who not read the message
+		Iterator<String> it2 = allMsgsIDandUsers.iterator();
+
+		while (it2.hasNext()) {
+			String[] msgIDandUsersSplited = it2.next().split(":");
+			String flag = msgIDandUsersSplited[1];
+			if (flag.equals(Configuration.TXT_MSG_FLAG)) { // is a text message
+				if (it1.hasNext()) {
+					//get first part: msgId, sender and text
+					String[] msgIDandTextSplited = it1.next().split(":",3);
+					String msgID = msgIDandTextSplited[0];
+					User sender = UserCatalog.getInstance().getUserById(msgIDandTextSplited[1]);
+					String text = msgIDandTextSplited[2];
+					
+					// get second part: users who not read the message
+					List<User> usersIDs = new ArrayList<>();
+					for (int i = 2; i < msgIDandUsersSplited.length; i++) {
+						User u = UserCatalog.getInstance().getUserById(msgIDandUsersSplited[i]);
+						if (u != null)
+							usersIDs.add(u);
+					}
+					
+					TextMessage m = new TextMessage(msgID, sender, usersIDs, text);
+					// add to group g
+					addMessageToGroup(m, g);
+				}
+			} else if (flag.equals(Configuration.PHOTO_MSG_FLAG)) { // is a photo message
+				//get first part: msgId, path
+				String msgID = msgIDandUsersSplited[0];
+				
+				// get second part: users who not read the message
+				List<User> usersIDs = new ArrayList<>();
+				for (int i = 2; i < msgIDandUsersSplited.length; i++) {
+					User u = UserCatalog.getInstance().getUserById(msgIDandUsersSplited[i]);
+					if (u != null)
+						usersIDs.add(u);
+				}
+				
+				PhotoMessage m = new PhotoMessage(msgID, usersIDs, "GETDOCONFIGURATIONS");
+				// add to group g
+				addMessageToGroup(m, g);
+			}
 		}
-		
-		return msgs;
+	}
+	
+	/**
+	 * Adicionar uma mensagem a um grupo
+	 * @param m a mensagem a adicionar ao grupo
+	 * @param g o grupo ao qual iremos adicionar a mensagem
+	 */
+	private static void addMessageToGroup(Message m, Group g) {
+		if (m.getUsersWhoNotReadMessages().isEmpty()) {
+			g.moveToHistory(m);
+		} else {
+			g.saveMessage(m);
+		}
 	}
 	
 	/**
 	 * Faz o load para memoria de todo o sistema em disco
 	 */
 	public static void load() throws IOException, Exception {
+		// load dos users
 		List<User> users = getAllUsersFromDisk();
 		for (User u : users) {
 			UserCatalog.getInstance().addUser(u);
 		}
 		
+		// load dos grupos
 		List<Group> groups = getAllGroupsFromDisk();
-		
 		for (Group g : groups) {
 			GroupCatalog.getInstance().addGroup(g);
 		}
 		
 		// load das mensagens
+		for (Group g : groups) {
+			getAllMessagesFromDisk(g);
+		}
 	}
 
 }

@@ -20,7 +20,7 @@ public abstract class Message {
      *
      * @param msgID - id da mensagem
      */
-	protected Message(String msgID, User sender, List<User> userNotSeenMsg) {
+	protected Message(String msgID, List<User> userNotSeenMsg) {
 		this.msgID = msgID;
 		this.sender = sender;
 		this.usersWhoNotReadMessages = new HashSet<>(userNotSeenMsg);
