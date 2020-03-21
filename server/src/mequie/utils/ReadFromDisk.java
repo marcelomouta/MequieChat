@@ -32,11 +32,12 @@ public class ReadFromDisk {
 				in = new FileInputStream(fileLocation);
 		} catch (FileNotFoundException e) {
 			File f = new File(fileLocation);
+			f.getParentFile().mkdirs();
 			f.createNewFile();
 			if (flag)
-				sc = new Scanner(new File(fileLocation));
+				sc = new Scanner(f);
 			else
-				in = new FileInputStream(fileLocation);
+				in = new FileInputStream(f);
 		}
 	}
 	
