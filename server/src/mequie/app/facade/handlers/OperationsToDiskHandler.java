@@ -24,12 +24,12 @@ public class OperationsToDiskHandler {
 			// write in messageInfo file
 			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
 			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
-			String messageInfo = String.join(":", m.getMsgID(), Configuration.TXT_MSG_FLAG, unseenUsers, "\n");
+			String messageInfo = String.join(":", m.getMsgID(), Configuration.TXT_MSG_FLAG) + unseenUsers;
 			writer.saveSimpleString(messageInfo);
 			
 			// write text message content
 			writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
-			String messageContent = String.join(":", m.getInfo(),"\n");
+			String messageContent = m.getInfo() + "\n";
 			writer.saveSimpleString(messageContent);
 			
 
