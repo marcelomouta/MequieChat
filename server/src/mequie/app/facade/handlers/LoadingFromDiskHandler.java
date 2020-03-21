@@ -96,7 +96,7 @@ public class LoadingFromDiskHandler {
 		while (it2.hasNext()) {
 			String[] msgIDandUsersSplited = it2.next().split(":");
 			String flag = msgIDandUsersSplited[1];
-			if (flag.equals("t")) { // is a text message
+			if (flag.equals(Configuration.TXT_MSG_FLAG)) { // is a text message
 				if (it1.hasNext()) {
 					//get first part: msgId, sender and text
 					String[] msgIDandTextSplited = it1.next().split(":",3);
@@ -116,7 +116,7 @@ public class LoadingFromDiskHandler {
 					// add to group g
 					addMessageToGroup(m, g);
 				}
-			} else if (flag.equals("p")) { // is a photo message
+			} else if (flag.equals(Configuration.PHOTO_MSG_FLAG)) { // is a photo message
 				//get first part: msgId, path
 				String msgID = msgIDandUsersSplited[0];
 				
