@@ -1,6 +1,9 @@
 package mequie.app.domain;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -10,11 +13,15 @@ import java.util.stream.Collectors;
  * Esta classe representa um utilizador do sistema.
  */
 public abstract class Message {
-
-	protected User sender;
+	// generic data about the message
 	private String msgID;
-
+	// Set of users that not read the message
 	protected Set<User> usersWhoNotReadMessages;
+	
+	// Safe manipulation locks
+	ReadWriteLock lock = new ReentrantReadWriteLock();
+	Lock writeLock = lock.writeLock();
+	Lock readLock = lock.readLock();
 
     /**
      *
@@ -22,7 +29,6 @@ public abstract class Message {
      */
 	protected Message(String msgID, List<User> userNotSeenMsg) {
 		this.msgID = msgID;
-		this.sender = sender;
 		this.usersWhoNotReadMessages = new HashSet<>(userNotSeenMsg);
 	}
 
@@ -40,21 +46,27 @@ public abstract class Message {
 	 * @return list of ids from users that didnt read this message
 	 */
 	public List<String> getUsersWhoNotReadMessages() {
+		readLock.lock();
+		try {
 		return usersWhoNotReadMessages.stream()
-										.map(User::getUserID)
-										.collect(Collectors.toList());
+									  .map(User::getUserID)
+									  .collect(Collectors.toList());
+		} finally {
+			readLock.unlock();
+		}
 	}
 
-	public User getSender() {
-		return sender;
-	}
-	
 	/**
 	 * 
 	 * @return true if user not read the msg
 	 */
 	public boolean userHasReadMessage(User u) {
-		return !usersWhoNotReadMessages.contains(u);
+		readLock.lock();
+		try {
+			return !usersWhoNotReadMessages.contains(u);
+		} finally {
+			readLock.unlock();
+		}
 	}
 	
 	/**
@@ -62,15 +74,25 @@ public abstract class Message {
 	 * @return true if all members of group read the message
 	 */
 	public boolean allHaveSeenMessage() {
+		readLock.lock();
+		try {
 		return usersWhoNotReadMessages.isEmpty();
+		} finally {
+			readLock.unlock();
+		}
 	}
 	
 	/**
 	 * 
-	 * user u read message
+	 * @param u the user read message
 	 */
 	public void messageReadByUser(User u) {
-		usersWhoNotReadMessages.remove(u);
+		writeLock.lock();
+		try {
+			usersWhoNotReadMessages.remove(u);
+		} finally {
+			writeLock.unlock();
+		}
 	}
 	
 	public abstract String getInfo();

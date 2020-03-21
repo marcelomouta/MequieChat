@@ -13,6 +13,14 @@ public class TextMessage extends Message {
 		this.text = text;
 	}
 	
+	/**
+	 * 
+	 * @return the sender of the message
+	 */
+	public User getSender() {
+		return sender;
+	}
+	
 	public String getInfo() {
 		return toString();
 	}
