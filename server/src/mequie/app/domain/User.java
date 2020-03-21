@@ -19,27 +19,26 @@ import mequie.app.domain.Group;
 public class User {
 	// generic data about the user
 	private String userID;
-    private String password;
-    // groups of this user
-    private Set<Group> groups = new HashSet<>();
-    // groups owned by this user
-    private Set<Group> groupsOwned = new HashSet<>();
-    
-    // Safe manipulation locks
-    // locks for groups safe manipulation
- 	ReadWriteLock lock1 = new ReentrantReadWriteLock();
- 	Lock groupsWriteLock = lock1.writeLock();
- 	Lock groupsReadLock = lock1.readLock();
- 	// locks for owned groups safe manipulation
- 	ReadWriteLock lock2 = new ReentrantReadWriteLock();
- 	Lock ownedGroupsWriteLock = lock2.writeLock();
- 	Lock ownedGroupsReadLock = lock2.readLock();
+	private String password;
+	// groups of this user
+	private Set<Group> groups = new HashSet<>();
+	// groups owned by this user
+	private Set<Group> groupsOwned = new HashSet<>();
 
-    /**
-     * 
-     * @param username the username of user
-     * @param pass the password of the user
-     */
+	// Safe manipulation locks
+	// locks for groups safe manipulation
+	ReadWriteLock lock = new ReentrantReadWriteLock();
+	Lock groupsWriteLock = lock.writeLock();
+	Lock groupsReadLock = lock.readLock();
+	// No needed locks for owned groups safe manipulation
+	// because it only add when the message is added. Then
+	// only read operations are executed.
+
+	/**
+	 * 
+	 * @param username the username of user
+	 * @param pass the password of the user
+	 */
 	public User(String username, String pass) {
 		this.userID = username; this.password = pass;
 	}
@@ -51,7 +50,7 @@ public class User {
 	public String getUserID() {
 		return userID;
 	}
-	
+
 	/**
 	 * 
 	 * @return the password of the user
@@ -67,26 +66,16 @@ public class User {
 	 */
 	public Group createGroup(String groupID) {
 		Group g = new Group(groupID, this);
-		
+
 		// add to groups of this user
-		groupsWriteLock.lock();
-		try {
-			groups.add(g);
-		} finally {
-			groupsWriteLock.unlock();
-		}
-		
+		groups.add(g);
+
 		// add to groups owned by this user
-		ownedGroupsWriteLock.lock();
-		try {
-			groupsOwned.add(g);
-		} finally {
-			ownedGroupsWriteLock.unlock();
-		}
-		
+		groupsOwned.add(g);
+
 		return g;
 	}
-	
+
 	/**
 	 * 
 	 * @param g the group to be added
@@ -100,7 +89,7 @@ public class User {
 			groupsReadLock.unlock();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param g the group to be added
@@ -127,20 +116,15 @@ public class User {
 			groupsReadLock.unlock();
 		}
 	}
-	
+
 	/**
 	 *
 	 * @return a list of groups the user owns to
 	 */
 	public List<Group> getGroupsWhoUserIsLeader() {
-		ownedGroupsReadLock.lock();
-		try {
-			return new ArrayList<>(groupsOwned);
-		} finally {
-			ownedGroupsReadLock.unlock();
-		}
+		return new ArrayList<>(groupsOwned);
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.userID;
