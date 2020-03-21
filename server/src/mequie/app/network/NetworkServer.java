@@ -91,6 +91,7 @@ public class NetworkServer {
 				}
 			} catch (Exception e) {
 				// Do nothing because finally will be called
+				e.printStackTrace();
 			} finally {
 				disconnect();
 				this.interrupt();

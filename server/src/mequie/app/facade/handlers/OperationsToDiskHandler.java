@@ -18,11 +18,20 @@ public class OperationsToDiskHandler {
 
 	private OperationsToDiskHandler() {}
 
-	public static boolean saveTextMessageInDisk(Message m, Group g) {
+	public static boolean saveTextMessageInDisk(TextMessage m, Group g) {
 		try {
-			WriteInDisk writer = new WriteInDisk("Data/" + g.getGoupID() + "/messages.txt");
-			String unseenUsers = m.allHaveSeenMessage() ? "" : "\\0" + String.join("\\0", m.getUsersWhoNotReadMessages());
-			writer.saveSimpleString(m.getInfo() + unseenUsers + "\n");
+			
+			// write in messageInfo file
+			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
+			String messageInfo = String.join(":", m.getMsgID(), Configuration.TXT_MSG_FLAG, unseenUsers, "\n");
+			writer.saveSimpleString(messageInfo);
+			
+			// write text message content
+			writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
+			String messageContent = String.join(":", m.getInfo(),"\n");
+			writer.saveSimpleString(messageContent);
+			
 
 			return true;
 		} catch (IOException e) {
@@ -31,6 +40,7 @@ public class OperationsToDiskHandler {
 	}
 
 	public static boolean savePhotoMessageInDisk(byte[] data, String path) {
+		//TODO
 		try {
 			WriteInDisk writer = new WriteInDisk(path);		
 			writer.saveBytes(data); //esta a escrever a path e nao o conteudo em si REVER
@@ -128,6 +138,7 @@ public class OperationsToDiskHandler {
 	}
 
 	public static boolean updateSeenMessages(List<Message> toRemoveList, Group g) {
+		//TODO
 		try {
 			for (Message toRemove : toRemoveList) {
 				if (toRemove instanceof TextMessage) {
