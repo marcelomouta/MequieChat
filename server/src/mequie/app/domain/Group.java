@@ -139,7 +139,7 @@ public class Group {
 	
 	public PhotoMessage createPhotoMessage(User owner, String path) {
 		String id = getGoupID() + generateMsgID();
-		return new PhotoMessage(id, owner, new ArrayList<>(users), path + id);
+		return new PhotoMessage(id, new ArrayList<>(users), path + id);
 	}
 	
 	private String generateMsgID() {

@@ -9,8 +9,8 @@ public class PhotoMessage extends Message {
 	
 	private String path;
 	
-	public PhotoMessage(String msgID, User sender, List<User> userNotSeenMsg, String path) {
-		super(msgID, sender, userNotSeenMsg);
+	public PhotoMessage(String msgID, List<User> userNotSeenMsg, String path) {
+		super(msgID, userNotSeenMsg);
 		this.path = path;
 	}
 
