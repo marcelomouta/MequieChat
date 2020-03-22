@@ -100,7 +100,7 @@ public class Group {
 	public List<Message> getHistory() {
 		historyReadLock.lock();
 		try {
-			return history;
+			return new ArrayList<>(history);
 		} finally {
 			historyReadLock.unlock();
 		}
