@@ -16,16 +16,17 @@ import mequie.utils.Configuration;
 import mequie.utils.ReadFromDisk;
 
 /**
- * Classe para fazer load dos dados que estao em disco
+ * This class aims to load all the system to memory
  */
 
 public class LoadingFromDiskHandler {
 	
 	private LoadingFromDiskHandler() {}
-	/***
-	 * Buscar todos os utilizadores (gravados em disco)
-	 * Vai buscar a informacao a: passwd.txt
-	 * @return Lista de utilizadores criados a partir dos dados do disco
+	
+	/**
+	 * Get all the users saved in disk
+	 * Will get the information on: passwd.txt
+	 * @return a list of users created by the information in disk
 	 */
 	private static List<User> getAllUsersFromDisk() throws IOException {
 		ReadFromDisk reader = new ReadFromDisk(Configuration.getPasswordPathName());
@@ -35,6 +36,7 @@ public class LoadingFromDiskHandler {
 		
 		for (String userIDandPass : idOfUsersAndPass) {
 			String[] userIDandPassSplited = userIDandPass.split(":");
+			// get generic information
 			String userID = userIDandPassSplited[0];
 			String pass =  userIDandPassSplited[1];
 			users.add(new User(userID, pass));
@@ -44,9 +46,9 @@ public class LoadingFromDiskHandler {
 	}
 	
 	/**
-	 * Buscar todos os grupos (gravados em disco)
-	 * Vai buscar a informacao a: groups.txt
-	 * @return Lista de grupos criados a partir dos dados do disco
+	 * Get all the groups saved in disk
+	 * Will get the information on: groups.txt
+	 * @return a list of groups created by the information in disk
 	 */
 	private static List<Group> getAllGroupsFromDisk() throws IOException, Exception {
 		ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
@@ -56,16 +58,21 @@ public class LoadingFromDiskHandler {
 		
 		for (String groupIDandUserID : idOfGroupsAndOwners) {
 			String[] groupIDandUsersIDSplited = groupIDandUserID.split(":");
+			// get generic informations
 			String groupID = groupIDandUsersIDSplited[0];
+			
 			String ownerID = groupIDandUsersIDSplited[1];
 			User owner = UserCatalog.getInstance().getUserById(ownerID);
-			Group g = owner.createGroup(groupID);
-
 			
+			Group g = owner.createGroup(groupID);
+			
+			// add the users of group in group
 			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
 				String userID = groupIDandUsersIDSplited[i];
 				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
 			}
+			
+			// add the group to group list
 			groups.add(g);
 			
 			// add mutex in Operations class
@@ -81,6 +88,15 @@ public class LoadingFromDiskHandler {
 	 *     messages.txt: contem todas as mensagens de texto
 	 *     messages_users.txt: contem quais os utilizadores que faltam ler para a msg
 	 * @param g o grupo que iremos fazer o load das mensagens
+	 */
+	
+	/**
+	 * Create all the messages sent in a group (saved in disk)
+	 * Will get the information on multiple files:
+	 *     - messages_info.txt have which users are left to read the message
+	 *     - text_messages.txt have all text messages sent in the group
+	 *     - <photoID> have the bytes of a photo sent in the group 
+	 * @param g the group to load the messages
 	 */
 	private static void getAllMessagesFromDisk(Group g) throws IOException {
 		
@@ -116,7 +132,6 @@ public class LoadingFromDiskHandler {
 					User sender = UserCatalog.getInstance().getUserById(msgIDandTextSplited[1]);
 					String text = msgIDandTextSplited[2];
 					
-					
 					m = new TextMessage(msgID, sender, usersIDs, text);
 				}
 			} else if (flag.equals(Configuration.PHOTO_MSG_FLAG)) { // is a photo message
@@ -139,21 +154,27 @@ public class LoadingFromDiskHandler {
 		}
 	}
 	
-	
+	/**
+	 * Get a list of users who haven't read a message
+	 * @param msgIDandUsersSplited a line list (of the file) with msgID and users separated
+	 * @return a list of users who haven't read a message
+	 */
 	private static List<User> getMsgUnseenUsers(String[] msgIDandUsersSplited) {
 		List<User> usersIDs = new ArrayList<>();
+		
 		for (int i = 2; i < msgIDandUsersSplited.length; i++) {
 			User u = UserCatalog.getInstance().getUserById(msgIDandUsersSplited[i]);
 			if (u != null)
 				usersIDs.add(u);
 		}
+		
 		return usersIDs;
 	}
 	
 	/**
-	 * Adicionar uma mensagem a um grupo
-	 * @param m a mensagem a adicionar ao grupo
-	 * @param g o grupo ao qual iremos adicionar a mensagem
+	 * Add a message to a group
+	 * @param m the message to add to group
+	 * @param g the group that will be added the message
 	 */
 	private static void addMessageToGroup(Message m, Group g) {
 		if (m.getUsersWhoNotReadMessages().isEmpty()) {
@@ -164,22 +185,22 @@ public class LoadingFromDiskHandler {
 	}
 	
 	/**
-	 * Faz o load para memoria de todo o sistema em disco
+	 * Do the load of all system to memory
 	 */
 	public static void load() throws IOException, Exception {
-		// load dos users
+		// users load
 		List<User> users = getAllUsersFromDisk();
 		for (User u : users) {
 			UserCatalog.getInstance().addUser(u);
 		}
 		
-		// load dos grupos
+		// groups load
 		List<Group> groups = getAllGroupsFromDisk();
 		for (Group g : groups) {
 			GroupCatalog.getInstance().addGroup(g);
 		}
 		
-		// load das mensagens
+		// messages load
 		for (Group g : groups) {
 			getAllMessagesFromDisk(g);
 		}

@@ -41,18 +41,38 @@ public class ReadFromDisk {
 		}
 	}
 	
+	/**
+	 * Check if the file has one more line
+	 * @return true if the file has a next line to read
+	 */
+	public boolean hasNextLine() {
+		return sc.hasNextLine();
+	}
+	
+	/**
+	 * Read the next line
+	 * @return the next line of the file
+	 */
 	public String readLine() {
 		return sc.nextLine();
 	}
 	
+	/**
+	 * Read all line of the file
+	 * @return a list with all lines of the file
+	 */
 	public List<String> readAllLines() {
 		List<String> lines = new ArrayList<>();
-		while (sc.hasNextLine()) {
-			lines.add(sc.nextLine());
+		while ( hasNextLine() ) {
+			lines.add( readLine() );
 		}
 		return lines;
 	}
 	
+	/**
+	 * Read all bytes of the file
+	 * @return all bytes of the file
+	 */
 	public byte[] readAllBytes() {
 		try {
 			byte[] buf = new byte[in.available()];
