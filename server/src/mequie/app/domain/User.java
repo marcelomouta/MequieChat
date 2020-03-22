@@ -66,8 +66,7 @@ public class User {
 	 * @return a group with groupID id and this user as owner
 	 */
 	public Group createGroup(String groupID) {
-		Group g = new Group(groupID, this);
-		return g;
+		return new Group(groupID, this);
 	}
 
 	/**
