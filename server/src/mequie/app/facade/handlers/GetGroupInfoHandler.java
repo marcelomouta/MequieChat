@@ -38,6 +38,11 @@ public class GetGroupInfoHandler{
             throw new NotExistingGroupException();
     }
     
+    /**
+     * 
+     * @return list with group id, number of users 
+     * and, if this user is the group owner, the users in this group
+     */
     public List<String> getInfo() {
     	List<String> info = new ArrayList<String>();
     	

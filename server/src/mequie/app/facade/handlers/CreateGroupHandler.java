@@ -34,6 +34,10 @@ public class CreateGroupHandler{
     	currentGroup = currentUser.createGroup(groupID);
     }
     
+    /**
+     * Links current user to this group
+     * @throws ErrorCreatingGroupException
+     */
     public void groupAssociation() throws ErrorCreatingGroupException {
     	if ( !GroupCatalog.getInstance().addGroup(currentGroup) )
             throw new ErrorCreatingGroupException();
