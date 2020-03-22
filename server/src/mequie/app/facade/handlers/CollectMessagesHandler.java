@@ -26,8 +26,9 @@ public class CollectMessagesHandler {
 	private User currentUser;
 	// group that the user wants to add users
 	private Group currentGroup;
-
+	// list of group messages to be send to the user
 	private List<Message> readMsgs = new ArrayList<>();
+	// list of photos to remove from disk
 	private List<PhotoMessage> photosToRemove = new ArrayList<>();
 
     /**
@@ -47,6 +48,11 @@ public class CollectMessagesHandler {
 			throw new NotExistingGroupException();
 	}
 
+	/**
+	 * 
+	 * @return list with text messages and photos for the user to see 
+	 * @throws UserNotHavePermissionException
+	 */
 	public List<List<? extends Object>> getNotSeenMessages() throws UserNotHavePermissionException {
 		if (!currentGroup.isUserOfGroup(currentUser))
 			throw new UserNotHavePermissionException();
