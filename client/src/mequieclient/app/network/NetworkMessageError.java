@@ -3,8 +3,7 @@ package mequieclient.app.network;
 import mequieclient.app.facade.exceptions.MequieException;
 
 /**
- * Classe comum ao Servidor e Cliente para troca de pedido e reposta
- * Esta classe auto envia-se para a rede
+ * Network message describing an error (common to client and server)
  */
 public class NetworkMessageError extends NetworkMessage {
 	
@@ -14,6 +13,7 @@ public class NetworkMessageError extends NetworkMessage {
 		super(op);
 		this.exception = exception;
 	}
+	
 	public MequieException getException() {
 		return exception;
 	}
