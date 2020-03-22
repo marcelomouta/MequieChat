@@ -9,7 +9,8 @@ import mequieclient.app.facade.Session;
 
 public class GetUserInfoHandler{
 
-    private User currentUser;
+	// user that is using this handler
+	private User currentUser;
 
     public GetUserInfoHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);

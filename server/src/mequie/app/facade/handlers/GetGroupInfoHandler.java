@@ -11,7 +11,8 @@ import mequieclient.app.facade.exceptions.NotExistingGroupException;
 
 public class GetGroupInfoHandler{
 
-    private User currentUser;
+	// user that is using this handler
+	private User currentUser;
     
     private Group currentGroup;
 

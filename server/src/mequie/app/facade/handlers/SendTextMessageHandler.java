@@ -11,7 +11,8 @@ import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
 public class SendTextMessageHandler{
 
-    private User currentUser;
+	// user that is using this handler
+	private User currentUser;
     private Group currentGroup;
     private TextMessage currentMsg;
 

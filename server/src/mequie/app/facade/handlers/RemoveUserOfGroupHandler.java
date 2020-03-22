@@ -13,7 +13,8 @@ import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
 public class RemoveUserOfGroupHandler{
 
-    private User currentUser;
+	// user that is using this handler
+	private User currentUser;
     
     private User currentUserToRemove;
     

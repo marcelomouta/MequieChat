@@ -13,7 +13,8 @@ import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
 public class MessageHistoryOfGroupHandler{
 
-    private User currentUser;
+	// user that is using this handler
+	private User currentUser;
     
     private Group currentGroup;
 

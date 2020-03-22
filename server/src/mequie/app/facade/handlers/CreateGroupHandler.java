@@ -9,7 +9,8 @@ import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 
 public class CreateGroupHandler{
 
-    private User currentUser;
+	// user that is using this handler
+	private User currentUser;
     private Group currentGroup;
 
     public CreateGroupHandler(Session s) {
