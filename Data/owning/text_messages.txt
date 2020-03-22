@@ -1,4 +1,0 @@
-owning0:user01: test1
-owning2:bfreitas: mensagem do bfreitas
-owning3:user01: mensagem user01
-owning4:bfreitas: mandei na mesma cara

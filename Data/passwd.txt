@@ -1,2 +1,0 @@
-user01:passwd
-bfreitas:123123123

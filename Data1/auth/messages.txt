@@ -1,6 +1,0 @@
-auth0:user01: hey
-auth1:user01: testing:[user01, marcelo, pedro]
-auth0:user01: testing\0user01\0marcelo\0pedro
-auth0:user01: lala:lala7\0user01\0marcelo\0pedro
-auth1:user01: ss\0ss\0user01\0marcelo\0pedro
-auth2:user01: opwiebv aa	\0user01\0marcelo\0pedro

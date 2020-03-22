@@ -1,4 +1,0 @@
-10001:user01:bfreitas
-auth:user01:marcelo:pedro
-owning:user01
-notOwner:marcelo:user01

@@ -1,5 +1,0 @@
-owning0:t
-owning1:p
-owning2:t
-owning3:t
-owning4:t

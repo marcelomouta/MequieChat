@@ -1,8 +1,0 @@
-100010:user01: ola amigos
-100011:user01: adeus
-100010:user01: 1829379812
-100010:user01: ola meu
-100013:user01: txt
-100014:user01: twgs
-100015:user01: owguhi
-100016:user01: third
