@@ -23,11 +23,17 @@ public class MessageHistoryOfGroupHandler{
     // group that the user wants to add users
     private Group currentGroup;
 
+    /**
+     * @param s session to be used in this handler
+     */
     public MessageHistoryOfGroupHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
-    // mensagens vistas por todos do grupo
+    /**
+     * @param groupID group id of the group
+     * @throws NotExistingGroupException if the groupID doesn't match any existing group
+     */
     public void indicateGroupID(String groupID) throws NotExistingGroupException {
     	currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
     	if  (currentGroup == null) 

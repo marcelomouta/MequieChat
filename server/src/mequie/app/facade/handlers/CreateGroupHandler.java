@@ -19,6 +19,9 @@ public class CreateGroupHandler{
     // group that the user wants to add users
     private Group currentGroup;
 
+    /**
+     * @param s session to be used in this handler
+     */
     public CreateGroupHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }

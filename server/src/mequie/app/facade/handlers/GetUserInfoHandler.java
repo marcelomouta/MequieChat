@@ -17,6 +17,9 @@ public class GetUserInfoHandler{
 	// user that is using this handler
 	private User currentUser;
 
+    /**
+     * @param s session to be used in this handler
+     */
     public GetUserInfoHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }

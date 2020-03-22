@@ -30,10 +30,17 @@ public class CollectMessagesHandler {
 	private List<Message> readMsgs = new ArrayList<>();
 	private List<PhotoMessage> photosToRemove = new ArrayList<>();
 
+    /**
+     * @param s session to be used in this handler
+     */
 	public CollectMessagesHandler(Session s) {
 		currentUser = GetUserFromSessionHandler.getUserFromSession(s);
 	}
 
+    /**
+     * @param groupID group id of the group
+     * @throws NotExistingGroupException if the groupID doesn't match any existing group
+     */
 	public void indicateGroupID(String groupID) throws NotExistingGroupException {
 		currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
 		if  (currentGroup == null) 

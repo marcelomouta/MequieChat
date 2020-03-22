@@ -23,10 +23,17 @@ public class SendPhotoMessageHandler{
     
     private PhotoMessage currentMsg;
 
+    /**
+     * @param s session to be used in this handler
+     */
     public SendPhotoMessageHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
+    /**
+     * @param groupID group id of the group
+     * @throws NotExistingGroupException if the groupID doesn't match any existing group
+     */
     public void getGroupByID(String groupID) throws NotExistingGroupException {
     	currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
     	if  (currentGroup == null) 

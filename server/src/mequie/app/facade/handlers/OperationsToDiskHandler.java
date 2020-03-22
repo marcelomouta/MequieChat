@@ -29,6 +29,9 @@ public class OperationsToDiskHandler {
 
 	private OperationsToDiskHandler() {}
 
+    /**
+     * @param s session to be used in this handler
+     */
 	public static boolean saveTextMessageInDisk(TextMessage m, Group g) {
 			try {
 				// write in messageInfo file

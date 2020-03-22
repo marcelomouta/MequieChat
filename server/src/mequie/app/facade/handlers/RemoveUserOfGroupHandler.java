@@ -25,16 +25,27 @@ public class RemoveUserOfGroupHandler{
     // group that the user wants to add users
     private Group currentGroup;
 
+    /**
+     * @param s session to be used in this handler
+     */
     public RemoveUserOfGroupHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
+    /**
+     * @param userID user id of a user
+     * @throws NotExistingUserException if the userID doesn't match with any existing user
+     */
     public void indicateUserID(String userID) throws NotExistingUserException {
     	currentUserToRemove = UserCatalog.getInstance().getUserById(userID);
         if (currentUserToRemove == null)
             throw new NotExistingUserException();
     }
     
+    /**
+     * @param groupID group id of the group
+     * @throws NotExistingGroupException if the groupID doesn't match any existing group
+     */
     public void indicateGroupID(String groupID) throws NotExistingGroupException {
     	currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
     	if  (currentGroup == null) 
