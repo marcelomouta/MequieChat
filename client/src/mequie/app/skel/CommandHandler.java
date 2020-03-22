@@ -10,11 +10,12 @@ import java.util.List;
 
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.MequieException;
+import mequie.app.facade.network.NetworkMessage;
+import mequie.app.facade.network.NetworkMessageError;
+import mequie.app.facade.network.NetworkMessageRequest;
+import mequie.app.facade.network.NetworkMessageResponse;
 import mequie.app.network.NetworkClient;
-import mequie.app.network.NetworkMessage;
-import mequie.app.network.NetworkMessageError;
-import mequie.app.network.NetworkMessageRequest;
-import mequie.app.network.NetworkMessageResponse;
+
 /**
  * Class that handles the commands received from the client, sends them and receives their results via NetworkClient
  */

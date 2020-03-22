@@ -1,4 +1,4 @@
-package mequie.app.network;
+package mequie.app.facade.network;
 
 import java.io.Serializable;
 

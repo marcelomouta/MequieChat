@@ -1,9 +1,10 @@
-package mequie.app.network;
+package mequie.app.facade.network;
 
 import mequie.app.facade.exceptions.MequieException;
+import mequie.app.facade.network.NetworkMessage;
 
 /**
- * Network message describing an error (common to client and server)
+ * Network error message from the server containing an exception
  */
 public class NetworkMessageError extends NetworkMessage {
 	
@@ -13,7 +14,6 @@ public class NetworkMessageError extends NetworkMessage {
 		super(op);
 		this.exception = exception;
 	}
-	
 	public MequieException getException() {
 		return exception;
 	}

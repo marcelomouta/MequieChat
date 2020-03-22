@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import mequie.app.facade.Session;
+import mequie.app.facade.network.NetworkMessage;
 
 /**
  * Client class that deals with network requests

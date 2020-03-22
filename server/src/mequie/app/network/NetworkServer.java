@@ -10,9 +10,9 @@ import java.net.Socket;
 import mequie.app.skel.MequieSkel;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
-import mequie.app.network.NetworkMessage;
-import mequie.app.network.NetworkMessageError;
-import mequie.app.network.NetworkMessageRequest;
+import mequie.app.facade.network.NetworkMessage;
+import mequie.app.facade.network.NetworkMessageError;
+import mequie.app.facade.network.NetworkMessageRequest;
 
 public class NetworkServer {
 

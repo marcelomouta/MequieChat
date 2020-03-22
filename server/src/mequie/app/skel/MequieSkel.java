@@ -15,14 +15,14 @@ import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequie.app.facade.handlers.SendPhotoMessageHandler;
 import mequie.app.facade.handlers.SendTextMessageHandler;
+import mequie.app.facade.network.NetworkMessage;
+import mequie.app.facade.network.NetworkMessageError;
+import mequie.app.facade.network.NetworkMessageRequest;
+import mequie.app.facade.network.NetworkMessageResponse;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
 import mequie.app.facade.exceptions.ErrorInsufficientArgumentsException;
 import mequie.app.facade.exceptions.MequieException;
-import mequie.app.network.NetworkMessage;
-import mequie.app.network.NetworkMessageError;
-import mequie.app.network.NetworkMessageRequest;
-import mequie.app.network.NetworkMessageResponse;
 
 /**
  * 
