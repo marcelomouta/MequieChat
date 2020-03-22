@@ -31,16 +31,35 @@ import mequieclient.app.network.NetworkMessageError;
 import mequieclient.app.network.NetworkMessageRequest;
 import mequieclient.app.network.NetworkMessageResponse;
 
+/**
+ * 
+ * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+ * 
+ * This class represents the skel class of the server.
+ * This class is the intermediary between who receives the messages (network) and the application in memory.
+ * Will authenticate a possible user and if successful the invoke method can be used.
+ * Invoke will get the operation that the user asked for will execute it and the will build the message
+ * to send to user with the result of that asked operation. The message built is a NetworkMessage.
+ */
 public class MequieSkel {
-	
+	// the system class to get the handlers
 	private Mequie system = new Mequie();
-	
+	// the current session of an user
 	private Session currentSession;
 	
+	/**
+	 * Create a MequieSkel for a session
+	 * (NOTE: will have to autenticate to use the invoke)
+	 * @param s the possible session
+	 */
 	public MequieSkel(Session s) {
 		this.currentSession = s;
 	}
 	
+	/**
+	 * Authentication of a client
+	 * @return a NetworkMessage to sent to client with authentication OK or an Error if authentication failed
+	 */
 	public NetworkMessage autentication() throws AuthenticationFailedException {
 		try {
 			GetUserFromSessionHandler.authenticateSession(currentSession);
@@ -50,6 +69,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Invoke method: will execute the operation of a client
+	 * @param msg the NetworkMessageRequest by a client
+	 * @return a NetworkMessage with the information of operation asked or an Error if wasn't successfully executed
+	 */
 	public NetworkMessage invoke(NetworkMessageRequest msg) {
 		NetworkMessage response;
 
@@ -82,12 +106,17 @@ public class MequieSkel {
 			response = history(msg);
 			break;
 		default:
-			return null;
+			response = new NetworkMessageError(msg.getOp(), new MequieException("ERROR invalid operation"));
 		}
 		
 		return response;
 	}
 
+	/**
+	 * Operation to create a group
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage with OK or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage createGroup(NetworkMessageRequest msg) {
 		try {
 			CreateGroupHandler cgh = system.getCreateGroupHandler(currentSession);
@@ -117,6 +146,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Operation to add a user to a group
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage with OK or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage addUserToGroup(NetworkMessageRequest msg) {		
 		try {
 			AddUserToGroupHandler augh = system.getAddUserToGroupHandler(currentSession);
@@ -160,6 +194,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Operation to remove a user from a group
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage with OK or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage removeUserFromGroup(NetworkMessageRequest msg) {		
 		try {
 			RemoveUserOfGroupHandler rugh = system.getRemoveUserOfGroupHandler(currentSession);
@@ -203,6 +242,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Operation to get the information of a group
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage the information asked or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage getGroupInfo(NetworkMessageRequest msg) {		
 		try {
 			GetGroupInfoHandler gih = system.getGetGroupInfoHandler(currentSession);
@@ -229,6 +273,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Operation to get the information of an user
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage the information asked or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage getUserInfo(NetworkMessageRequest msg) {
 		
 		GetUserInfoHandler uih = system.getGetUserInfoHandler(currentSession);
@@ -239,6 +288,11 @@ public class MequieSkel {
 		
 	}
 	
+	/**
+	 * Operation to send a text message to a group
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage with OK or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage sendMsg(NetworkMessageRequest msg) {		
 		try {
 			SendTextMessageHandler stmh = system.getSendTextMessageHandler(currentSession);
@@ -276,6 +330,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Operation to send a photo message to a group
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage with OK or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage sendPhoto(NetworkMessageRequest msg) {	
 		try {
 			SendPhotoMessageHandler spmh = system.getSendPhotoMessageHandler(currentSession);
@@ -313,6 +372,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Operation to collect the messages unseen of a group by the client 
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage with the text messages and the photos or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage collectMsgs(NetworkMessageRequest msg) {		
 		try {
 			CollectMessagesHandler cmh = system.getCollectMessagesHandler(currentSession);
@@ -346,6 +410,11 @@ public class MequieSkel {
 		}
 	}
 	
+	/**
+	 * Operation to get the history of text messages of a group
+	 * @param msg the message with the information of what the client asked for
+	 * @return a NetworkMessage with the information asked or an Error if wasn't successfully executed
+	 */
 	private NetworkMessage history(NetworkMessageRequest msg) {
 		try {
 			MessageHistoryOfGroupHandler mhgh = system.getMessageHistoryOfGroupHandler(currentSession);

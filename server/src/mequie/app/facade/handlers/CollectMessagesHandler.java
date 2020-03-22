@@ -15,18 +15,32 @@ import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 import mequieclient.app.facade.exceptions.NotExistingGroupException;
 import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to collect group mesages of a user
+*/
 public class CollectMessagesHandler {
 
+	// user that is using this handler
 	private User currentUser;
+	// group that the user wants to add users
 	private Group currentGroup;
 
 	private List<Message> readMsgs = new ArrayList<>();
 	private List<PhotoMessage> photosToRemove = new ArrayList<>();
 
+    /**
+     * @param s session to be used in this handler
+     */
 	public CollectMessagesHandler(Session s) {
 		currentUser = GetUserFromSessionHandler.getUserFromSession(s);
 	}
 
+    /**
+     * @param groupID group id of the group
+     * @throws NotExistingGroupException if the groupID doesn't match any existing group
+     */
 	public void indicateGroupID(String groupID) throws NotExistingGroupException {
 		currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
 		if  (currentGroup == null) 
@@ -70,7 +84,11 @@ public class CollectMessagesHandler {
 		return msgsAndPhotosSeparated;
 	}
 
-	public void save() throws ErrorSavingInDiskException {
+    /**
+     * Saves Makes the operation persistent on disk
+     * @throws ErrorSavingInDiskException
+     */
+    public void save() throws ErrorSavingInDiskException {
 		if ( !OperationsToDiskHandler.updateSeenMessages(readMsgs, currentGroup, currentUser) )
 			throw new ErrorSavingInDiskException();
 		

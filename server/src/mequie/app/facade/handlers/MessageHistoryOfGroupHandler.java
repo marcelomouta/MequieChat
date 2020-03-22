@@ -11,17 +11,29 @@ import mequieclient.app.facade.Session;
 import mequieclient.app.facade.exceptions.NotExistingGroupException;
 import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to get messages history of a group
+*/
 public class MessageHistoryOfGroupHandler{
 
-    private User currentUser;
-    
+	// user that is using this handler
+	private User currentUser;
+    // group that the user wants to add users
     private Group currentGroup;
 
+    /**
+     * @param s session to be used in this handler
+     */
     public MessageHistoryOfGroupHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
-    // mensagens vistas por todos do grupo
+    /**
+     * @param groupID group id of the group
+     * @throws NotExistingGroupException if the groupID doesn't match any existing group
+     */
     public void indicateGroupID(String groupID) throws NotExistingGroupException {
     	currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
     	if  (currentGroup == null) 

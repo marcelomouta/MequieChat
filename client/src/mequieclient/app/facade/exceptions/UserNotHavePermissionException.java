@@ -1,18 +1,16 @@
 package mequieclient.app.facade.exceptions;
 
-import mequieclient.app.facade.exceptions.MequieException;
-
 /**
  * 
  * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
  * 
- * Esta classe representa uma exepcao que pode ser lancada caso um user 
- * nao tenha permissao para fazer uma acao
+ * This class represents an exception that is thrown when a user doesn't have permission 
+ * to execute an operation
  */
 @SuppressWarnings("serial")
 public class UserNotHavePermissionException extends MequieException {
 
 	public UserNotHavePermissionException(){
-		super("ERROR user nao tem permissao para fazer a acao");
+		super("ERROR user does not have permission to execute that action");
 	}
 }

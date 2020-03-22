@@ -1,18 +1,15 @@
 package mequieclient.app.facade.exceptions;
 
-import mequieclient.app.facade.exceptions.MequieException;
-
 /**
  * 
  * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
  * 
- * Esta classe representa uma exepcao que pode ser lancada caso nao haja 
- * um erro ao criar um grupo
+ * This class represents an exception that is thrown when adding a user to a group fails
  */
 @SuppressWarnings("serial")
 public class ErrorAddingUserToGroupException extends MequieException {
 
 	public ErrorAddingUserToGroupException(){
-		super("ERROR ao adicionar o utilizador ao grupo");
+		super("ERROR adding a user to a group. User already in this group");
 	}
 }

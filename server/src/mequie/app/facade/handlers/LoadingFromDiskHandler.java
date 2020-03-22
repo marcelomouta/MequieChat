@@ -16,9 +16,10 @@ import mequie.utils.Configuration;
 import mequie.utils.ReadFromDisk;
 
 /**
- * This class aims to load all the system to memory
- */
-
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class aims to load all the system to memory
+*/
 public class LoadingFromDiskHandler {
 	
 	private LoadingFromDiskHandler() {}

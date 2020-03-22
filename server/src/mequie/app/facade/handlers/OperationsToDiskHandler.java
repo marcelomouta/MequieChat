@@ -16,6 +16,11 @@ import mequie.utils.WriteInDisk;
 import mequie.utils.Configuration;
 import mequie.utils.ReadFromDisk;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class aims to make operations of any sort to the disk
+*/
 public class OperationsToDiskHandler {
 
 	private static Object groupMutex = new Object();
@@ -24,6 +29,9 @@ public class OperationsToDiskHandler {
 
 	private OperationsToDiskHandler() {}
 
+    /**
+     * @param s session to be used in this handler
+     */
 	public static boolean saveTextMessageInDisk(TextMessage m, Group g) {
 			try {
 				// write in messageInfo file
