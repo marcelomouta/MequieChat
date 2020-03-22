@@ -15,9 +15,16 @@ import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 import mequieclient.app.facade.exceptions.NotExistingGroupException;
 import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to collect group mesages of a user
+*/
 public class CollectMessagesHandler {
 
+	// user that is using this handler
 	private User currentUser;
+	// group that the user wants to add users
 	private Group currentGroup;
 
 	private List<Message> readMsgs = new ArrayList<>();

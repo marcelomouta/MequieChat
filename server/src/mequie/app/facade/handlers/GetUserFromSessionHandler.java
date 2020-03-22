@@ -6,6 +6,11 @@ import mequieclient.app.facade.Session;
 import mequieclient.app.facade.exceptions.AuthenticationFailedException;
 import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to get a user from a session
+*/
 public class GetUserFromSessionHandler {
 
 	private GetUserFromSessionHandler() {}

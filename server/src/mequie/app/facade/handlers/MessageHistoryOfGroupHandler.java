@@ -11,10 +11,16 @@ import mequieclient.app.facade.Session;
 import mequieclient.app.facade.exceptions.NotExistingGroupException;
 import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to get messages history of a group
+*/
 public class MessageHistoryOfGroupHandler{
 
-    private User currentUser;
-    
+	// user that is using this handler
+	private User currentUser;
+    // group that the user wants to add users
     private Group currentGroup;
 
     public MessageHistoryOfGroupHandler(Session s) {

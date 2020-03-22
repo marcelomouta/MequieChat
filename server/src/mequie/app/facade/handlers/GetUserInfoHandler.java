@@ -7,9 +7,15 @@ import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequieclient.app.facade.Session;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to get user information
+*/
 public class GetUserInfoHandler{
 
-    private User currentUser;
+	// user that is using this handler
+	private User currentUser;
 
     public GetUserInfoHandler(Session s) {
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
