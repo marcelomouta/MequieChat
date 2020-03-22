@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Current session of a client containing client credentials
  */
+@SuppressWarnings("serial")
 public class Session implements Serializable {
     // generic information about the session of a client
     private String username;

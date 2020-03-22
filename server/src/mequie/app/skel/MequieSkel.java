@@ -332,6 +332,7 @@ public class MequieSkel {
 	 * @param msg the message with the information of what the client asked for
 	 * @return a NetworkMessage with the text messages and the photos or an Error if wasn't successfully executed
 	 */
+	@SuppressWarnings("unchecked")
 	private NetworkMessage collectMsgs(NetworkMessageRequest msg) {		
 		try {
 			CollectMessagesHandler cmh = system.getCollectMessagesHandler(currentSession);

@@ -2,7 +2,6 @@ package mequie.app.facade.network;
 
 import java.util.ArrayList;
 
-
 /**
  * Network response message from the server containing results of the client command
  */
@@ -65,6 +64,7 @@ public class NetworkMessageResponse extends NetworkMessage {
 	/**
 	 * @return list of extra information string list from info 2 (ex: owning groups in uinfo)
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> getMsg2() {
 		return (ArrayList<String>) info2;
 	}
@@ -73,6 +73,7 @@ public class NetworkMessageResponse extends NetworkMessage {
 	/**
 	 * @return list of photos in bytes from collect
 	 */
+	@SuppressWarnings("unchecked")
 	public ArrayList<byte[]> getPhotos() {
 		return (ArrayList<byte[]>) info2;
 	}

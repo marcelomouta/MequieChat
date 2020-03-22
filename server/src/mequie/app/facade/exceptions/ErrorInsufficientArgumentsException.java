@@ -7,6 +7,7 @@ package mequie.app.facade.exceptions;
  * This class represents an exception that is thrown when an operation asked doesn't
  * have all the arguments needed
  */
+@SuppressWarnings("serial")
 public class ErrorInsufficientArgumentsException extends MequieException {
 
 	public ErrorInsufficientArgumentsException(){

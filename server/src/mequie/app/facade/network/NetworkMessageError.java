@@ -6,6 +6,7 @@ import mequie.app.facade.network.NetworkMessage;
 /**
  * Network error message from the server containing an exception
  */
+@SuppressWarnings("serial")
 public class NetworkMessageError extends NetworkMessage {
 	
 	private MequieException exception;

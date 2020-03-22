@@ -3,10 +3,10 @@ package mequie.app.facade.network;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 /**
  * Network message with client command request to the server
  */
+@SuppressWarnings("serial")
 public class NetworkMessageRequest extends NetworkMessage {
 	
 	private ArrayList<String> arguments; // Tem de ser ArrayList porque List nao eh Serializable

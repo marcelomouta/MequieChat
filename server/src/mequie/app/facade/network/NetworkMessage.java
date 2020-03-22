@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Common class to client and server to be sent through the network
  */
+@SuppressWarnings("serial")
 public abstract class NetworkMessage implements Serializable{
 
 
