@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# mkdir if folder doen not exists
+mkdir -p server/bin
+mkdir -p client/bin
+
+# clean all the files in bin
 if [ -d "server/bin" ] ; then
     rm -Rf server/bin/*
 fi
