@@ -26,6 +26,10 @@ public class CreateGroupHandler{
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
+    /**
+     * Creates a new group
+     * @param groupID id of the group to create
+     */
     public void makeGrupByID(String groupID) {
     	currentGroup = currentUser.createGroup(groupID);
     }
