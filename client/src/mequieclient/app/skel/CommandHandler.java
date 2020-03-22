@@ -15,7 +15,9 @@ import mequieclient.app.network.NetworkMessage;
 import mequieclient.app.network.NetworkMessageError;
 import mequieclient.app.network.NetworkMessageRequest;
 import mequieclient.app.network.NetworkMessageResponse;
-
+/**
+ * Class that handles the commands received from the client, sends them and receives their results via NetworkClient
+ */
 public class CommandHandler {
 
 	private static NetworkClient network;
@@ -25,6 +27,12 @@ public class CommandHandler {
 		this.network = network;
 	}
 
+	/**
+	 * Tries to authenticate the user in the server
+	 * @param user username
+	 * @param pass password
+	 * @return true if the user was authenticated, false otherwise
+	 */
 	public boolean authentication(String user, String pass) {
 		if (user.contains(":")) {
 			System.out.println("Invalid userID: ':' is a reserved symbol");
@@ -34,7 +42,7 @@ public class CommandHandler {
 			Session session = new Session(user, pass);
 			NetworkMessage res;
 
-			res = network.autenticaUser(session);
+			res = network.authenticateUser(session);
 
 			if (res instanceof NetworkMessageError) {
 				NetworkMessageError err = (NetworkMessageError) res;
@@ -50,6 +58,13 @@ public class CommandHandler {
 
 	}
 
+	/**
+	 * Create a new group command
+	 * @param newGroupID id of the group to be created
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws MequieException
+	 */
 	public void createGroup(String newGroupID) throws ClassNotFoundException, IOException, MequieException {
 		if (newGroupID.contains(":")) {
 			System.out.println("Invalid groupID: ':' is a reserved symbol");
@@ -66,7 +81,14 @@ public class CommandHandler {
 	}
 
 
-
+	/**
+	 * Add new user to a group command
+	 * @param userID id of the user to be added
+	 * @param groupID id of the group
+	 * @throws MequieException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	public void add(String userID, String groupID) throws MequieException, ClassNotFoundException, IOException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.ADD_USER_TO_GROUP,
 				new ArrayList(Arrays.asList(userID, groupID)));
@@ -77,6 +99,14 @@ public class CommandHandler {
 		printResult(msgServer);
 	}
 
+	/**
+	 * Remove user from group command
+	 * @param userID id of the user to be removed
+	 * @param groupID id of the group
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws MequieException
+	 */
 	public void remove(String userID, String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.REMOVE_USER_FROM_GROUP,
 				new ArrayList(Arrays.asList(userID, groupID)));
@@ -87,6 +117,13 @@ public class CommandHandler {
 		printResult(msgServer);
 	}
 
+	/**
+	 * Get info from group command
+	 * @param groupID id of the group
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws MequieException
+	 */
 	public void groupInfo(String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_GROUP_INFO,
 				new ArrayList(Arrays.asList(groupID)));
@@ -100,6 +137,12 @@ public class CommandHandler {
 		}
 	}
 
+	/**
+	 * Get info from current user's command
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws MequieException
+	 */
 	public void userInfo() throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_USER_INFO,
 				new ArrayList());
@@ -122,6 +165,14 @@ public class CommandHandler {
 		}
 	}
 
+	/**
+	 * Send message to a group command
+	 * @param groupID id of the group
+	 * @param txtMsg message to send
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws MequieException
+	 */
 	public void message(String groupID, String txtMsg) throws ClassNotFoundException, IOException, MequieException {
 		
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
@@ -133,6 +184,14 @@ public class CommandHandler {
 		printResult(msgServer);
 	}
 
+	/**
+	 * Send photo to a group command
+	 * @param groupID id of the group
+	 * @param fileName path of the file containing the photo
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws MequieException
+	 */
 	public void photo(String groupID, String fileName) throws IOException, ClassNotFoundException, MequieException {
 		FileInputStream inFile = new FileInputStream(fileName);
 		int size = Math.toIntExact(new File(fileName).length());
@@ -149,6 +208,13 @@ public class CommandHandler {
 		printResult(msgServer);
 	}
 
+	/**
+	 * Collect unread messages from group command
+	 * @param groupID id of the group
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws MequieException
+	 */
 	public void collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
 				new ArrayList(Arrays.asList(groupID)));
@@ -181,10 +247,22 @@ public class CommandHandler {
 		
 	}
 
+	/**
+	 * Formated empty collect messages print
+	 * @param groupID id of the group
+	 * @param msgType empty message type 
+	 */
 	private void printEmptyCollectMsgs(String groupID, String msgType) {
 		System.out.println("There are no " + msgType + "messages to read on '" + groupID + "'.");
 	}
 
+	/**
+	 * Get message history from group command
+	 * @param groupID id of the group
+	 * @throws MequieException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	public void history(String groupID) throws MequieException, ClassNotFoundException, IOException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.MESSAGE_HISTORY_OF_GROUP,
 				new ArrayList(Arrays.asList(groupID)));
@@ -202,6 +280,11 @@ public class CommandHandler {
 		}
 	}    
 
+	/**
+	 * Checks if an error was received from network
+	 * @param msgServer message received from the server
+	 * @throws MequieException
+	 */
 	private void checkIfMessageIsAnError(NetworkMessage msgServer) throws MequieException {
 		if(msgServer instanceof NetworkMessageError) {
 			NetworkMessageError msgError = (NetworkMessageError) msgServer;
@@ -209,12 +292,21 @@ public class CommandHandler {
 		}
 	}
 	
+	/**
+	 * Prints result received form network message
+	 * @param msgServer message received from the server
+	 */
 	private void printResult(NetworkMessage msgServer) {
 		if(msgServer instanceof NetworkMessageResponse) {
 			System.out.println(((NetworkMessageResponse) msgServer).getResult());
 		}
 	}
 
+	/**
+	 * Writes received photo to disk
+	 * @param photo photo content in bytes
+	 * @param path path to write the photo in
+	 */
 	private void writePhoto(byte[] photo, String path) {
 		File fileToWrite = new File(path);
 		fileToWrite.getParentFile().mkdirs();

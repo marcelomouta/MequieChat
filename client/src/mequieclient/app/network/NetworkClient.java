@@ -8,6 +8,9 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Client class that deals with network requests
+ */
 public class NetworkClient {
 
 	private NetworkClient() {
@@ -27,11 +30,13 @@ public class NetworkClient {
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 
-	/*
-	 * Esta função deve: - Obter o endereço do servidor (struct sockaddr_in) a base
-	 * da informação guardada na estrutura rtable; - Estabelecer a ligação com o
-	 * servidor; - Guardar toda a informação necessária (e.g., descritor do socket)
-	 * na estrutura rtable; - Retornar 0 (OK) ou -1 (erro).
+	
+	/**
+	 * Connects to the server
+	 * @param host hostname of the server
+	 * @param port port of the server
+	 * @throws UnknownHostException
+	 * @throws IOException
 	 */
 	public void connectToServer(String host, int port) throws UnknownHostException, IOException {
 
@@ -43,13 +48,13 @@ public class NetworkClient {
 	}
 
 
-
-	//    // ideia de SD
-	//    public Resposta sendReceive(Pedido p)  {
-	//    	// TODO
-	//    }
-
-
+	/**
+	 * Sends message to the server and receives its response
+	 * @param msg network message to send
+	 * @return received network message response from the server
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public NetworkMessage sendAndReceive(NetworkMessage msg) throws IOException, ClassNotFoundException {
 
 		out.writeObject(msg);
@@ -58,7 +63,14 @@ public class NetworkClient {
 		return msgResponse;
 	}
 	
-	public NetworkMessage autenticaUser(Session session) throws IOException, ClassNotFoundException {
+	/**
+	 * Tries to authenticate the current user on the server
+	 * @param session containing current user credentials
+	 * @return response from the server
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public NetworkMessage authenticateUser(Session session) throws IOException, ClassNotFoundException {
 		
 		out.writeObject(session);
 		out.flush();
@@ -67,28 +79,9 @@ public class NetworkClient {
 	}
 
 
-/*	public void sendTestFile(FileInputStream inFile, int size) throws IOException {
-
-		//out.writeObject("test");
-
-		//out.writeObject(size);
-
-		byte[] buf = new byte[size];
-		inFile.read(buf, 0, size);
-
-		//out.write(buf, 0, size);
-		//out.flush();
-
-		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.AUTH,
-				new ArrayList(Arrays.asList(new String(buf))));
-
-		out.writeObject(msg);
-
-		out.flush();
-	}*/
-
-	/*
-	 * A função closeConnection() fecha a ligação estabelecida por network_connect().
+	/**
+	 * Closes the connection to the server
+	 * @throws IOException
 	 */
 	public void closeConnection() throws IOException {
 
