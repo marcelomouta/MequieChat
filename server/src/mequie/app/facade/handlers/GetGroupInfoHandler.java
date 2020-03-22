@@ -9,6 +9,11 @@ import mequie.app.domain.catalogs.GroupCatalog;
 import mequieclient.app.facade.Session;
 import mequieclient.app.facade.exceptions.NotExistingGroupException;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to get a group information
+*/
 public class GetGroupInfoHandler{
 
 	// user that is using this handler

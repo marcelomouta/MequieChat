@@ -11,6 +11,11 @@ import mequieclient.app.facade.exceptions.NotExistingGroupException;
 import mequieclient.app.facade.exceptions.NotExistingUserException;
 import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
 
+/**
+* @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
+* 
+* This class represents a handler to remove a users of a group
+*/
 public class RemoveUserOfGroupHandler{
 
 	// user that is using this handler
