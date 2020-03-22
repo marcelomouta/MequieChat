@@ -41,6 +41,9 @@ public class CreateGroupHandler{
     public void groupAssociation() throws ErrorCreatingGroupException {
     	if ( !GroupCatalog.getInstance().addGroup(currentGroup) )
             throw new ErrorCreatingGroupException();
+    	
+    	currentUser.addGroupToOwnededGroups(currentGroup);
+    	currentUser.addGroupToBelongedGroups(currentGroup);
     }
     
     /**

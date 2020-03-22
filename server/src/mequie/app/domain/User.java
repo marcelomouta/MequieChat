@@ -27,12 +27,13 @@ public class User {
 
 	// Safe manipulation locks
 	// locks for groups safe manipulation
-	private ReadWriteLock lock = new ReentrantReadWriteLock();
-	private Lock groupsWriteLock = lock.writeLock();
-	private Lock groupsReadLock = lock.readLock();
-	// No needed locks for owned groups safe manipulation
-	// because it only add when the message is added. Then
-	// only read operations are executed.
+	private ReadWriteLock lock1 = new ReentrantReadWriteLock();
+	private Lock groupsWriteLock = lock1.writeLock();
+	private Lock groupsReadLock = lock1.readLock();
+	// locks for owned groups safe manipulation
+	private ReadWriteLock lock2 = new ReentrantReadWriteLock();
+	private Lock ownedGroupsWriteLock = lock2.writeLock();
+	private Lock ownedGroupsReadLock = lock2.readLock();
 
 	/**
 	 * 
@@ -66,14 +67,21 @@ public class User {
 	 */
 	public Group createGroup(String groupID) {
 		Group g = new Group(groupID, this);
-
-		// add to groups of this user
-		groups.add(g);
-
-		// add to groups owned by this user
-		groupsOwned.add(g);
-
 		return g;
+	}
+
+	/**
+	 * 
+	 * @param g the group to be added
+	 * @return true if group was successfully added to owned groups of the user
+	 */
+	public boolean addGroupToOwnededGroups(Group g) {
+		ownedGroupsWriteLock.lock();
+		try {
+			return groupsOwned.add(g);
+		} finally {
+			ownedGroupsWriteLock.unlock();
+		}
 	}
 
 	/**
