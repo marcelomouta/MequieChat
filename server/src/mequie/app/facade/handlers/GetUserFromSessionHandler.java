@@ -2,9 +2,9 @@ package mequie.app.facade.handlers;
 
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.UserCatalog;
-import mequieclient.app.facade.Session;
-import mequieclient.app.facade.exceptions.AuthenticationFailedException;
-import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
+import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.AuthenticationFailedException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas

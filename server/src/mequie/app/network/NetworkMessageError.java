@@ -1,10 +1,10 @@
 package mequie.app.network;
-import mequieclient.app.facade.exceptions.MequieException;
-import mequieclient.app.network.NetworkMessage;
+
+import mequie.app.facade.exceptions.MequieException;
+import mequie.app.network.NetworkMessage;
 
 /**
- * Classe comum ao Servidor e Cliente para troca de pedido e reposta
- * Esta classe auto envia-se para a rede
+ * Network error message from the server containing an exception
  */
 public class NetworkMessageError extends NetworkMessage {
 	

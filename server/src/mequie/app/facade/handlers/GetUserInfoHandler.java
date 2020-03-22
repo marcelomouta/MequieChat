@@ -5,7 +5,7 @@ import java.util.List;
 
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
-import mequieclient.app.facade.Session;
+import mequie.app.facade.Session;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas

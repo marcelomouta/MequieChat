@@ -10,6 +10,10 @@ package mequieclient.app.facade.exceptions;
 public class ErrorRemovingUserOfGroupException extends MequieException {
 
 	public ErrorRemovingUserOfGroupException(){
-		super("ERROR removing user from group. User does not belong to this group");
+		this("ERROR removing user from group. User does not belong to this group");
+	}
+
+	public ErrorRemovingUserOfGroupException(String message) {
+		super(message);
 	}
 }

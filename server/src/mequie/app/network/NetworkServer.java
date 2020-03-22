@@ -8,11 +8,11 @@ import java.net.Socket;
 //import java.nio.charset.StandardCharsets;
 
 import mequie.app.skel.MequieSkel;
-import mequieclient.app.facade.Session;
-import mequieclient.app.facade.exceptions.AuthenticationFailedException;
-import mequieclient.app.network.NetworkMessage;
-import mequieclient.app.network.NetworkMessageError;
-import mequieclient.app.network.NetworkMessageRequest;
+import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.AuthenticationFailedException;
+import mequie.app.network.NetworkMessage;
+import mequie.app.network.NetworkMessageError;
+import mequie.app.network.NetworkMessageRequest;
 
 public class NetworkServer {
 
@@ -123,15 +123,6 @@ public class NetworkServer {
 			}
 		}
 
-//		private void receiveFile(NetworkMessageRequest msg) throws IOException, ClassNotFoundException {
-//			System.out.println("A receber ficheiro...");
-//
-//			byte[] file = msg.getArguments().get(0).getBytes(StandardCharsets.UTF_8);
-//
-//			System.out.println("Recebeu o conteudo do ficheiro: " + msg.getArguments().get(0));
-//
-//			System.out.println("Ficheiro recebido.");
-//		}
 	}
 
 }

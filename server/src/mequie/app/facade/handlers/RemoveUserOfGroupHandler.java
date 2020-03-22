@@ -4,12 +4,12 @@ import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
-import mequieclient.app.facade.Session;
-import mequieclient.app.facade.exceptions.ErrorRemovingUserOfGroupException;
-import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
-import mequieclient.app.facade.exceptions.NotExistingGroupException;
-import mequieclient.app.facade.exceptions.NotExistingUserException;
-import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
+import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.ErrorRemovingUserOfGroupException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
+import mequie.app.facade.exceptions.NotExistingGroupException;
+import mequie.app.facade.exceptions.NotExistingUserException;
+import mequie.app.facade.exceptions.UserNotHavePermissionException;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
@@ -56,8 +56,15 @@ public class RemoveUserOfGroupHandler{
     	if (!currentGroup.getOwner().equals(currentUser))
     		throw new UserNotHavePermissionException();
     	
-    	if ( !currentGroup.removeUserByID(currentUserToRemove) )
+    	if ( !currentGroup.removeUserByID(currentUserToRemove) ) {
+    		
+    		if (currentUser.equals(currentUserToRemove)) {
+    			System.out.println("\n\nENTROU\n\n");
+    			throw new ErrorRemovingUserOfGroupException("ERROR removing user from group. Owner cannot remove himself");
+    		}
+    		
             throw new ErrorRemovingUserOfGroupException();
+    	}
     }
     
     /**

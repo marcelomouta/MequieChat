@@ -4,10 +4,10 @@ import mequie.app.domain.Group;
 import mequie.app.domain.PhotoMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
-import mequieclient.app.facade.Session;
-import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
-import mequieclient.app.facade.exceptions.NotExistingGroupException;
-import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
+import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
+import mequie.app.facade.exceptions.NotExistingGroupException;
+import mequie.app.facade.exceptions.UserNotHavePermissionException;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas

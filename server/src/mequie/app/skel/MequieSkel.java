@@ -15,21 +15,14 @@ import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
 import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
 import mequie.app.facade.handlers.SendPhotoMessageHandler;
 import mequie.app.facade.handlers.SendTextMessageHandler;
-import mequieclient.app.facade.Session;
-import mequieclient.app.facade.exceptions.AuthenticationFailedException;
-import mequieclient.app.facade.exceptions.ErrorAddingUserToGroupException;
-import mequieclient.app.facade.exceptions.ErrorCreatingGroupException;
-import mequieclient.app.facade.exceptions.ErrorInsufficientArgumentsException;
-import mequieclient.app.facade.exceptions.ErrorRemovingUserOfGroupException;
-import mequieclient.app.facade.exceptions.ErrorSavingInDiskException;
-import mequieclient.app.facade.exceptions.MequieException;
-import mequieclient.app.facade.exceptions.NotExistingGroupException;
-import mequieclient.app.facade.exceptions.NotExistingUserException;
-import mequieclient.app.facade.exceptions.UserNotHavePermissionException;
-import mequieclient.app.network.NetworkMessage;
-import mequieclient.app.network.NetworkMessageError;
-import mequieclient.app.network.NetworkMessageRequest;
-import mequieclient.app.network.NetworkMessageResponse;
+import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.AuthenticationFailedException;
+import mequie.app.facade.exceptions.ErrorInsufficientArgumentsException;
+import mequie.app.facade.exceptions.MequieException;
+import mequie.app.network.NetworkMessage;
+import mequie.app.network.NetworkMessageError;
+import mequie.app.network.NetworkMessageRequest;
+import mequie.app.network.NetworkMessageResponse;
 
 /**
  * 
@@ -64,8 +57,8 @@ public class MequieSkel {
 		try {
 			GetUserFromSessionHandler.authenticateSession(currentSession);
 			return new NetworkMessageResponse(NetworkMessage.Opcode.AUTH, "OK");
-		} catch (ErrorSavingInDiskException e) {
-			return new NetworkMessageError(NetworkMessage.Opcode.AUTH, new ErrorSavingInDiskException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(NetworkMessage.Opcode.AUTH, e);
 		}
 	}
 	
@@ -137,12 +130,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 		
-		} catch (ErrorCreatingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorCreatingGroupException());
-		} catch (ErrorSavingInDiskException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		}
 	}
 	
@@ -177,18 +166,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
-		} catch (NotExistingUserException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingUserException());
-		} catch (NotExistingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-		} catch (ErrorAddingUserToGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorAddingUserToGroupException());
-		} catch (UserNotHavePermissionException e) {
-			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
-		} catch (ErrorSavingInDiskException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		} catch (Exception e) {
 			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
@@ -225,18 +204,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
-		} catch (NotExistingUserException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingUserException());
-		} catch (NotExistingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-		} catch (ErrorRemovingUserOfGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorRemovingUserOfGroupException());
-		} catch (UserNotHavePermissionException e) {
-			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
-		} catch (ErrorSavingInDiskException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		} catch (Exception e) {
 			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
@@ -266,10 +235,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(),"OK", new ArrayList<>(info));
 			
-		} catch (NotExistingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		}
 	}
 	
@@ -319,14 +286,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 		
-		} catch (NotExistingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-		} catch (UserNotHavePermissionException e) {
-			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
-		} catch (ErrorSavingInDiskException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		}
 	}
 	
@@ -361,14 +322,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
-		} catch (NotExistingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-		} catch (UserNotHavePermissionException e) {
-			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
-		} catch (ErrorSavingInDiskException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		}
 	}
 	
@@ -399,14 +354,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK", info1, info2);
 			
-		} catch (NotExistingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-		} catch (UserNotHavePermissionException e) {
-			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
-		} catch (ErrorSavingInDiskException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorSavingInDiskException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		}
 	}
 	
@@ -434,12 +383,8 @@ public class MequieSkel {
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(msgs));
 			
-		} catch (NotExistingGroupException e) {
-			return new NetworkMessageError(msg.getOp(), new NotExistingGroupException());
-		} catch (UserNotHavePermissionException e) {
-			return new NetworkMessageError(msg.getOp(), new UserNotHavePermissionException());
-		} catch (ErrorInsufficientArgumentsException e) {
-			return new NetworkMessageError(msg.getOp(), new ErrorInsufficientArgumentsException());
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
 		}
 	}
 

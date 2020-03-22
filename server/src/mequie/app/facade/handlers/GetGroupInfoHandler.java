@@ -6,8 +6,8 @@ import java.util.List;
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
-import mequieclient.app.facade.Session;
-import mequieclient.app.facade.exceptions.NotExistingGroupException;
+import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.NotExistingGroupException;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas

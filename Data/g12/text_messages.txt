@@ -1,2 +1,4 @@
 g120:user01: ola
 g121:user01: asjdas
+g122:bfreitas: ola user01
+g123:bfreitas: tudo bem? Olha vou enviar uma foto super engraçada
