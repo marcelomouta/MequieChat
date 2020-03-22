@@ -27,9 +27,9 @@ public class User {
 
 	// Safe manipulation locks
 	// locks for groups safe manipulation
-	ReadWriteLock lock = new ReentrantReadWriteLock();
-	Lock groupsWriteLock = lock.writeLock();
-	Lock groupsReadLock = lock.readLock();
+	private ReadWriteLock lock = new ReentrantReadWriteLock();
+	private Lock groupsWriteLock = lock.writeLock();
+	private Lock groupsReadLock = lock.readLock();
 	// No needed locks for owned groups safe manipulation
 	// because it only add when the message is added. Then
 	// only read operations are executed.
@@ -82,11 +82,11 @@ public class User {
 	 * @return true if group was successfully added to groups of the user
 	 */
 	public boolean addGroupToBelongedGroups(Group g) {
-		groupsReadLock.lock();
+		groupsWriteLock.lock();
 		try {
 			return groups.add(g);
 		} finally {
-			groupsReadLock.unlock();
+			groupsWriteLock.unlock();
 		}
 	}
 
@@ -96,11 +96,11 @@ public class User {
 	 * @return true if group was successfully removed from groups of the user
 	 */
 	public boolean removeGroupFromBelongedGroups(Group g) {
-		groupsReadLock.lock();
+		groupsWriteLock.lock();
 		try {
 			return groups.remove(g);
 		} finally {
-			groupsReadLock.unlock();
+			groupsWriteLock.unlock();
 		}
 	}
 

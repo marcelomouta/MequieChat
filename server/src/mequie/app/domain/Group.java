@@ -33,17 +33,17 @@ public class Group {
 
 	// Safe manipulation locks
 	// locks for users safe manipulation
-	ReadWriteLock lock1 = new ReentrantReadWriteLock();
-	Lock usersWriteLock = lock1.writeLock();
-	Lock usersReadLock = lock1.readLock();
+	private ReadWriteLock lock1 = new ReentrantReadWriteLock();
+	private Lock usersWriteLock = lock1.writeLock();
+	private Lock usersReadLock = lock1.readLock();
 	// locks for messages safe manipulation
-	ReadWriteLock lock2 = new ReentrantReadWriteLock();
-	Lock messagesWriteLock = lock2.writeLock();
-	Lock messagesReadLock = lock2.readLock();
+	private ReadWriteLock lock2 = new ReentrantReadWriteLock();
+	private Lock messagesWriteLock = lock2.writeLock();
+	private Lock messagesReadLock = lock2.readLock();
 	// locks for history safe manipulation
-	ReadWriteLock lock3 = new ReentrantReadWriteLock();
-	Lock historyWriteLock = lock3.writeLock();
-	Lock historyReadLock = lock3.readLock();
+	private ReadWriteLock lock3 = new ReentrantReadWriteLock();
+	private Lock historyWriteLock = lock3.writeLock();
+	private Lock historyReadLock = lock3.readLock();
 
 	/**
 	 * 
@@ -100,7 +100,7 @@ public class Group {
 	public List<Message> getHistory() {
 		historyReadLock.lock();
 		try {
-			return history;
+			return new ArrayList<>(history);
 		} finally {
 			historyReadLock.unlock();
 		}
@@ -134,7 +134,7 @@ public class Group {
 	 * @param userToAdd the user to add to this group
 	 * @return true if the user was successfully added to this group
 	 */
-	public boolean addUserByID(User userToAdd) throws Exception {
+	public boolean addUserByID(User userToAdd){
 		boolean doneCorrectly = false;
 
 		// add user to users group
@@ -160,7 +160,7 @@ public class Group {
 	 * @param userToRemove the user to remove from this group
 	 * @return true if the user was successfully removed from this group
 	 */
-	public boolean removeUserByID(User userToRemove) throws Exception{
+	public boolean removeUserByID(User userToRemove) {
 		if (userToRemove.equals(owner))
 			return false;
 
