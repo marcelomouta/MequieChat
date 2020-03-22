@@ -5,9 +5,9 @@ Grupo 37
 * 51110 - Marcelo Mouta
 * 51468 - Bruno Freitas
 
-Abra o terminal dentro da pasta 'SegC-grupo37proj1' para executar os próximos comandos.
+Abra o terminal dentro da pasta 'SegC-grupo37-proj1' para executar os próximos comandos.
 Pode deslocar-se para lá fazendo:
-    cd $HOME/SegC-grupo37proj1
+    cd $HOME/SegC-grupo37-proj1
 
 
 BUILD
@@ -24,7 +24,7 @@ e finalmente:
 
 RUN
 
-Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: $HOME/SegC-grupo37proj1 
+Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: $HOME/SegC-grupo37-proj1
 
 Servidor:
     java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer <port>
