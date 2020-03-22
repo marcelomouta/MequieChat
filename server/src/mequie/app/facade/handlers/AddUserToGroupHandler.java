@@ -65,7 +65,7 @@ public class AddUserToGroupHandler{
     }
     
     /**
-     * Saves the user to the group in the disk
+     * Saves Makes the operation persistent on disk
      * @throws ErrorSavingInDiskException
      */
     public void save() throws ErrorSavingInDiskException {

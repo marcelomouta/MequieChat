@@ -50,6 +50,10 @@ public class SendTextMessageHandler{
     	currentGroup.saveMessage(currentMsg);
     }
     
+    /**
+     * Saves Makes the operation persistent on disk
+     * @throws ErrorSavingInDiskException
+     */
     public void save() throws ErrorSavingInDiskException {
     	if ( !OperationsToDiskHandler.saveTextMessageInDisk(currentMsg, currentGroup) )
     		throw new ErrorSavingInDiskException();

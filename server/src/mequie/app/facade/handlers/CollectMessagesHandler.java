@@ -84,7 +84,11 @@ public class CollectMessagesHandler {
 		return msgsAndPhotosSeparated;
 	}
 
-	public void save() throws ErrorSavingInDiskException {
+    /**
+     * Saves Makes the operation persistent on disk
+     * @throws ErrorSavingInDiskException
+     */
+    public void save() throws ErrorSavingInDiskException {
 		if ( !OperationsToDiskHandler.updateSeenMessages(readMsgs, currentGroup, currentUser) )
 			throw new ErrorSavingInDiskException();
 		

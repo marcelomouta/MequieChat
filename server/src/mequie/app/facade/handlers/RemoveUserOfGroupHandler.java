@@ -60,6 +60,10 @@ public class RemoveUserOfGroupHandler{
             throw new ErrorRemovingUserOfGroupException();
     }
     
+    /**
+     * Saves Makes the operation persistent on disk
+     * @throws ErrorSavingInDiskException
+     */
     public void save() throws ErrorSavingInDiskException {
     	if ( !OperationsToDiskHandler.saveRemoveUserFromGroup(currentUserToRemove, currentGroup) )
     		throw new ErrorSavingInDiskException();

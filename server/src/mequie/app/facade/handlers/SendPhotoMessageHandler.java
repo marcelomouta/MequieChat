@@ -51,6 +51,11 @@ public class SendPhotoMessageHandler{
     	currentGroup.saveMessage(currentMsg);
     }
     
+    /**
+     * Saves Makes the operation persistent on disk
+     * @param photo array of bytes of the photo to save
+     * @throws ErrorSavingInDiskException
+     */
     public void save(byte[] photo) throws ErrorSavingInDiskException {
     	if ( !OperationsToDiskHandler.savePhotoMessageInDisk(photo, currentMsg, currentGroup) )
     		throw new ErrorSavingInDiskException();

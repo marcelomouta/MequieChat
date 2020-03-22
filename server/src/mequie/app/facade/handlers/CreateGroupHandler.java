@@ -35,6 +35,10 @@ public class CreateGroupHandler{
             throw new ErrorCreatingGroupException();
     }
     
+    /**
+     * Saves Makes the operation persistent on disk
+     * @throws ErrorSavingInDiskException
+     */
     public void save() throws ErrorSavingInDiskException {
     	if ( !OperationsToDiskHandler.saveGroupInDisk(currentGroup) )
     		throw new ErrorSavingInDiskException();
