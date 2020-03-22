@@ -87,7 +87,6 @@ public class Mequie {
 		String[] command = scanner.nextLine().split(" ",3);
 
 		try {
-			//TODO
 			switch (command[0]) {
 				case "create": case "c":
 					cHandler.createGroup(command[1]);
@@ -135,10 +134,8 @@ public class Mequie {
 		} catch (IOException e) {
 			System.out.println("Error executing command");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} catch (MequieException e) {
-			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
 

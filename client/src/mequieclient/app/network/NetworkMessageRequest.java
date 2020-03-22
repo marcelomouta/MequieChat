@@ -1,12 +1,11 @@
 package mequieclient.app.network;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import mequieclient.app.network.NetworkMessage;
 
 /**
- * Classe comum ao Servidor e Cliente para troca de pedido e reposta
- * Esta classe auto envia-se para a rede
+ * Network message with client command request to the server
  */
 public class NetworkMessageRequest extends NetworkMessage {
 	

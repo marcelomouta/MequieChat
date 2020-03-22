@@ -1,13 +1,9 @@
 package mequie.app.network;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import mequieclient.app.facade.exceptions.MequieException;
+import java.io.Serializable;
 
 /**
- * Classe comum ao Servidor e Cliente para troca de pedido e reposta
- * Esta classe auto envia-se para a rede
+ * Common class to client and server to be sent through the network
  */
 public abstract class NetworkMessage implements Serializable{
 
@@ -22,11 +18,14 @@ public abstract class NetworkMessage implements Serializable{
 		SEND_PHOTO_MESSAGE,
 		COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
 		MESSAGE_HISTORY_OF_GROUP,
-		TEST // TODO Apgar mais tarde
+		AUTH
 	}
 	
 	private Opcode op;
 	
+	/** Network Message with current operation 
+	 * @param op operation code
+	 */
 	protected NetworkMessage(Opcode op) {
 		super();
 		this.op = op;
@@ -38,12 +37,4 @@ public abstract class NetworkMessage implements Serializable{
 	
 	public abstract String toString();
 	
-//	public String toString() {
-//		return "--- NetworkMessage ---\n" +
-//			"Opcode = " + this.getOp().toString() + "\n" +
-//			"CType = " + this.getType().toString() + "\n" +
-//			"Arguments = " + Arrays.toString(this.getArguments().toArray()) + "\n" +
-//			"Result = " + (this.getResult().equals("") ? "\"\"" : this.getResult());
-//		
-//	}
 }
