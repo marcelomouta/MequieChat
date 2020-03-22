@@ -57,7 +57,10 @@ public class Mequie {
         close();
 
     }
-
+	
+	/**
+	 * Closes the client.
+	 */
     private static void close() {
         scanner.close();
 
@@ -67,7 +70,10 @@ public class Mequie {
             System.err.println(e.getMessage());
         }
     }
-
+    
+    /**
+     * Read and execute next command from cli
+     */
     private static void doNextCommand() {
 
 		//reads command from cli
@@ -131,16 +137,26 @@ public class Mequie {
 
 	}
 
+    /**
+     * @param message message to include in formated print
+     * Formated print for incorrect command
+     */
 	private static void incorrectCommand(String message) {
 		System.out.println(message);
 		printPossibleCommands();
 	}
 
+	/**
+	 * Standard print for incorrect command
+	 */
 	private static void incorrectCommand() {
 		incorrectCommand("Incorrect command");
 
 	}
 
+	/**
+	 * Prints possible commands to use in cli
+	 */
 	private static void printPossibleCommands() {
 		System.out.println("Possible Commands:\n" +
 				"\tcreate <groupID>\n" +
@@ -155,6 +171,11 @@ public class Mequie {
                 "\texit");
 	}
 
+	/**
+	 * Gets password form args or asks it to user if not provided
+	 * @param args program arguments
+	 * @return read password
+	 */
 	private static String getPassword(String[] args) {
 		if (args.length == 3) {
 			return args[2];
