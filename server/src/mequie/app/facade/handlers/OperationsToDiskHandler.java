@@ -29,9 +29,13 @@ public class OperationsToDiskHandler {
 
 	private OperationsToDiskHandler() {}
 
-    /**
-     * @param s session to be used in this handler
-     */
+	/**
+	 * 
+	 * @param m text message
+	 * @param g group to save it to
+	 * @return true if it saved the text message with success
+	 *         false otherwise
+	 */
 	public static boolean saveTextMessageInDisk(TextMessage m, Group g) {
 			try {
 				// write in messageInfo file
@@ -49,7 +53,14 @@ public class OperationsToDiskHandler {
 				return false;
 			}
 	}
-
+	
+	/**
+	 * 
+	 * @param data photo bytes array
+	 * @param g group to save it to
+	 * @return true if it saved the photo with success
+	 *         false otherwise
+	 */
 	public static boolean savePhotoMessageInDisk(byte[] data, PhotoMessage m, Group g) {
 		try {
 			// write in messageInfo file
@@ -65,6 +76,7 @@ public class OperationsToDiskHandler {
 	}
 
 	/**
+	 * Saves the message in disk
 	 * @param m message to write in disk
 	 * @param flag message type
 	 */
@@ -77,6 +89,12 @@ public class OperationsToDiskHandler {
 		}
 	}
 
+	/**
+	 * 
+	 * @param u user
+	 * @return true if it saved the user with success
+	 *         false otherwise
+	 */
 	public static synchronized boolean saveUserInDisk(User u) {
 		try {
 			WriteInDisk write = new WriteInDisk(Configuration.getPasswordPathName());
@@ -88,6 +106,12 @@ public class OperationsToDiskHandler {
 		}
 	}
 
+	/**
+	 * 
+	 * @param g group
+	 * @return true if it saved the group with success
+	 *         false otherwise
+	 */
 	public static boolean saveGroupInDisk(Group g) {
 		initializeGroupMutexes(g);
 		
@@ -110,6 +134,13 @@ public class OperationsToDiskHandler {
 		textMessageMutexes.put(g.getGoupID(), new Object());
 	}
 
+	/**
+	 * 
+	 * @param u user
+	 * @param g group
+	 * @return true if it saved the user to group with success
+	 *         false otherwise
+	 */
 	public static boolean saveUserToGroupInDisk(User u, Group g) {
 		synchronized(groupMutex) {
 			try {
@@ -137,6 +168,13 @@ public class OperationsToDiskHandler {
 		}
 	}
 
+	/**
+	 * 
+	 * @param u user
+	 * @param g group
+	 * @return true if it saved the removal of the user to group with success
+	 *         false otherwise
+	 */
 	public static boolean saveRemoveUserFromGroup(User u, Group g) {
 		synchronized(groupMutex) {
 			try {
@@ -159,6 +197,11 @@ public class OperationsToDiskHandler {
 		}
 	}
 
+	/**
+	 * 
+	 * @param path path to the content
+	 * @return array of bytes of the content read in that path
+	 */
 	public static byte[] getFileContent(String path) {
 		try {
 			ReadFromDisk reader = new ReadFromDisk(path, false);

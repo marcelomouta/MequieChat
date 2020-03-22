@@ -24,6 +24,10 @@ public class GetUserInfoHandler{
         currentUser = GetUserFromSessionHandler.getUserFromSession(s);
     }
 
+    /**
+     * 
+     * @return list with a list with the user's groups and a list with groups that the user is owner
+     */
     public List<List<String>> getUserInfo() {
     	List<List<String>> groupsAndOwnedGroupsSeparated = new ArrayList<>(2);
     	

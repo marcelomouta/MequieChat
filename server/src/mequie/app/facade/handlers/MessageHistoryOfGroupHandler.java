@@ -40,6 +40,11 @@ public class MessageHistoryOfGroupHandler{
             throw new NotExistingGroupException();
     }
     
+    /**
+     * 
+     * @return list of the text messages in group's history
+     * @throws UserNotHavePermissionException
+     */
     public List<String> getHistory() throws UserNotHavePermissionException {
     	if (!currentGroup.isUserOfGroup(currentUser))
     		throw new UserNotHavePermissionException();
