@@ -2,7 +2,6 @@ package mequie.app.skel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -25,8 +24,8 @@ public class CommandHandler {
 	private static NetworkClient network;
 	private int generator = 1; // to generate the id of income photos
 
-	public CommandHandler(NetworkClient network) {
-		this.network = network;
+	public CommandHandler(NetworkClient nw) {
+		network = nw;
 	}
 
 	/**
@@ -35,6 +34,7 @@ public class CommandHandler {
 	 * @param pass password
 	 * @return true if the user was authenticated, false otherwise
 	 */
+	@SuppressWarnings("unused")
 	public boolean authentication(String user, String pass) {
 		if (user.contains(":")) {
 			System.out.println("Invalid userID: ':' is a reserved symbol");
@@ -74,7 +74,7 @@ public class CommandHandler {
 		}
 
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.CREATE_GROUP,
-				new ArrayList(Arrays.asList(newGroupID)));
+				new ArrayList<>(Arrays.asList(newGroupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
@@ -93,7 +93,7 @@ public class CommandHandler {
 	 */
 	public void add(String userID, String groupID) throws MequieException, ClassNotFoundException, IOException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.ADD_USER_TO_GROUP,
-				new ArrayList(Arrays.asList(userID, groupID)));
+				new ArrayList<>(Arrays.asList(userID, groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
@@ -111,7 +111,7 @@ public class CommandHandler {
 	 */
 	public void remove(String userID, String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.REMOVE_USER_FROM_GROUP,
-				new ArrayList(Arrays.asList(userID, groupID)));
+				new ArrayList<>(Arrays.asList(userID, groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
@@ -160,7 +160,7 @@ public class CommandHandler {
 	 */
 	public void userInfo() throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_USER_INFO,
-				new ArrayList());
+				new ArrayList<>());
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
@@ -196,7 +196,7 @@ public class CommandHandler {
 	public void message(String groupID, String txtMsg) throws ClassNotFoundException, IOException, MequieException {
 		
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
-				new ArrayList(Arrays.asList(groupID, txtMsg)));
+				new ArrayList<>(Arrays.asList(groupID, txtMsg)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
@@ -237,7 +237,7 @@ public class CommandHandler {
 	 */
 	public void collect(String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
-				new ArrayList(Arrays.asList(groupID)));
+				new ArrayList<>(Arrays.asList(groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
@@ -285,7 +285,7 @@ public class CommandHandler {
 	 */
 	public void history(String groupID) throws MequieException, ClassNotFoundException, IOException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.MESSAGE_HISTORY_OF_GROUP,
-				new ArrayList(Arrays.asList(groupID)));
+				new ArrayList<>(Arrays.asList(groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);

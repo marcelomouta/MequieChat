@@ -3,8 +3,6 @@ package mequie.app.network;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import mequie.app.facade.Session;
 import mequie.app.facade.network.NetworkMessage;
