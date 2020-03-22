@@ -1,4 +1,4 @@
-grant codeBase "file:${user.home}/SegC-grupo37proj1/-"{ // codeBase "file:${user.home}/pasta/MequieChat/-"
+grant codeBase "file:${user.home}/SegC-grupo37-proj1/-"{ // codeBase "file:${user.home}/pasta/MequieChat/-"
 	permission java.net.SocketPermission "*:1024-", "connect,resolve";
 	permission java.io.FilePermission "ClientData/-","write,read";
 	permission java.io.FilePermission "./*","read"; //send photos in root folder
