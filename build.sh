@@ -9,9 +9,9 @@ if [ -d "client/bin" ] ; then
 fi
 
 # compile server
-javac -d server/bin -cp server/src server/src/mequie/main/MequieServer.java
+javac -d server/bin -cp server/src server/src/mequie/main/MequieServer.java > /dev/null
 
 #compile client
-javac -d client/bin -cp client/src:server/src client/src/mequie/main/Mequie.java
+javac -d client/bin -cp client/src:server/src client/src/mequie/main/Mequie.java > /dev/null
 
 echo "MequieChat (client & server) compilled with success :-)"
