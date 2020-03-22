@@ -27,6 +27,12 @@ public class CommandHandler {
 		this.network = network;
 	}
 
+	/**
+	 * Tries to authenticate the user in the server
+	 * @param user username
+	 * @param pass password
+	 * @return true if the user was authenticated, false otherwise
+	 */
 	public boolean authentication(String user, String pass) {
 		if (user.contains(":")) {
 			System.out.println("Invalid userID: ':' is a reserved symbol");
@@ -36,7 +42,7 @@ public class CommandHandler {
 			Session session = new Session(user, pass);
 			NetworkMessage res;
 
-			res = network.autenticaUser(session);
+			res = network.authenticateUser(session);
 
 			if (res instanceof NetworkMessageError) {
 				NetworkMessageError err = (NetworkMessageError) res;

@@ -8,7 +8,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-
+/**
+ * Mequie Client 
+ * @author Grupo 37
+ * @author 51021 - Pedro Marques
+ * @author 51110 - Marcelo Mouta
+ * @author 51468 - Bruno Freitas
+ *
+ */
 public class Mequie {
 
 	private static Scanner scanner = new Scanner(System.in);
