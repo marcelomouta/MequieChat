@@ -17,7 +17,7 @@ public class RemoveUserOfGroupHandler{
 	private User currentUser;
     
     private User currentUserToRemove;
-    
+    // group that the user wants to add users
     private Group currentGroup;
 
     public RemoveUserOfGroupHandler(Session s) {

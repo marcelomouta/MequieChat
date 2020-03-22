@@ -13,6 +13,7 @@ public class SendTextMessageHandler{
 
 	// user that is using this handler
 	private User currentUser;
+    // group that the user wants to add users
     private Group currentGroup;
     private TextMessage currentMsg;
 

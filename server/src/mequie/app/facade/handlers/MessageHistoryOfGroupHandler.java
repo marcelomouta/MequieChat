@@ -15,7 +15,7 @@ public class MessageHistoryOfGroupHandler{
 
 	// user that is using this handler
 	private User currentUser;
-    
+    // group that the user wants to add users
     private Group currentGroup;
 
     public MessageHistoryOfGroupHandler(Session s) {
