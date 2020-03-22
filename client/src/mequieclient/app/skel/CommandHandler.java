@@ -210,7 +210,7 @@ public class CommandHandler {
 	 * @throws ClassNotFoundException
 	 * @throws MequieException
 	 */
-	public void photo(String groupID, String fileName) throws IOException, ClassNotFoundException, MequieException {
+	public void photo(String groupID, String fileName) throws IOException, ArithmeticException, ClassNotFoundException, MequieException {
 		FileInputStream inFile = new FileInputStream(fileName);
 		int size = Math.toIntExact(new File(fileName).length());
 		byte[] buf = new byte[size];
@@ -218,7 +218,7 @@ public class CommandHandler {
 		inFile.close();
 
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_PHOTO_MESSAGE,
-				new ArrayList(Arrays.asList(groupID)), buf);
+				new ArrayList<>(Arrays.asList(groupID)), buf);
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
