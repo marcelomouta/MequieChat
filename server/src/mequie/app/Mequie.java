@@ -16,38 +16,74 @@ import mequieclient.app.facade.Session;
  */
 public class Mequie {
 	
+	/**
+	 * 
+	 * @return the handler to create a group
+	 */
 	public CreateGroupHandler getCreateGroupHandler(Session s) {
 		return new CreateGroupHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to add a user to a gropu
+	 */
 	public AddUserToGroupHandler getAddUserToGroupHandler(Session s) {
 		return new AddUserToGroupHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to remove a user from a group
+	 */
 	public RemoveUserOfGroupHandler getRemoveUserOfGroupHandler(Session s) {
 		return new RemoveUserOfGroupHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to collect the message of a group
+	 */
 	public CollectMessagesHandler getCollectMessagesHandler(Session s) {
 		return new CollectMessagesHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to get the information of a group
+	 */
 	public GetGroupInfoHandler getGetGroupInfoHandler(Session s) {
 		return new GetGroupInfoHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to get the information of an user
+	 */
 	public GetUserInfoHandler getGetUserInfoHandler(Session s) {
 		return new GetUserInfoHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to get the history of a group
+	 */
 	public MessageHistoryOfGroupHandler getMessageHistoryOfGroupHandler(Session s) {
 		return new MessageHistoryOfGroupHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to send a photo message in a group
+	 */
 	public SendPhotoMessageHandler getSendPhotoMessageHandler(Session s) {
 		return new SendPhotoMessageHandler(s);
 	}
 	
+	/**
+	 * 
+	 * @return the handler to send a text message in a group
+	 */
 	public SendTextMessageHandler getSendTextMessageHandler(Session s) {
 		return new SendTextMessageHandler(s);
 	}
