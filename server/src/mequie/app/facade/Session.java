@@ -3,10 +3,10 @@ package mequie.app.facade;
 import java.io.Serializable;
 
 /**
- * Current session containing user credentials
+ * Current session of a client containing client credentials
  */
 public class Session implements Serializable {
-    
+    // generic information about the session of a client
     private String username;
     private String password;
 
@@ -20,10 +20,18 @@ public class Session implements Serializable {
     	this.password = password;
     }
     
+    /**
+     * 
+     * @return the username of the user client
+     */
     public String getUsername() {
     	return this.username;
     }
     
+    /**
+     * 
+     * @return the password of the user client
+     */
     public String getPassword() {
     	return this.password;
     }
