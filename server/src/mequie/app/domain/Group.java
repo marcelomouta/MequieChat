@@ -33,17 +33,17 @@ public class Group {
 
 	// Safe manipulation locks
 	// locks for users safe manipulation
-	ReadWriteLock lock1 = new ReentrantReadWriteLock();
-	Lock usersWriteLock = lock1.writeLock();
-	Lock usersReadLock = lock1.readLock();
+	private ReadWriteLock lock1 = new ReentrantReadWriteLock();
+	private Lock usersWriteLock = lock1.writeLock();
+	private Lock usersReadLock = lock1.readLock();
 	// locks for messages safe manipulation
-	ReadWriteLock lock2 = new ReentrantReadWriteLock();
-	Lock messagesWriteLock = lock2.writeLock();
-	Lock messagesReadLock = lock2.readLock();
+	private ReadWriteLock lock2 = new ReentrantReadWriteLock();
+	private Lock messagesWriteLock = lock2.writeLock();
+	private Lock messagesReadLock = lock2.readLock();
 	// locks for history safe manipulation
-	ReadWriteLock lock3 = new ReentrantReadWriteLock();
-	Lock historyWriteLock = lock3.writeLock();
-	Lock historyReadLock = lock3.readLock();
+	private ReadWriteLock lock3 = new ReentrantReadWriteLock();
+	private Lock historyWriteLock = lock3.writeLock();
+	private Lock historyReadLock = lock3.readLock();
 
 	/**
 	 * 
