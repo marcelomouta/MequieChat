@@ -76,31 +76,31 @@ public class Mequie {
 		try {
 			//TODO
 			switch (command[0]) {
-				case "create":
+				case "create": case "c":
 					cHandler.createGroup(command[1]);
 					break;
-				case "addu":
+				case "addu": case "a":
 					cHandler.add(command[1],command[2]);
 					break;
-				case "removeu":
+				case "removeu": case "r":
 					cHandler.remove(command[1],command[2]);
 					break;
-				case "ginfo":
+				case "ginfo": case "g":
 					cHandler.groupInfo(command[1]);
 					break;
-				case "uinfo":
+				case "uinfo": case "u":
 					cHandler.userInfo();
 					break;
-				case "msg":
+				case "msg": case "m":
 					cHandler.message(command[1],command[2]);
 					break;
-				case "photo":
+				case "photo": case "p":
 					cHandler.photo(command[1],command[2]);
 					break;
-				case "collect":
+				case "collect": case "co":
 					cHandler.collect(command[1]);
 					break;
-				case "history":
+				case "history": case "h":
 					cHandler.history(command[1]);
 					break;
 				case "exit":
