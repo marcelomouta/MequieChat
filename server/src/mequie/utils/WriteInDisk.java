@@ -122,6 +122,7 @@ public class WriteInDisk {
 	 * Check if the file is empty
 	 * @return true if the file is empty 
 	 */
+	@SuppressWarnings("unused")
 	public boolean emptyFile() {
 		try (FileWriter writer = new FileWriter(fileToWrite)) {
 			return true;
