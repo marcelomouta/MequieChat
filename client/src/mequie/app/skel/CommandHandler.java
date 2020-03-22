@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -332,8 +333,21 @@ public class CommandHandler {
 		try(FileOutputStream writer = new FileOutputStream(fileToWrite)) {
 			writer.write(photo);
 			writer.flush();
+			addFileExtensionToPhoto(fileToWrite);
 		} catch (IOException e) {
 			System.out.println("Nao foi possivel gravar a foto recebida.");
+		}
+	}
+	
+	/**
+	 * Adds the file extension to a photo
+	 * @param file file object of the saved file
+	 */
+	private static void addFileExtensionToPhoto(File fileToWrite) throws IOException {
+		String fileType = Files.probeContentType(fileToWrite.toPath());
+		if(fileType != null && !fileType.equals("text/plain")) {
+			String fileExtension = fileType.replaceAll(".*/", "");
+			fileToWrite.renameTo(new File(fileToWrite.getPath() + "." + fileExtension));
 		}
 	}
 }
