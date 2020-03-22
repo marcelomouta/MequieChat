@@ -39,7 +39,7 @@ LIMITAÇÕES
 
 Cliente:
 
-* O cliente apenas reconhece os seguintes comandos/atalhos:
+O cliente apenas reconhece os seguintes comandos/atalhos:
     create/c
     addu/a
     removeu/r
@@ -51,7 +51,7 @@ Cliente:
     history/h
     exit
 
-* Para enviar fotos é preciso colocar a foto na pasta client (policy so permite ler e escrever nessa pasta), sendo que apenas se aceitam ficheiros até 2GB.
+* Para enviar uma foto é preciso indicar o filepath da mesma, com este pertencendo ao SegC-grupo37-proj1/ já que apenas é permitido ler aí pela policy. Apenas se aceitam ficheiros até 2GB.
 
 * Ao fazer collect, as fotos serão colocadas num diretório 'ClientData' sobre uma pasta com o nome do grupo onde se enviou essa foto, que será gerado no diretório, de dados,principal do programa.
 
