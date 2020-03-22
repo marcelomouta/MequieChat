@@ -3,8 +3,8 @@ package mequieclient.app.facade.exceptions;
 /**
  * 
  * @author 51021 Pedro Marques,51103 David Almeida,51468 Bruno Freitas
- * Esta classe representa uma excepcao que pode ser lancada caso aconteca
- * algo de errado na decorrer do programa
+ * 
+ * This class represents an exception that is thrown when something fails
  */
 @SuppressWarnings("serial")
 public class MequieException extends Exception{

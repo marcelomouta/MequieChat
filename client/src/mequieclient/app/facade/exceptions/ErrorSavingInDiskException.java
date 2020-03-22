@@ -1,18 +1,15 @@
 package mequieclient.app.facade.exceptions;
 
-import mequieclient.app.facade.exceptions.MequieException;
-
 /**
  * 
  * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
  * 
- * Esta classe representa uma exepcao que pode ser lancada caso nao haja 
- * um erro ao escrever no disco
+ * This class represents an exception that is thrown when saving to disk fails
  */
 @SuppressWarnings("serial")
 public class ErrorSavingInDiskException extends MequieException {
 	
 	public ErrorSavingInDiskException(){
-		super("ERROR ao gravar no disco");
+		super("ERROR saving to disk. Information may not persist the next time server restarts");
 	}
 }
