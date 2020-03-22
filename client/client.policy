@@ -3,4 +3,5 @@ grant codeBase "file:${user.home}/SegC-grupo37-proj1/-"{
 	permission java.io.FilePermission "ClientData/-","write,read";
 	permission java.io.FilePermission "*","write";
 	permission java.io.FilePermission "-","read";
+	permission java.util.PropertyPermission "user.dir", "read";
 };
