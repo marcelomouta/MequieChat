@@ -134,7 +134,7 @@ public class Group {
 	 * @param userToAdd the user to add to this group
 	 * @return true if the user was successfully added to this group
 	 */
-	public boolean addUserByID(User userToAdd) throws Exception {
+	public boolean addUserByID(User userToAdd){
 		boolean doneCorrectly = false;
 
 		// add user to users group
@@ -160,7 +160,7 @@ public class Group {
 	 * @param userToRemove the user to remove from this group
 	 * @return true if the user was successfully removed from this group
 	 */
-	public boolean removeUserByID(User userToRemove) throws Exception{
+	public boolean removeUserByID(User userToRemove) {
 		if (userToRemove.equals(owner))
 			return false;
 
