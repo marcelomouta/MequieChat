@@ -67,6 +67,9 @@ public class LoadingFromDiskHandler {
 			
 			Group g = owner.createGroup(groupID);
 			
+			owner.addGroupToOwnededGroups(g);
+			owner.addGroupToBelongedGroups(g);
+			
 			// add the users of group in group
 			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
 				String userID = groupIDandUsersIDSplited[i];
