@@ -13,3 +13,5 @@ javac -d server/bin -cp server/src server/src/mequie/main/MequieServer.java
 
 #compile client
 javac -d client/bin -cp client/src:server/src client/src/mequie/main/Mequie.java
+
+echo "MequieChat (client & server) compilled with success :-)"
