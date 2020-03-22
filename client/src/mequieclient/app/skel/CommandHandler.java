@@ -126,14 +126,27 @@ public class CommandHandler {
 	 */
 	public void groupInfo(String groupID) throws ClassNotFoundException, IOException, MequieException {
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_GROUP_INFO,
-				new ArrayList(Arrays.asList(groupID)));
+				new ArrayList<>(Arrays.asList(groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
 
 		if(msgServer instanceof NetworkMessageResponse) {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
-			res.getMsgs().forEach(text -> System.out.println(text) );
+			List<String> groupInfo = res.getMsgs();
+			printFormatedGroupInfo(groupInfo);
+			
+		}
+	}
+	
+	private void printFormatedGroupInfo(List<String> groupInfo) {
+		boolean userIsOwner = groupInfo.size() > 2;
+		String basicInfo = "The group '" + groupInfo.get(0) + "' has " + groupInfo.get(1) + " users";
+		if (userIsOwner) {
+			System.out.println(basicInfo + ":");
+			groupInfo.subList(2, groupInfo.size()).forEach(user -> System.out.println("\t" + user) );
+		} else {
+			System.out.println(basicInfo + ".");
 		}
 	}
 
@@ -153,12 +166,17 @@ public class CommandHandler {
 		if(msgServer instanceof NetworkMessageResponse) {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
 
-			System.out.println("Grupos a que pertence:");
+			System.out.println("Groups that you belong to:");
 			List<String> groups = res.getMsgs();
 			if (!groups.isEmpty()) {
 				groups.forEach(text -> System.out.println("\t" + text) );
-				System.out.println("Grupos a que e dono:");
-				res.getMsg2().forEach(text -> System.out.println("\t" + text) );
+				
+				List<String> ownedGroups = res.getMsg2();
+				if (!ownedGroups.isEmpty()) {
+					System.out.println("Groups that you own:");
+					ownedGroups.forEach(text -> System.out.println("\t" + text) );					
+				}
+				
 			} else {
 				System.out.println("Geral");
 			}
