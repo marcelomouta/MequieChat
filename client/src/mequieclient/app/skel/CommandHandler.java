@@ -25,20 +25,6 @@ public class CommandHandler {
 		this.network = network;
 	}
 
-	/*public void test() throws IOException, ArithmeticException {
-
-		String fileName = "file.txt";
-
-		FileInputStream inFile = new FileInputStream(fileName);
-
-		int size = Math.toIntExact(new File(fileName).length());
-
-		network.sendTestFile(inFile, size);
-		System.out.println("Ficheiro '" + fileName + "' enviado.");
-
-		inFile.close();
-	}*/
-
 	public boolean authentication(String user, String pass) {
 		if (user.contains(":")) {
 			System.out.println("Invalid userID: ':' is a reserved symbol");
@@ -171,17 +157,32 @@ public class CommandHandler {
 		checkIfMessageIsAnError(msgServer);
 
 		NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer; 
-
-		msgResponse.getMsgs().forEach(text -> System.out.println(text) );
-		// TODO: Salvar todas as fotos em msgResponse.getPhotos() numa pasta à parte
+		
+		List<String> msgsToRead = msgResponse.getMsgs();
 		List<byte[]> photos = msgResponse.getPhotos();
-		if (!photos.isEmpty()) {
-			for (byte[] photo : photos) {
-                String path = "ClientData/photos_" + groupID + "/" + (generator++);
-                System.out.println("Foto: " + path);
-                writePhoto(photo, path);
-			}
+		
+		if (msgsToRead.isEmpty() && photos.isEmpty())
+			printEmptyCollectMsgs(groupID, "");
+		else {
+			if (!msgsToRead.isEmpty())
+				msgsToRead.forEach(text -> System.out.println(text) );
+			else
+				printEmptyCollectMsgs(groupID, "text ");
+			
+			if (!photos.isEmpty()) {
+				for (byte[] photo : photos) {
+	                String path = "ClientData/photos_" + groupID + "/" + (generator++);
+	                System.out.println("Photo: " + path);
+	                writePhoto(photo, path);
+				}
+			} else
+				printEmptyCollectMsgs(groupID, "photo ");
 		}
+		
+	}
+
+	private void printEmptyCollectMsgs(String groupID, String msgType) {
+		System.out.println("There are no " + msgType + "messages to read on '" + groupID + "'.");
 	}
 
 	public void history(String groupID) throws MequieException, ClassNotFoundException, IOException {
@@ -193,7 +194,11 @@ public class CommandHandler {
 
 		if(msgServer instanceof NetworkMessageResponse) {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
-			res.getMsgs().forEach(text -> System.out.println(text) );
+			List<String> history = res.getMsgs();
+			if (!history.isEmpty())
+				history.forEach(text -> System.out.println(text) );
+			else 
+				System.out.println("Group '" + groupID + "' does not have a message history yet.");
 		}
 	}    
 
