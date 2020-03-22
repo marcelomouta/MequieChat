@@ -1,5 +1,6 @@
 grant codeBase "file:${user.home}/SegC-grupo37-proj1/-"{
 	permission java.net.SocketPermission "*:1024-", "connect,resolve";
 	permission java.io.FilePermission "ClientData/-","write,read";
-	permission java.io.FilePermission "./-","read"; //send photos in root folder
+	permission java.io.FilePermission "*","write";
+	permission java.io.FilePermission "-","read";
 };
