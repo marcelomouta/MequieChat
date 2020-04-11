@@ -29,13 +29,16 @@ public class GetUserFromSessionHandler {
 
 		if (user != null) {
 			// ja existe utilizador com esse username
-			if ( !user.getPassword().equals(session.getPassword()) )
-				throw new AuthenticationFailedException();
+//			if ( !user.getPassword().equals(session.getPassword()) )
+//				throw new AuthenticationFailedException();
+			// nao é preciso fazer pois o utilizador já foi
+			// autenticado com sucesso com o seu certificado
+			// foi visto que era ele por ter mandado corretamente o nonce
 		} else {
 			CreateUserHandler  cuh = new CreateUserHandler();
 
-			user = cuh.makeUser(session.getUsername(), session.getPassword());
-			cuh.save();
+			user = cuh.makeUser(session.getUsername());
+			cuh.save(session.getPublicKey());
 		}
 	}
 
@@ -64,8 +67,8 @@ public class GetUserFromSessionHandler {
 		 * @param pass password of the user to create 
 		 * @return user created
 		 */
-		public User makeUser(String username, String pass) {
-			currentUser = UserCatalog.getInstance().createUser(username, pass);
+		public User makeUser(String username) {
+			currentUser = UserCatalog.getInstance().createUser(username, username + ".cert");
 			UserCatalog.getInstance().addUser(currentUser);
 			return currentUser;
 		}
@@ -74,9 +77,13 @@ public class GetUserFromSessionHandler {
 	     * Saves Makes the operation persistent on disk
 	     * @throws ErrorSavingInDiskException
 	     */
-		public void save() throws ErrorSavingInDiskException {
+		public void save(byte[] publicKey) throws ErrorSavingInDiskException {
 			if ( !OperationsToDiskHandler.saveUserInDisk(currentUser) )
 				throw new ErrorSavingInDiskException();
+			
+			// save da public key vai ser igual/parecido ao da foto
+//			if ( !OperationsToDiskHandler.savePhotoMessageInDisk(publicKey, m, g) )
+//				throw new ErrorSavingInDiskException();
 		}
 
 

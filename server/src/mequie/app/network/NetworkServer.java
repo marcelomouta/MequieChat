@@ -61,6 +61,11 @@ public class NetworkServer {
 				outStream = new ObjectOutputStream(socket.getOutputStream());
 				inStream = new ObjectInputStream(socket.getInputStream());
 
+				// temos de enviar o nonce
+				
+				// recebemos o nonce e a sessao e verificamos se conseguimos
+				//desencriptar o nonce corretamente
+				
 				// Receive the session to authenticate client
 				sessao = (Session) inStream.readObject();
 
