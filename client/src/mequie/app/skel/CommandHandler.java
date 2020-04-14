@@ -35,13 +35,13 @@ public class CommandHandler {
 	 * @return true if the user was authenticated, false otherwise
 	 */
 	@SuppressWarnings("unused")
-	public boolean authentication(String user, String pass) {
+	public boolean authentication(String user, String keystore, String keystorePassword) {
 		if (user.contains(":")) {
 			System.out.println("Invalid userID: ':' is a reserved symbol");
 			return false;
 		}
 		try {
-			Session session = new Session(user, pass);
+			Session session = new Session(user, keystorePassword);
 			NetworkMessage res;
 
 			res = network.authenticateUser(session);

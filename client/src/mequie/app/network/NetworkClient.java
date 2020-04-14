@@ -4,6 +4,10 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import mequie.app.facade.Session;
 import mequie.app.facade.network.NetworkMessage;
 
@@ -25,7 +29,7 @@ public class NetworkClient {
 		return INSTANCE;
 	}
 
-	private Socket echoSocket;
+	private SSLSocket echoSocket;
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 
@@ -37,10 +41,12 @@ public class NetworkClient {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public void connectToServer(String host, int port) throws UnknownHostException, IOException {
-
-
-		this.echoSocket = new Socket(host, port);
+	public void connectToServer(String host, int port, String truststore) throws UnknownHostException, IOException {
+		System.setProperty("javax.net.ssl.trustStore", truststore);
+		System.setProperty("javax.net.ssl.trustStorePassword", "admin123"); //TODO
+		
+		SocketFactory sf = SSLSocketFactory.getDefault();
+		this.echoSocket = (SSLSocket) sf.createSocket(host, port);
 
 		this.in = new ObjectInputStream(this.echoSocket.getInputStream());
 		this.out = new ObjectOutputStream(this.echoSocket.getOutputStream());

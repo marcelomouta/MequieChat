@@ -24,9 +24,9 @@ public class Mequie {
 
 	public static void main(String[] args) {
 
-		if (args.length < 2 || args.length > 3) {
+		if (args.length != 5) {
 			System.out.println(
-					"Incorrect usage of arguments. Example of use:\n\tMequie <serverAddress> <localUserID> [password]");
+					"Incorrect usage of arguments. Example of use:\n\tMequie <serverAddress> <truststore> <keystore> <keystore_password> <localUserID>");
 			System.exit(-1);
 		}
 
@@ -37,19 +37,20 @@ public class Mequie {
 			String host = args[0].split(":")[0];
 			int port = Integer.parseInt(args[0].split(":")[1]);
 
-			network.connectToServer(host,port);
+			network.connectToServer(host,port, args[1]);
 
 		} catch (NumberFormatException | UnknownHostException e) {
 			System.err.println(e.getMessage());
 			System.out.println("Nao foi possivel resolver o endereco IP indicado. A terminar...");
             System.exit(-1);
         } catch (IOException e) {
+        	e.printStackTrace();
 			System.err.println(e.getMessage());
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor. A terminar...");
             System.exit(-1);
 		}
 
-		Boolean auth = cHandler.authentication(args[1], getPassword(args));
+		Boolean auth = cHandler.authentication(args[4], args[2], args[3]);
 		if (auth) {
 			
             printPossibleCommands();
@@ -173,20 +174,6 @@ public class Mequie {
 				"\tcollect <groupID>\n" +
 				"\thistory <groupID>\n" +
                 "\texit");
-	}
-
-	/**
-	 * Gets password form args or asks it to user if not provided
-	 * @param args program arguments
-	 * @return read password
-	 */
-	private static String getPassword(String[] args) {
-		if (args.length == 3) {
-			return args[2];
-		} else {
-			System.out.println("Introduza a password:");
-			return scanner.nextLine();
-		}
 	}
 
 }

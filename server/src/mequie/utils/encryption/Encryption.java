@@ -31,14 +31,14 @@ public class Encryption {
 	private static final String FILEWITHSECRETKEY = "Data/a.key";
 
 	/**
-	 * KeyStore path (secalhar mover para config)
+	 * KeyStore path
 	 */
-	private static final String KEYSTORE = "Data/serverKeys";
+	private static String keystore;
 
 	/**
-	 * The password fot he keystore -> received from start
+	 * The password fot he keystore
 	 */
-	private static final String PASSWDKEYSTORE = "admin123";
+	private static String passwordKeystore;
 
 	/**
 	 * The Secret key in memory for faster operations
@@ -52,7 +52,10 @@ public class Encryption {
 	 * 
 	 * @throws MequieException
 	 */
-	public static void loadSecretKey() throws MequieException {
+	public static void loadSecretKey(String ks, String passwdKeystore) throws MequieException {
+		keystore = ks;
+		passwordKeystore = passwdKeystore;
+		
 		// no Mequie não vai ser key == null mas sim se existe o ficheiro blah.key (que
 		// irá estar cifrado com a chave publica do servidor ISTO PARA que quem possa 
 		// decifra-la seja unicamente o Servido
@@ -104,9 +107,9 @@ public class Encryption {
 
 			//3. obter chave publica para cifrar a chave secreta
 			//3.1 obter chave publica da keystore
-			FileInputStream kfile = new FileInputStream(KEYSTORE);  //keystore
-			KeyStore kstore = KeyStore.getInstance("JCEKS");
-			kstore.load(kfile, PASSWDKEYSTORE.toCharArray());           //password
+			FileInputStream kfile = new FileInputStream(keystore);  //keystore
+			KeyStore kstore = KeyStore.getInstance("JKS");
+			kstore.load(kfile, passwordKeystore.toCharArray());           //password
 			Certificate cert = kstore.getCertificate("keyRSA");  //alias do utilizador
 			PublicKey ku = cert.getPublicKey();
 
@@ -155,10 +158,10 @@ public class Encryption {
 			kis.close();
 
 			//1.2 obter chave privada
-			FileInputStream kfile = new FileInputStream(KEYSTORE);  //keystore
-			KeyStore kstore = KeyStore.getInstance("JCEKS");
-			kstore.load(kfile, PASSWDKEYSTORE.toCharArray());
-			Key kr = kstore.getKey("keyRSA", PASSWDKEYSTORE.toCharArray());
+			FileInputStream kfile = new FileInputStream(keystore);  //keystore
+			KeyStore kstore = KeyStore.getInstance("JKS");
+			kstore.load(kfile, passwordKeystore.toCharArray());
+			Key kr = kstore.getKey("keyRSA", passwordKeystore.toCharArray());
 
 			//1.3 fazer unwrap da chave secreta
 			Cipher c = Cipher.getInstance("RSA");

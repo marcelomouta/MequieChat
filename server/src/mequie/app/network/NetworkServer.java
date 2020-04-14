@@ -7,6 +7,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 //import java.nio.charset.StandardCharsets;
 
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+
 import mequie.app.skel.MequieSkel;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
@@ -17,17 +21,26 @@ import mequie.app.facade.network.NetworkMessageRequest;
 public class NetworkServer {
 
 	private int port;
+	private String keystorePath;
+	private String keystorePasswd;
 
-	public NetworkServer(int port) {
+	public NetworkServer(int port, String keystorePath, String keystorePasswd) {
 		this.port = port;
+		this.keystorePath = keystorePath;
+		this.keystorePasswd = keystorePasswd;
 	}
 
 	public void start() {
-		try (ServerSocket sSoc = new ServerSocket(port)){
+		System.setProperty("javax.net.ssl.keyStore", this.keystorePath);
+		System.setProperty("javax.net.ssl.keyStorePassword", this.keystorePasswd);
+		
+		ServerSocketFactory ssf = SSLServerSocketFactory.getDefault( );
+		
+		try (SSLServerSocket ss = (SSLServerSocket) ssf.createServerSocket(this.port)){
 
 			while(true) {
 				try {
-					Socket inSoc = sSoc.accept();
+					Socket inSoc = ss.accept();
 					ServerThread newServerThread = new ServerThread(inSoc);
 					newServerThread.start();
 				}
@@ -37,6 +50,7 @@ public class NetworkServer {
 			}
 
 		} catch (IllegalArgumentException | IOException e) {
+			e.printStackTrace();
 			System.out.println("Erro ao abrir porto do servidor.");
 			System.err.println(e.getMessage());
 			System.exit(-1);

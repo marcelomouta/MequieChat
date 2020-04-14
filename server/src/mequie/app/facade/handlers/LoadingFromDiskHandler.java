@@ -195,9 +195,7 @@ public class LoadingFromDiskHandler {
 	/**
 	 * Do the load of all system to memory
 	 */
-	public static void load() throws IOException, Exception {
-		Encryption.loadSecretKey();
-		
+	public static void load() throws IOException, Exception {		
 		// users load
 		List<User> users = getAllUsersFromDisk();
 		for (User u : users) {
