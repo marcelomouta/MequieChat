@@ -30,7 +30,7 @@ public class LoadingFromDiskHandler {
 	 * @return a list of users created by the information in disk
 	 */
 	private static List<User> getAllUsersFromDisk() throws IOException {
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getPasswordPathName());
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName());
 		
 		List<String> idOfUsersAndPass = reader.readAllLines();
 		List<User> users = new ArrayList<>();

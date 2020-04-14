@@ -6,7 +6,7 @@ public class Configuration {
 	
 	private static final String DATAPATH = "Data/";
 	private static final String GROUPFILENAME = "group.txt";
-	private static final String PASSWDFILE = "passwd.txt";
+	private static final String USERSFILE = "users.txt";
 	private static final String MSG_INFO_FILENAME = "message_info.txt";
 	private static final String TEXT_MSGS_FILENAME = "text_messages.txt";
 	public static final String TXT_MSG_FLAG = "t";
@@ -50,10 +50,10 @@ public class Configuration {
 	}
 	
 	/**
-	 * @return passwd file containing all user data in disk
+	 * @return users file containing all user data in disk
 	 */
-	public static String getPasswordPathName() {
-		return DATAPATH + PASSWDFILE;
+	public static String getUsersPathName() {
+		return DATAPATH + USERSFILE;
 	}
 	
 }

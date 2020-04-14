@@ -96,7 +96,7 @@ public class OperationsToDiskHandler {
 	 */
 	public static synchronized boolean saveUserInDisk(User u) {
 		try {
-			WriteInDisk write = new WriteInDisk(Configuration.getPasswordPathName());
+			WriteInDisk write = new WriteInDisk(Configuration.getUsersPathName());
 			write.saveTwoStringsSeparatedBy(u.getUserID(), u.getPassword() + "\n", ":");
 
 			return true;
