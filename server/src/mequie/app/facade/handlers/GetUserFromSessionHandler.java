@@ -14,9 +14,10 @@ import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 public class GetUserFromSessionHandler {
 
 	private GetUserFromSessionHandler() {}
-
-	// user in the sesion
-	private static User user;
+	
+	public static boolean userExists(String userID) {
+		return UserCatalog.getInstance().getUserById(userID) != null;
+	}
 
 	/**
 	 * Authenticates the user inside the session and if he doesn't exist creates one
@@ -25,20 +26,21 @@ public class GetUserFromSessionHandler {
 	 * @throws ErrorSavingInDiskException
 	 */
 	public static void authenticateSession(Session session) throws AuthenticationFailedException, ErrorSavingInDiskException {
-		user =  UserCatalog.getInstance().getUserById(session.getUsername());
+		User user =  UserCatalog.getInstance().getUserById(session.getUsername());
 
 		if (user != null) {
 			// ja existe utilizador com esse username
-//			if ( !user.getPassword().equals(session.getPassword()) )
-//				throw new AuthenticationFailedException();
+			if ( !user.getPassword().equals(session.getPublicKey()) )
+				throw new AuthenticationFailedException();
 			// nao é preciso fazer pois o utilizador já foi
 			// autenticado com sucesso com o seu certificado
 			// foi visto que era ele por ter mandado corretamente o nonce
+			
 		} else {
 			CreateUserHandler  cuh = new CreateUserHandler();
 
-			user = cuh.makeUser(session.getUsername());
-			cuh.save(session.getPublicKey());
+			user = cuh.makeUser(session.getUsername(), session.getPublicKey());
+			cuh.save();
 		}
 	}
 
@@ -48,9 +50,7 @@ public class GetUserFromSessionHandler {
 	 * @return User inside the session
 	 */
 	public static User getUserFromSession(Session session) {
-
-		user =  UserCatalog.getInstance().getUserById(session.getUsername());
-		return user;
+		return UserCatalog.getInstance().getUserById(session.getUsername());
 	}
 
 	// This class represents a handler to create a user
@@ -67,8 +67,8 @@ public class GetUserFromSessionHandler {
 		 * @param pass password of the user to create 
 		 * @return user created
 		 */
-		public User makeUser(String username) {
-			currentUser = UserCatalog.getInstance().createUser(username, username + ".cert");
+		public User makeUser(String username, String password) {
+			currentUser = UserCatalog.getInstance().createUser(username, password);
 			UserCatalog.getInstance().addUser(currentUser);
 			return currentUser;
 		}
@@ -77,7 +77,7 @@ public class GetUserFromSessionHandler {
 	     * Saves Makes the operation persistent on disk
 	     * @throws ErrorSavingInDiskException
 	     */
-		public void save(byte[] publicKey) throws ErrorSavingInDiskException {
+		public void save() throws ErrorSavingInDiskException {
 			if ( !OperationsToDiskHandler.saveUserInDisk(currentUser) )
 				throw new ErrorSavingInDiskException();
 			
