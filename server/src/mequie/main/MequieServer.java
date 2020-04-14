@@ -5,6 +5,7 @@ package mequie.main;
 *
 ***************************************************************************/
 
+import mequie.app.facade.exceptions.MequieException;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
 import mequie.app.network.NetworkServer;
 
@@ -36,7 +37,10 @@ public class MequieServer{
 			
 		} catch (NumberFormatException e) {
 			System.out.println("ERROR the port has to be a number.");
+		} catch (MequieException e) {
+			System.out.println(e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("ERROR loading the system.\nProbably corrupted data in disk.");
 		}
 	}
