@@ -3,6 +3,7 @@ package mequie.utils.encryption;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.Key;
@@ -11,6 +12,8 @@ import java.security.PublicKey;
 import java.security.cert.Certificate;
 
 import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 
 import mequie.app.facade.exceptions.MequieException;
@@ -20,22 +23,22 @@ public class Encryption {
 	/**
 	 * The algorithm used to encrypt and decrypt
 	 */
-	protected static final String ALGORITHM = "AES";
+	public static final String ALGORITHM = "AES";
 
 	/**
 	 * The file ENCRYPTED with the Secret Key (secalhar mover para config)
 	 */
-	private static final String FILEWITHSECRETKEY = "tp4+5/a.key";
+	private static final String FILEWITHSECRETKEY = "Data/a.key";
 
 	/**
 	 * KeyStore path (secalhar mover para config)
 	 */
-	private static final String KEYSTORE = "tp4+5/myKeys";
+	private static final String KEYSTORE = "Data/serverKeys";
 
 	/**
 	 * The password fot he keystore -> received from start
 	 */
-	private static final String PASSWDKEYSTORE = "changeit";
+	private static final String PASSWDKEYSTORE = "admin123";
 
 	/**
 	 * The Secret key in memory for faster operations
@@ -98,7 +101,7 @@ public class Encryption {
 	private static void encryptSecretKey() throws MequieException {
 
 		try {
-			
+
 			//3. obter chave publica para cifrar a chave secreta
 			//3.1 obter chave publica da keystore
 			FileInputStream kfile = new FileInputStream(KEYSTORE);  //keystore
@@ -121,7 +124,7 @@ public class Encryption {
 			oos.writeObject(wrappedKey);
 			oos.close();
 			kos.close();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new MequieException("ERROR encrypting the System secret key file. Try again.");
@@ -140,7 +143,7 @@ public class Encryption {
 	private static void loadExistingSecretKey() throws MequieException {
 
 		try {
-			
+
 			//1. decifrar a chave secreta
 			//1.1 ler wrapped key do ficheiro (a.key)
 			FileInputStream kis = new FileInputStream(FILEWITHSECRETKEY);
@@ -161,11 +164,44 @@ public class Encryption {
 			Cipher c = Cipher.getInstance("RSA");
 			c.init(Cipher.UNWRAP_MODE, kr);
 			key = c.unwrap(wrappedKey, "AES", Cipher.SECRET_KEY);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new MequieException("ERROR encrypting the System secret key file. Try again.");
 		}
 	}
 
+	/**
+	 * 
+	 * @return the Secret key used in the system
+	 */
+	public static Key getKey() {
+		return key;
+	}
+
+	public static CipherInputStream getCipherInputStream(FileInputStream in) throws MequieException {
+		try {
+			Cipher d = Cipher.getInstance(Encryption.ALGORITHM);
+			d.init(Cipher.DECRYPT_MODE, key);
+			return new CipherInputStream(in, d);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new MequieException("ERROR getting a Cipher Input Stream");
+		}
+	}
+
+	public static CipherOutputStream getCipherOutputStream(FileOutputStream fos) throws MequieException {
+		try {
+			Cipher c = Cipher.getInstance(ALGORITHM);
+			c.init(Cipher.ENCRYPT_MODE, key);
+			return new CipherOutputStream(fos, c);
+		}catch (Exception e) {
+			e.printStackTrace();
+			throw new MequieException("ERROR getting a Cipher Input Stream");
+		}
+	}
+	
+	public static void closeCipherStreams() {
+		
+	}
 }
