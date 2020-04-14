@@ -11,9 +11,11 @@ import mequie.app.domain.Message;
 import mequie.app.domain.PhotoMessage;
 import mequie.app.domain.TextMessage;
 import mequie.app.domain.User;
+import mequie.app.facade.exceptions.MequieException;
 import mequie.utils.WriteInDisk;
 import mequie.utils.Configuration;
 import mequie.utils.ReadFromDisk;
+import mequie.utils.ReadOperation;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
@@ -96,11 +98,15 @@ public class OperationsToDiskHandler {
 	 */
 	public static synchronized boolean saveUserInDisk(User u) {
 		try {
-			WriteInDisk write = new WriteInDisk(Configuration.getUsersPathName());
-			write.saveTwoStringsSeparatedBy(u.getUserID(), u.getPassword() + "\n", ":");
-
+			ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName(), ReadOperation.ENCRYPTEDFILE);
+			List<String> lines = reader.readAllLines();
+			lines.add(u.getUserID() + ":" + u.getPassword() + "\n");
+			
+			WriteInDisk writer = new WriteInDisk(Configuration.getUsersPathName());
+			writer.saveEncryptedListOfStringsSeparatedBy(lines, "\n");
+			
 			return true;
-		} catch (IOException e) {
+		} catch (IOException | MequieException e) {
 			return false;
 		}
 	}
@@ -116,10 +122,14 @@ public class OperationsToDiskHandler {
 		
 		synchronized(groupMutex) {
 			try {
-				WriteInDisk write = new WriteInDisk(Configuration.getGroupPathName());
-				write.saveTwoStringsSeparatedBy(g.getGoupID(), g.getOwner().getUserID() + "\n", ":");
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName(), ReadOperation.ENCRYPTEDFILE);
+				List<String> lines = reader.readAllLines();
+				lines.add(g.getGoupID() + ":" + g.getOwner().getUserID() + "\n");
+				
+				WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
+				writer.saveEncryptedListOfStringsSeparatedBy(lines, "\n");
 				return true;
-			} catch (IOException e) {
+			} catch (IOException | MequieException e) {
 				return false;
 			}
 		}
@@ -144,7 +154,7 @@ public class OperationsToDiskHandler {
 		synchronized(groupMutex) {
 			try {
 				// ler as linhas e ver o grupo que foi alterado e adicionar ao grupo
-				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName(), ReadOperation.ENCRYPTEDFILE);
 				List<String> lines = reader.readAllLines();
 
 				List<String> toWrite = new ArrayList<>();
@@ -157,11 +167,9 @@ public class OperationsToDiskHandler {
 				});
 
 				WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
-				writer.emptyFile();
-				writer.saveListOfStringsSeparatedBy(toWrite, "\n");
-				writer.saveSimpleString("\n");
+				writer.saveEncryptedListOfStringsSeparatedBy(toWrite, "\n");
 				return true;
-			} catch (IOException e) {
+			} catch (IOException | MequieException e) {
 				return false;
 			}
 		}
@@ -178,19 +186,16 @@ public class OperationsToDiskHandler {
 		synchronized(groupMutex) {
 			try {
 				// ler as linhas e ver o grupo que foi alterado e remover do disco
-				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName(), ReadOperation.ENCRYPTEDFILE);
 				List<String> lines = reader.readAllLines();
 
 				List<String> toWrite = replaceStringInList(lines, g.getGoupID(), ":" + u.getUserID(), "");
 
 				// depois escrever a alteracao ao grupo no disco
 				WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
-				writer.emptyFile();
-				writer.saveListOfStringsSeparatedBy(toWrite, "\n");
-				writer.saveSimpleString("\n");
-
+				writer.saveEncryptedListOfStringsSeparatedBy(toWrite, "\n");
 				return true;
-			} catch (IOException e) {
+			} catch (IOException | MequieException e) {
 				return false;
 			}
 		}
@@ -203,11 +208,11 @@ public class OperationsToDiskHandler {
 	 */
 	public static byte[] getFileContent(String path) {
 		try {
-			ReadFromDisk reader = new ReadFromDisk(path, false);
+			ReadFromDisk reader = new ReadFromDisk(path, ReadOperation.CLEARBYTES);
 			byte[] buf = reader.readAllBytes();
 
 			return buf;
-		} catch (IOException e) {
+		} catch (IOException | MequieException e) {
 			return null;
 		}
 	}
@@ -229,7 +234,7 @@ public class OperationsToDiskHandler {
 			}
 
 			return true;
-		} catch (IOException e) {
+		} catch (IOException | MequieException e) {
 			return false;
 		}
 	}

@@ -12,8 +12,11 @@ import mequie.app.domain.TextMessage;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
+import mequie.app.facade.exceptions.MequieException;
 import mequie.utils.Configuration;
 import mequie.utils.ReadFromDisk;
+import mequie.utils.ReadOperation;
+import mequie.utils.encryption.Encryption;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
@@ -28,9 +31,10 @@ public class LoadingFromDiskHandler {
 	 * Get all the users saved in disk
 	 * Will get the information on: passwd.txt
 	 * @return a list of users created by the information in disk
+	 * @throws MequieException 
 	 */
-	private static List<User> getAllUsersFromDisk() throws IOException {
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName());
+	private static List<User> getAllUsersFromDisk() throws IOException, MequieException {
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName(), ReadOperation.ENCRYPTEDFILE);
 		
 		List<String> idOfUsersAndPass = reader.readAllLines();
 		List<User> users = new ArrayList<>();
@@ -52,7 +56,7 @@ public class LoadingFromDiskHandler {
 	 * @return a list of groups created by the information in disk
 	 */
 	private static List<Group> getAllGroupsFromDisk() throws IOException, Exception {
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName());
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName(), ReadOperation.ENCRYPTEDFILE);
 		
 		List<String> idOfGroupsAndOwners = reader.readAllLines();
 		List<Group> groups = new ArrayList<>();
@@ -102,7 +106,7 @@ public class LoadingFromDiskHandler {
 	 *     - <photoID> have the bytes of a photo sent in the group 
 	 * @param g the group to load the messages
 	 */
-	private static void getAllMessagesFromDisk(Group g) throws IOException {
+	private static void getAllMessagesFromDisk(Group g) throws IOException, MequieException {
 		
 		// all messages id and user who not read the message
 		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
@@ -192,6 +196,8 @@ public class LoadingFromDiskHandler {
 	 * Do the load of all system to memory
 	 */
 	public static void load() throws IOException, Exception {
+		Encryption.loadSecretKey();
+		
 		// users load
 		List<User> users = getAllUsersFromDisk();
 		for (User u : users) {

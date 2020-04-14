@@ -6,6 +6,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import javax.crypto.CipherOutputStream;
+
+import mequie.app.facade.exceptions.MequieException;
+import mequie.utils.encryption.Encryption;
+
 public class WriteInDisk {
 
 	private File fileToWrite;
@@ -27,6 +32,15 @@ public class WriteInDisk {
 	public boolean saveSimpleString(String info) {
 		try(FileWriter writer = new FileWriter(fileToWrite, true)) {
 			writer.write(info);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public boolean saveEncryptedSimpleString(String info) throws MequieException {
+		try (CipherOutputStream cos = Encryption.getCipherOutputStream(new FileOutputStream(fileToWrite, true))){
+			cos.write(info.getBytes());
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -80,6 +94,17 @@ public class WriteInDisk {
 		}
 	}
 	
+	public boolean saveEncryptedTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) throws MequieException {
+		try {
+			CipherOutputStream cos = Encryption.getCipherOutputStream(new FileOutputStream(fileToWrite, true));
+			String toWrite = toSave1 + sep + toSave2;
+			cos.write(toWrite.getBytes());
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
 	/**
 	 * Write multiple strings separated by other string in the file
 	 * Example: (string[0] + sep + string[1] + sep ... + string[n]), n = list.size()
@@ -96,6 +121,20 @@ public class WriteInDisk {
 			sb.deleteCharAt(sb.length() - 1); //remove the last ':'
 			
 			writer.write(sb.toString());
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public boolean saveEncryptedListOfStringsSeparatedBy(List<String> itemsToSave, String sep) throws MequieException {
+		StringBuilder sb = new StringBuilder();
+		try (CipherOutputStream cos = Encryption.getCipherOutputStream(new FileOutputStream(fileToWrite))){
+			for (String item : itemsToSave) {
+				sb.append(item + sep);
+			}
+			sb.deleteCharAt(sb.length() - 1); //remove the last ':'
+			cos.write(sb.toString().getBytes());
 			return true;
 		} catch (IOException e) {
 			return false;
