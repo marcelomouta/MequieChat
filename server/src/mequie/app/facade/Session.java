@@ -9,14 +9,14 @@ import java.io.Serializable;
 public class Session implements Serializable {
     // generic information about the session of a client
     private String username;
-    private byte[] publicKey;
+    private String publicKey;
 
     /**
      * Session containing user credentials
      * @param username
      * @param password
      */
-    public Session(String username, byte[] publicKey) {
+    public Session(String username, String publicKey) {
     	this.username = username;
     	this.publicKey = publicKey;
     }
@@ -33,7 +33,7 @@ public class Session implements Serializable {
      * 
      * @return the password of the user client
      */
-    public byte[] getPublicKey() {
+    public String getPublicKey() {
     	return this.publicKey;
     }
 
