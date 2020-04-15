@@ -43,7 +43,7 @@ public class NetworkClient {
 	 */
 	public void connectToServer(String host, int port, String truststore) throws UnknownHostException, IOException {
 		System.setProperty("javax.net.ssl.trustStore", truststore);
-		System.setProperty("javax.net.ssl.trustStorePassword", "admin123"); //TODO
+		//System.setProperty("javax.net.ssl.trustStorePassword", "admin123"); //TODO
 		
 		SocketFactory sf = SSLSocketFactory.getDefault();
 		this.echoSocket = (SSLSocket) sf.createSocket(host, port);
