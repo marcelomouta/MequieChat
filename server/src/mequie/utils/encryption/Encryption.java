@@ -29,6 +29,11 @@ public class Encryption {
 	 * The file ENCRYPTED with the Secret Key (secalhar mover para config)
 	 */
 	private static final String FILEWITHSECRETKEY = "Data/a.key";
+	
+	/**
+	 * The name of the server RSA key used to encrypt the secret key
+	 */
+	private static final String RSA_KEY_NAME = "keyRSA";
 
 	/**
 	 * KeyStore path
@@ -110,7 +115,7 @@ public class Encryption {
 			FileInputStream kfile = new FileInputStream(keystore);  //keystore
 			KeyStore kstore = KeyStore.getInstance("JKS");
 			kstore.load(kfile, passwordKeystore.toCharArray());           //password
-			Certificate cert = kstore.getCertificate("keyRSA");  //alias do utilizador
+			Certificate cert = kstore.getCertificate(RSA_KEY_NAME);  //alias do utilizador
 			PublicKey ku = cert.getPublicKey();
 
 			//3.2 cifrar chave secreta com chave publica
@@ -161,7 +166,7 @@ public class Encryption {
 			FileInputStream kfile = new FileInputStream(keystore);  //keystore
 			KeyStore kstore = KeyStore.getInstance("JKS");
 			kstore.load(kfile, passwordKeystore.toCharArray());
-			Key kr = kstore.getKey("keyRSA", passwordKeystore.toCharArray());
+			Key kr = kstore.getKey(RSA_KEY_NAME, passwordKeystore.toCharArray());
 
 			//1.3 fazer unwrap da chave secreta
 			Cipher c = Cipher.getInstance("RSA");
