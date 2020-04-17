@@ -8,7 +8,7 @@ package mequie.main;
 import mequie.app.facade.exceptions.MequieException;
 import mequie.app.facade.handlers.LoadingFromDiskHandler;
 import mequie.app.network.NetworkServer;
-import mequie.utils.encryption.Encryption;
+import mequie.utils.Encryption;
 
 /**
  * 

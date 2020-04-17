@@ -13,7 +13,6 @@ import java.util.Scanner;
 import javax.crypto.CipherInputStream;
 
 import mequie.app.facade.exceptions.MequieException;
-import mequie.utils.encryption.Encryption;
 
 public class ReadFromDisk {
 

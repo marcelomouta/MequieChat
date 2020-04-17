@@ -14,9 +14,9 @@ import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.exceptions.MequieException;
 import mequie.utils.Configuration;
+import mequie.utils.Encryption;
 import mequie.utils.ReadFromDisk;
 import mequie.utils.ReadOperation;
-import mequie.utils.encryption.Encryption;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas

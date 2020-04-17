@@ -9,7 +9,6 @@ import java.util.List;
 import javax.crypto.CipherOutputStream;
 
 import mequie.app.facade.exceptions.MequieException;
-import mequie.utils.encryption.Encryption;
 
 public class WriteInDisk {
 

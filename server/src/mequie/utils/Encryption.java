@@ -1,4 +1,4 @@
-package mequie.utils.encryption;
+package mequie.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
