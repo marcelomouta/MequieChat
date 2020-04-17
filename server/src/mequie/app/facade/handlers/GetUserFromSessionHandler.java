@@ -1,10 +1,14 @@
 package mequie.app.facade.handlers;
 
+import java.security.cert.Certificate;
+
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.UserCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
+import mequie.app.facade.exceptions.MequieException;
+import mequie.utils.Encryption;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
@@ -31,20 +35,39 @@ public class GetUserFromSessionHandler {
 	 * @throws ErrorSavingInDiskException
 	 */
 	public static void authenticateSession(Session session) throws AuthenticationFailedException, ErrorSavingInDiskException {
+		
+		long nonce = session.getNonce();
+		byte[] signature = session.getSignature();
+		if (signature == null)
+			throw new AuthenticationFailedException();
+		
+		
+		Certificate cert;
+		
 		User user =  UserCatalog.getInstance().getUserById(session.getUsername());
-
-		if (user != null) {
-			// ja existe utilizador com esse username
-			if ( !user.getPassword().equals(session.getPublicKey()) )
-				throw new AuthenticationFailedException();
-			// nao é preciso fazer pois o utilizador já foi
-			// autenticado com sucesso com o seu certificado
-			// foi visto que era ele por ter mandado corretamente o nonce
+		if (session.isUnknownUserFlag()) {
 			
+			cert = session.getUserCertificate();
+			if (cert == null)
+				throw new AuthenticationFailedException();
+			
+			//TODO
+			// verificar signature com nonce e certificate dado 
+			
+//			CreateUserHandler  cuh = new CreateUserHandler();
+//			
+//			cuh.createNewUser(session.getUsername(), session.getPublicKey());
+						
 		} else {
-			CreateUserHandler  cuh = new CreateUserHandler();
-
-			cuh.createNewUser(session.getUsername(), session.getPublicKey());
+			
+			try {
+				cert = Encryption.loadUserCertificate(user.getPublicKey());
+			} catch (MequieException e) {
+				throw new AuthenticationFailedException();
+			}
+			
+			if ( Encryption.verifyNonceSignature(nonce, signature, cert) )
+				throw new AuthenticationFailedException();
 		}
 	}
 
