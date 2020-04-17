@@ -180,7 +180,7 @@ public class CommandHandler {
 				}
 				
 			} else {
-				System.out.println("Geral");
+				System.out.println("You do not belong to any group");
 			}
 		}
 	}
