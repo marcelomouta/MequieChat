@@ -44,7 +44,6 @@ public class Mequie {
 			System.out.println("Nao foi possivel resolver o endereco IP indicado. A terminar...");
             System.exit(-1);
         } catch (IOException e) {
-        	e.printStackTrace();
 			System.err.println(e.getMessage());
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor. A terminar...");
             System.exit(-1);
