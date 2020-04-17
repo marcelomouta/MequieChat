@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.security.SignedObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,8 @@ import mequie.app.facade.network.NetworkMessageError;
 import mequie.app.facade.network.NetworkMessageRequest;
 import mequie.app.facade.network.NetworkMessageResponse;
 import mequie.app.network.NetworkClient;
+import mequie.utils.ClientEncryption;
+import mequie.utils.Encryption;
 
 /**
  * Class that handles the commands received from the client, sends them and receives their results via NetworkClient
@@ -35,16 +38,25 @@ public class CommandHandler {
 	 * @return true if the user was authenticated, false otherwise
 	 */
 	@SuppressWarnings("unused")
-	public boolean authentication(String user, String keystore, String keystorePassword) {
+	public boolean authentication(String user) {
 		if (user.contains(":")) {
 			System.out.println("Invalid userID: ':' is a reserved symbol");
 			return false;
 		}
 		try {
-			Session session = new Session(user, keystorePassword);
-			NetworkMessage res;
-
-			res = network.authenticateUser(session);
+			
+			Session session = network.startAuthentication(new Session(user));
+			
+			// cifra nonce com private key
+			long nonce = session.getNonce();
+			session.setSignature(ClientEncryption.signsNonce(nonce));
+			
+			
+			if (session.isUnknownUserFlag()) {
+				 session.setUserCertificate(ClientEncryption.getCertificate());
+			}
+			
+			NetworkMessage res = network.authenticateUser(session);
 
 			if (res instanceof NetworkMessageError) {
 				NetworkMessageError err = (NetworkMessageError) res;
@@ -54,10 +66,12 @@ public class CommandHandler {
 				System.out.println("Authentication successful!");
 				return true;
 			}
+		} catch (MequieException e) {
+			System.out.println(e.getMessage());
+			return false;
 		} catch (Exception e) {
 			return false;
 		}
-
 	}
 
 	/**

@@ -8,6 +8,7 @@ import java.util.Scanner;
 import mequie.app.facade.exceptions.MequieException;
 import mequie.app.network.NetworkClient;
 import mequie.app.skel.CommandHandler;
+import mequie.utils.ClientEncryption;
 /**
  * Mequie Client 
  * @author Grupo 37
@@ -48,8 +49,10 @@ public class Mequie {
 			System.out.println("Nao foi possivel estabelecer a ligacao ao servidor. A terminar...");
             System.exit(-1);
 		}
+		
+		ClientEncryption.loadKeys(args[2], args[3]);	
 
-		Boolean auth = cHandler.authentication(args[4], args[2], args[3]);
+		Boolean auth = cHandler.authentication(args[4]);
 		if (auth) {
 			
             printPossibleCommands();

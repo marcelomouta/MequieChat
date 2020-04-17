@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 //import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocket;
@@ -75,10 +76,20 @@ public class NetworkServer {
 				outStream = new ObjectOutputStream(socket.getOutputStream());
 				inStream = new ObjectInputStream(socket.getInputStream());
 
-				// 1- receber uma userID
+				// receives a Session with only the username of the user trying to authenticate
+				sessao = (Session) inStream.readObject();
 				
-				// 2- temos de enviar o nonce + flag existe (session tem flag)
+				// sends Session object to the client with nonce + unknown flag
+				Random rand = new Random();
+				sessao.setNonce(rand.nextLong());
 				
+				boolean existsFlag = MequieSkel.userExists(sessao.getUsername());
+				sessao.setUnknownUserFlag(!existsFlag);
+				
+				outStream.writeObject(sessao);
+				outStream.flush();
+				
+
 				// recebemos session com: o nonce e a cert publico e verificamos se conseguimos
 				//desencriptar o nonce corretamente
 				/*
@@ -88,12 +99,12 @@ public class NetworkServer {
 				 * Senao
 				 * 		session terá o nonce assinado e o cert publico
 				 */
+				// Initialization of Skell
+				MequieSkel skel = new MequieSkel(sessao);
 				
 				// Receive the session to authenticate client
 				sessao = (Session) inStream.readObject();
 
-				// Initialization of Skell
-				MequieSkel skel = new MequieSkel(sessao);
 
 				// Make authentication and send the Msg Packet to client
 				sendMessage(skel.autentication());

@@ -43,7 +43,6 @@ public class NetworkClient {
 	 */
 	public void connectToServer(String host, int port, String truststore) throws UnknownHostException, IOException {
 		System.setProperty("javax.net.ssl.trustStore", truststore);
-		//System.setProperty("javax.net.ssl.trustStorePassword", "admin123"); //TODO
 		
 		SocketFactory sf = SSLSocketFactory.getDefault();
 		this.echoSocket = (SSLSocket) sf.createSocket(host, port);
@@ -69,8 +68,25 @@ public class NetworkClient {
 	}
 	
 	/**
-	 * Tries to authenticate the current user on the server
-	 * @param session containing current user credentials
+	 * Starts the authentication process, sendig a session to the server with the users ID and receiving a nonce
+	 * @param session Session with users id
+	 * @return session with nonce and unknown user flag
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	public Session startAuthentication(Session session) throws ClassNotFoundException, IOException {
+
+		out.writeObject(session);
+		out.flush();
+		
+		return (Session) in.readObject();
+	}
+
+	/**
+	 * Tries to authenticate the current user on the server,
+	 *  sending a session with the necessary proof that the user is who says it is
+	 *  and receives the servers answer with the authentication result
+	 * @param session containing cifred nonce with user private key 
 	 * @return response from the server
 	 * @throws IOException
 	 * @throws ClassNotFoundException
@@ -79,8 +95,8 @@ public class NetworkClient {
 		
 		out.writeObject(session);
 		out.flush();
-		NetworkMessage msgResponse = (NetworkMessage) in.readObject();
-		return  msgResponse;
+		
+		return (NetworkMessage) in.readObject();
 	}
 
 
@@ -98,5 +114,7 @@ public class NetworkClient {
 
 		this.echoSocket.close();
 	}
+
+
 
 }

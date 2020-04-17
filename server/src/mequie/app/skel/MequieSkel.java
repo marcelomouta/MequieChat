@@ -50,6 +50,15 @@ public class MequieSkel {
 	}
 	
 	/**
+	 * Checks if a given user exists
+	 * @param userID The username of the user
+	 * @return true if the user exist on the system, false otherwise
+	 */
+	public static boolean userExists(String userID) {
+		return GetUserFromSessionHandler.userExists(userID);
+	}
+	
+	/**
 	 * Authentication of a client
 	 * @return a NetworkMessage to sent to client with authentication OK or an Error if authentication failed
 	 */

@@ -15,6 +15,11 @@ public class GetUserFromSessionHandler {
 
 	private GetUserFromSessionHandler() {}
 	
+	/**
+	 * Checks if a given user exists
+	 * @param userID The username of the user
+	 * @return true if the user exist on the system, false otherwise
+	 */
 	public static boolean userExists(String userID) {
 		return UserCatalog.getInstance().getUserById(userID) != null;
 	}
@@ -39,8 +44,7 @@ public class GetUserFromSessionHandler {
 		} else {
 			CreateUserHandler  cuh = new CreateUserHandler();
 
-			user = cuh.makeUser(session.getUsername(), session.getPublicKey());
-			cuh.save();
+			cuh.createNewUser(session.getUsername(), session.getPublicKey());
 		}
 	}
 
@@ -55,37 +59,23 @@ public class GetUserFromSessionHandler {
 
 	// This class represents a handler to create a user
 	private static class CreateUserHandler {
-
-		// user that is using this handler
-		private User currentUser;
 		
 		public CreateUserHandler() {}
 
 		/**
-		 * 
+		 * Creates a new User and saves it on the disk
 		 * @param username username of the user to create 
 		 * @param pass password of the user to create 
-		 * @return user created
-		 */
-		public User makeUser(String username, String password) {
-			currentUser = UserCatalog.getInstance().createUser(username, password);
-			UserCatalog.getInstance().addUser(currentUser);
-			return currentUser;
-		}
-
-	    /**
-	     * Saves Makes the operation persistent on disk
 	     * @throws ErrorSavingInDiskException
-	     */
-		public void save() throws ErrorSavingInDiskException {
+		 */
+		public void createNewUser(String username, String password) throws ErrorSavingInDiskException {
+			User currentUser = UserCatalog.getInstance().createUser(username, password);
+			UserCatalog.getInstance().addUser(currentUser);
+			
 			if ( !OperationsToDiskHandler.saveUserInDisk(currentUser) )
 				throw new ErrorSavingInDiskException();
 			
-			// save da public key vai ser igual/parecido ao da foto
-//			if ( !OperationsToDiskHandler.savePhotoMessageInDisk(publicKey, m, g) )
-//				throw new ErrorSavingInDiskException();
 		}
-
 
 	}
 }

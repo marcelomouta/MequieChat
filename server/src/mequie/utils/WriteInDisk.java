@@ -93,17 +93,6 @@ public class WriteInDisk {
 		}
 	}
 	
-	public boolean saveEncryptedTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) throws MequieException {
-		try {
-			CipherOutputStream cos = Encryption.getCipherOutputStream(new FileOutputStream(fileToWrite, true));
-			String toWrite = toSave1 + sep + toSave2;
-			cos.write(toWrite.getBytes());
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
 	/**
 	 * Write multiple strings separated by other string in the file
 	 * Example: (string[0] + sep + string[1] + sep ... + string[n]), n = list.size()

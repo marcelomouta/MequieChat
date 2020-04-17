@@ -209,7 +209,4 @@ public class Encryption {
 		}
 	}
 	
-	public static void closeCipherStreams() {
-		
-	}
 }
