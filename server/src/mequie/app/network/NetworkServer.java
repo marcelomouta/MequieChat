@@ -80,8 +80,7 @@ public class NetworkServer {
 				sessao = (Session) inStream.readObject();
 				
 				// sends Session object to the client with nonce + unknown flag
-				Random rand = new Random();
-				sessao.setNonce(rand.nextLong());
+				sessao.setNonce(new Random().nextLong());
 				
 				boolean existsFlag = MequieSkel.userExists(sessao.getUsername());
 				sessao.setUnknownUserFlag(!existsFlag);
@@ -89,22 +88,12 @@ public class NetworkServer {
 				outStream.writeObject(sessao);
 				outStream.flush();
 				
-
-				// recebemos session com: o nonce e a cert publico e verificamos se conseguimos
-				//desencriptar o nonce corretamente
-				/*
-				 * recebemos session com: nonce
-				 * Se flag existe
-				 * 		session terá apenas o nonce assinado
-				 * Senao
-				 * 		session terá o nonce assinado e o cert publico
-				 */
-				// Initialization of Skell
-				MequieSkel skel = new MequieSkel(sessao);
-				
-				// Receive the session to authenticate client
+				// Receive the session with the clients signature
 				sessao = (Session) inStream.readObject();
 
+				
+				// Initialization of Skell
+				MequieSkel skel = new MequieSkel(sessao);
 
 				// Make authentication and send the Msg Packet to client
 				sendMessage(skel.autentication());
@@ -123,7 +112,7 @@ public class NetworkServer {
 
 			} catch (AuthenticationFailedException e) { // username and password doesnt match
 				try {
-					System.out.println("Autenticacao falhou: username ou password incorretos");
+					System.out.println("Authentication Failed");
 					sendMessage(new NetworkMessageError(NetworkMessage.Opcode.AUTH, new AuthenticationFailedException()));
 				} catch (IOException e1) {
 					// Do nothing because finally will be called
