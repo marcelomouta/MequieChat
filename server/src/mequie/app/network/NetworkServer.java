@@ -15,6 +15,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 import mequie.app.skel.MequieSkel;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.network.NetworkMessage;
 import mequie.app.facade.network.NetworkMessageError;
 import mequie.app.facade.network.NetworkMessageRequest;
@@ -121,6 +122,8 @@ public class NetworkServer {
 				System.out.println("Invalid Message received");
 			} catch (IOException e) {
 				// Do nothing because finally will be called
+			} catch (ErrorSavingInDiskException e) {
+				System.out.println(e.getMessage());
 			} finally {
 				disconnect();
 			}
@@ -141,7 +144,7 @@ public class NetworkServer {
 		 * Disconnect the client
 		 */
 		private void disconnect() {
-			System.out.println("User " + sessao.getUsername() + " disconnected from server.");
+			System.out.println("User " + (sessao == null ? "" : sessao.getUsername()) + " disconnected from server.");
 			try {
 				outStream.close();
 				inStream.close();
