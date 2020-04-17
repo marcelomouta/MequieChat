@@ -100,7 +100,7 @@ public class OperationsToDiskHandler {
 		try {
 			ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName(), ReadOperation.ENCRYPTEDFILE);
 			List<String> lines = reader.readAllLines();
-			lines.add(u.getUserID() + ":" + u.getPassword() + "\n");
+			lines.add(u.getUserID() + ":" + u.getPublicKey() + "\n");
 			
 			WriteInDisk writer = new WriteInDisk(Configuration.getUsersPathName());
 			writer.saveEncryptedListOfStringsSeparatedBy(lines, "\n");

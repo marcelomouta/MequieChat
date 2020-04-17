@@ -56,7 +56,7 @@ public class User {
 	 * 
 	 * @return the password of the user
 	 */
-	public String getPassword() {
+	public String getPublicKey() {
 		return publicKey;
 	}
 
