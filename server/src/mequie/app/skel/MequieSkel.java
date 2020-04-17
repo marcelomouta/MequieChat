@@ -22,6 +22,7 @@ import mequie.app.facade.network.NetworkMessageResponse;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
 import mequie.app.facade.exceptions.ErrorInsufficientArgumentsException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.MequieException;
 
 /**
@@ -61,14 +62,11 @@ public class MequieSkel {
 	/**
 	 * Authentication of a client
 	 * @return a NetworkMessage to sent to client with authentication OK or an Error if authentication failed
+	 * @throws ErrorSavingInDiskException 
 	 */
-	public NetworkMessage autentication() throws AuthenticationFailedException {
-		try {
-			GetUserFromSessionHandler.authenticateSession(currentSession);
-			return new NetworkMessageResponse(NetworkMessage.Opcode.AUTH, "OK");
-		} catch (MequieException e) {
-			return new NetworkMessageError(NetworkMessage.Opcode.AUTH, e);
-		}
+	public NetworkMessage autentication() throws AuthenticationFailedException, ErrorSavingInDiskException {
+		GetUserFromSessionHandler.authenticateSession(currentSession);
+		return new NetworkMessageResponse(NetworkMessage.Opcode.AUTH, "OK");
 	}
 	
 	/**
