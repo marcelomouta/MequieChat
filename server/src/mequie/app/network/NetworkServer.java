@@ -81,7 +81,8 @@ public class NetworkServer {
 				sessao = (Session) inStream.readObject();
 				
 				// sends Session object to the client with nonce + unknown flag
-				sessao.setNonce(new Random().nextLong());
+				long nonce = new Random().nextLong();
+				sessao.setNonce(nonce);
 				
 				boolean existsFlag = MequieSkel.userExists(sessao.getUsername());
 				sessao.setUnknownUserFlag(!existsFlag);
@@ -92,6 +93,9 @@ public class NetworkServer {
 				// Receive the session with the clients signature
 				sessao = (Session) inStream.readObject();
 
+				// resets session initial nonce + flag in case user changed them (safety precaution)
+				sessao.setNonce(nonce);
+				sessao.setUnknownUserFlag(!existsFlag);
 				
 				// Initialization of Skell
 				MequieSkel skel = new MequieSkel(sessao);

@@ -275,4 +275,14 @@ public class OperationsToDiskHandler {
 
 	}
 
+	public static String saveUserCertificate(String username, byte[] cert) throws IOException {
+
+			String path = Configuration.getUserCertPath(username);
+			WriteInDisk writer = new WriteInDisk(path);
+			writer.saveBytes(cert);
+
+			return path;
+
+	}
+
 }

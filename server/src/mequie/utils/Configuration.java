@@ -5,6 +5,7 @@ public class Configuration {
 	private Configuration() {}
 	
 	private static final String DATAPATH = "Data/";
+	private static final String CERTSPATH = "PubKeys/";
 	private static final String GROUPFILENAME = "group.txt";
 	private static final String USERSFILE = "users.txt";
 	private static final String MSG_INFO_FILENAME = "message_info.txt";
@@ -19,6 +20,14 @@ public class Configuration {
 		return DATAPATH + groupID + "/";
 	}
 	
+	/**
+	 * @param userID The id of the user
+	 * @return the user cert path
+	 */
+	public static String getUserCertPath(String userID) {
+		return CERTSPATH + userID + ".cert";
+	}
+
 	/**
 	 * @return current group message info file path in disk
 	 */

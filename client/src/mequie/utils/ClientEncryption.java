@@ -89,8 +89,7 @@ public class ClientEncryption {
 	private static PrivateKey getPrivateKey() throws Exception {
 
 		try (FileInputStream kfile = new FileInputStream(keystore)) {
-			KeyStore kstore = KeyStore.getInstance(STORETYPE);
-			kstore.load(kfile, keystorePassword.toCharArray());
+			KeyStore kstore = loadKeystore(kfile);
 			PrivateKey pk = (PrivateKey) kstore.getKey(RSA_KEY_NAME, keystorePassword.toCharArray());
 			
 			kfile.close();
@@ -103,13 +102,24 @@ public class ClientEncryption {
 
 	public static Certificate getCertificate() throws Exception {
 		try (FileInputStream kfile = new FileInputStream(keystore)) {
-			KeyStore kstore = KeyStore.getInstance(STORETYPE);
-			kstore.load(kfile, "123456".toCharArray()); //password da keystore
+			KeyStore kstore = loadKeystore(kfile);
 			Certificate cert = kstore.getCertificate(RSA_KEY_NAME);
 						
 			return cert;
 		} catch (Exception e) { throw e; }
 		
+	}
+
+	/**
+	 * Loads the user keystore
+	 * @param kfile inputstream for the store
+	 * @return
+	 * @throws Exception
+	 */
+	private static KeyStore loadKeystore(FileInputStream kfile)	throws Exception {
+		KeyStore kstore = KeyStore.getInstance(STORETYPE);
+		kstore.load(kfile, keystorePassword.toCharArray());
+		return kstore;
 	}
 
 
