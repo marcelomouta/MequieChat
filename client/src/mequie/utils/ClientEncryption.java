@@ -10,11 +10,17 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignedObject;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.util.Map.Entry;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 import mequie.app.facade.exceptions.MequieException;
 
@@ -47,11 +53,6 @@ public class ClientEncryption {
 	 * The password for the keystore
 	 */
 	private static String keystorePassword;
-
-	/**
-	 * The Secret key in memory for faster operations
-	 */
-	protected static Key key;
 
 	public static void loadKeys(String ks, String ksPswd) {
 		keystore = ks;
@@ -120,6 +121,40 @@ public class ClientEncryption {
 		KeyStore kstore = KeyStore.getInstance(STORETYPE);
 		kstore.load(kfile, keystorePassword.toCharArray());
 		return kstore;
+	}
+	
+	/**
+	 * Generate new group key and wrap it with this users public key
+	 * @return Entry with userID and wrapped key
+	 * @throws MequieException 
+	 */
+	public static byte[] generateAndWrapNewUserGroupKey() throws MequieException {
+		 
+        try {
+			SecretKey groupKey = generateNewSecretKey();
+			PublicKey pk = getCertificate().getPublicKey();
+			
+	        Cipher c = Cipher.getInstance("RSA");
+	        c.init(Cipher.WRAP_MODE, pk);
+
+	        return c.wrap(groupKey);
+
+	        
+		} catch (Exception e) {
+			throw new MequieException("ERROR could not generate and wrap new user group key");
+		}
+
+ 
+	}
+
+	/**
+	 * @return 
+	 * @throws NoSuchAlgorithmException
+	 */
+	private static SecretKey generateNewSecretKey() throws NoSuchAlgorithmException {
+		KeyGenerator kg = KeyGenerator.getInstance("AES");
+        kg.init(128);
+        return kg.generateKey();
 	}
 
 

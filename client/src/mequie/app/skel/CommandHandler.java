@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.security.SignedObject;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +17,6 @@ import mequie.app.facade.network.NetworkMessageRequest;
 import mequie.app.facade.network.NetworkMessageResponse;
 import mequie.app.network.NetworkClient;
 import mequie.utils.ClientEncryption;
-import mequie.utils.Encryption;
 
 /**
  * Class that handles the commands received from the client, sends them and receives their results via NetworkClient
@@ -26,7 +25,8 @@ public class CommandHandler {
 
 	private static NetworkClient network;
 	private int generator = 1; // to generate the id of income photos
-
+	private String userID;
+	
 	public CommandHandler(NetworkClient nw) {
 		network = nw;
 	}
@@ -43,6 +43,7 @@ public class CommandHandler {
 			System.out.println("Invalid userID: ':' is a reserved symbol");
 			return false;
 		}
+		
 		try {
 			
 			Session session = network.startAuthentication(new Session(user));
@@ -63,6 +64,7 @@ public class CommandHandler {
 				System.out.println(res.toString());
 				return false;
 			} else {
+				userID = user;
 				System.out.println("Authentication successful!");
 				return true;
 			}
@@ -86,9 +88,12 @@ public class CommandHandler {
 			System.out.println("Invalid groupID: ':' is a reserved symbol");
 			return;
 		}
+		
+		byte[] wrappedGroupKey = ClientEncryption.generateAndWrapNewUserGroupKey();
+		SimpleEntry<String,byte[]> userWrappedGroupKey = new SimpleEntry<>(userID,wrappedGroupKey); 
 
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.CREATE_GROUP,
-				new ArrayList<>(Arrays.asList(newGroupID)));
+				new ArrayList<>(Arrays.asList(newGroupID)),  new ArrayList<>(Arrays.asList(userWrappedGroupKey)) );
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
