@@ -1,7 +1,9 @@
 package mequie.app.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -21,8 +23,8 @@ public class Group {
 	// generic data about the group
 	private String id;
 	private User owner;
-	// all the users of this group
-	private Set<User> users = new HashSet<>();
+	// map with the users of this group and the path to their key files
+	private Map<User,String> users = new HashMap<>();
 	// the messages (text or photos) that were not seen by all users
 	private List<Message> messages = new ArrayList<>();
 	// the messages (only text) that were seen by all users
@@ -50,10 +52,10 @@ public class Group {
 	 * @param id the id of the group
 	 * @param owner the owner of the group
 	 */
-	public Group(String id, User owner) {
+	public Group(String id, User owner, String ownerKeysPath) {
 		this.id = id;
 		this.owner = owner;
-		this.users.add(owner);
+		this.users.put(owner, ownerKeysPath);
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class Group {
 	public List<User> getAllUsers() {
 		usersReadLock.lock();
 		try {
-			return new ArrayList<>(this.users);
+			return new ArrayList<>(this.users.keySet());
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -114,7 +116,7 @@ public class Group {
 	public boolean isUserOfGroup(User u) {
 		usersReadLock.lock();
 		try {
-			return users.contains(u);
+			return users.containsKey(u);
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -134,13 +136,17 @@ public class Group {
 	 * @param userToAdd the user to add to this group
 	 * @return true if the user was successfully added to this group
 	 */
-	public boolean addUserByID(User userToAdd){
+	public boolean addUserByID(User userToAdd, String userKeysPath){
 		boolean doneCorrectly = false;
 
 		// add user to users group
 		usersWriteLock.lock();
 		try {
-			doneCorrectly = this.users.add(userToAdd);
+			if (!users.containsKey(userToAdd)) {
+				this.users.put(userToAdd, userKeysPath);
+				doneCorrectly = true;
+			}
+				
 		} finally {
 			usersWriteLock.unlock();
 		}
@@ -165,11 +171,13 @@ public class Group {
 			return false;
 
 		boolean doneCorrectly = false;
+		String path;
 
 		// remove user from users group
 		usersWriteLock.lock();
 		try {
-			doneCorrectly = this.users.remove(userToRemove);
+			if ((path = this.users.remove(userToRemove)) != null)
+				doneCorrectly = true;
 		} finally {
 			usersWriteLock.unlock();
 		}
@@ -178,8 +186,15 @@ public class Group {
 		doneCorrectly = userToRemove.removeGroupFromBelongedGroups(this);
 
 		// rollback the process
-		if (!doneCorrectly) this.users.add(userToRemove);
-
+		if (!doneCorrectly) {
+			usersWriteLock.lock();
+			try {
+				this.users.put(userToRemove, path);
+			} finally {
+				usersWriteLock.unlock();
+			}
+		}
+		
 		return doneCorrectly;
 	}
 
@@ -229,7 +244,7 @@ public class Group {
 	public TextMessage createTextMessage(String text, User sender) {
 		usersReadLock.lock();
 		try {
-			return new TextMessage(getGoupID() + generateMsgID(), sender, new ArrayList<>(users), text);
+			return new TextMessage(getGoupID() + generateMsgID(), sender, new ArrayList<>(users.keySet()), text);
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -244,7 +259,7 @@ public class Group {
 
 		usersReadLock.lock();
 		try {
-			return new PhotoMessage(id, new ArrayList<>(users));
+			return new PhotoMessage(id, new ArrayList<>(users.keySet()));
 		} finally {
 			usersReadLock.unlock();
 		}

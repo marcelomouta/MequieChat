@@ -1,5 +1,6 @@
 package mequie.app.skel;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -123,14 +124,15 @@ public class MequieSkel {
 			
 			// list of arguments
 			List<String> args = msg.getArguments();
+			List<SimpleEntry<String, byte[]>> usersGroupKeys = msg.getUsersGroupKeys();
 			
-			if (args.isEmpty())
+			if (args.isEmpty() || usersGroupKeys.isEmpty())
 				throw new ErrorInsufficientArgumentsException();
 			
 			String g = args.get(0);
 			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
-			
+			//TODO
 			cgh.makeGrupByID(g);
 			cgh.groupAssociation();
 			cgh.save();
