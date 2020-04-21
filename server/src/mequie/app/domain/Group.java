@@ -84,6 +84,10 @@ public class Group {
 	public int getNumberOfUsers() {
 		return this.users.size();
 	}
+	
+	public String getUserKeyFilePath(User u) {
+		return this.users.get(u);
+	}
 
 	/**
 	 * @return the currentKeyID
