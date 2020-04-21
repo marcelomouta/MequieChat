@@ -25,6 +25,8 @@ public class Group {
 	private User owner;
 	// map with the users of this group and the path to their key files
 	private Map<User,String> users = new HashMap<>();
+	// the ID of the current key being used to encrypt group messages
+	private int currentKeyID;
 	// the messages (text or photos) that were not seen by all users
 	private List<Message> messages = new ArrayList<>();
 	// the messages (only text) that were seen by all users
@@ -56,6 +58,7 @@ public class Group {
 		this.id = id;
 		this.owner = owner;
 		this.users.put(owner, ownerKeysPath);
+		this.setCurrentKeyID(0);
 	}
 
 	/**
@@ -80,6 +83,20 @@ public class Group {
 	 */
 	public int getNumberOfUsers() {
 		return this.users.size();
+	}
+
+	/**
+	 * @return the currentKeyID
+	 */
+	public int getCurrentKeyID() {
+		return currentKeyID;
+	}
+
+	/**
+	 * @param currentKeyID the currentKeyID to set
+	 */
+	public void setCurrentKeyID(int currentKeyID) {
+		this.currentKeyID = currentKeyID;
 	}
 
 	/**
