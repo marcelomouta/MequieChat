@@ -285,4 +285,15 @@ public class OperationsToDiskHandler {
 
 	}
 
+	/**
+	 * 
+	 * @param id The id associated with the key
+	 * @param key The key of the id
+	 * @return The path
+	 */
+	public static String createGroupMemberKeyfile(int id, byte[] key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

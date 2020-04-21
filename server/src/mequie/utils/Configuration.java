@@ -7,6 +7,7 @@ public class Configuration {
 	private static final String DATAPATH = "Data/";
 	private static final String CERTSPATH = "PubKeys/";
 	private static final String GROUPFILENAME = "group.txt";
+	private static final String GROUPLOCATIONKEYS_FILENAME = "keysLocation.txt";
 	private static final String USERSFILE = "users.txt";
 	private static final String MSG_INFO_FILENAME = "message_info.txt";
 	private static final String TEXT_MSGS_FILENAME = "text_messages.txt";
@@ -18,6 +19,15 @@ public class Configuration {
 	 */
 	public static String getGroupPath(String groupID) {
 		return DATAPATH + groupID + "/";
+	}
+	
+	/**
+	 * 
+	 * @param groupID The group
+	 * @return the location of the file with all locations of user keys
+	 */
+	public static String getLocationKeysOfGroupPath(String groupID) {
+		return getGroupPath(groupID) + GROUPLOCATIONKEYS_FILENAME;
 	}
 	
 	/**
