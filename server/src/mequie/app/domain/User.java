@@ -63,10 +63,11 @@ public class User {
 	/**
 	 * 
 	 * @param groupID a string representing the id of the group
+	 * @param ownerKeysPath 
 	 * @return a group with groupID id and this user as owner
 	 */
-	public Group createGroup(String groupID) {
-		return new Group(groupID, this);
+	public Group createGroup(String groupID, String ownerKeysPath) {
+		return new Group(groupID, this, ownerKeysPath);
 	}
 
 	/**
