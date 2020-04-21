@@ -2,6 +2,7 @@ package mequie.app.skel;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import mequie.app.facade.handlers.AddUserToGroupHandler;
 import mequie.app.facade.handlers.CollectMessagesHandler;
 import mequie.app.facade.handlers.CreateGroupHandler;
 import mequie.app.facade.handlers.GetGroupInfoHandler;
+import mequie.app.facade.handlers.GetLastKeyOfGroupHandler;
 import mequie.app.facade.handlers.GetUserFromSessionHandler;
 import mequie.app.facade.handlers.GetUserInfoHandler;
 import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
@@ -105,6 +107,9 @@ public class MequieSkel {
 			break;
 		case MESSAGE_HISTORY_OF_GROUP:
 			response = history(msg);
+			break;
+		case GET_LAST_KEY_OF_GROUP:
+			response = getLastKeyOfGroup(msg);
 			break;
 		default:
 			response = new NetworkMessageError(msg.getOp(), new MequieException("ERROR invalid operation"));
@@ -392,6 +397,29 @@ public class MequieSkel {
 			List<String> msgs = mhgh.getHistory();
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(msgs));
+			
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
+		}
+	}
+	
+	private NetworkMessage getLastKeyOfGroup(NetworkMessageRequest msg) {
+		try {
+			GetLastKeyOfGroupHandler gkg = new GetLastKeyOfGroupHandler(currentSession);
+			
+			// list of arguments
+			List<String> args = msg.getArguments();
+			
+			if (args.isEmpty())
+				throw new ErrorInsufficientArgumentsException();
+			
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			byte[] encryptedKey = gkg.getLastKeyOfGroup(g);
+			
+			return new NetworkMessageResponse(msg.getOp(), "OK", null, new ArrayList<byte[]>(Arrays.asList(encryptedKey)));
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);

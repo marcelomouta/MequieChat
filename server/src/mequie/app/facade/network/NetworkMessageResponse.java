@@ -78,6 +78,13 @@ public class NetworkMessageResponse extends NetworkMessage {
 		return (ArrayList<byte[]>) info2;
 	}
 	
+	/**
+	 * @return the key of the group encrypted
+	 */
+	public byte[] getKeyOfGroup() {
+		return (byte[]) info2.get(0);
+	}
+	
 	public String toString() {
 		return "--- NetworkMessageResponse ---\n" +
 			"Opcode = " + this.getOp().toString() + "\n" +
