@@ -33,7 +33,7 @@ public class CreateGroupHandler{
      */
     public void makeGrupByID(String groupID, byte[] ownerKey) {
     	//TODO create keyFile now OR get the path from Configuration and create it on save
-    	String ownerKeyFilePath;
+    	String ownerKeyFilePath = OperationsToDiskHandler.createGroupMemberKeyfile(0, ownerKey);
     	currentGroup = currentUser.createGroup(groupID, ownerKeyFilePath);
     }
     
