@@ -111,6 +111,7 @@ public class CommandHandler {
 	 * @throws IOException
 	 */
 	public void add(String userID, String groupID) throws MequieException, ClassNotFoundException, IOException {
+		
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.ADD_USER_TO_GROUP,
 				new ArrayList<>(Arrays.asList(userID, groupID)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -213,7 +214,12 @@ public class CommandHandler {
 	 * @throws MequieException
 	 */
 	public void message(String groupID, String txtMsg) throws ClassNotFoundException, IOException, MequieException {
+		// first thing is to get the last key of the group to be able to sent the msg encrypted
+		byte[] encryptedKey = getTheKeyFromGroup(groupID);
+			
+		// now encrypt the message
 		
+		// now send it encrypted
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
 				new ArrayList<>(Arrays.asList(groupID, txtMsg)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -232,12 +238,19 @@ public class CommandHandler {
 	 * @throws MequieException
 	 */
 	public void photo(String groupID, String fileName) throws IOException, ArithmeticException, ClassNotFoundException, MequieException {
+		// first thing is to get the last key of the group to be able to sent the msg encrypted
+		byte[] encryptedKey = getTheKeyFromGroup(groupID);
+		
+		// get the image
 		FileInputStream inFile = new FileInputStream(fileName);
 		int size = Math.toIntExact(new File(fileName).length());
 		byte[] buf = new byte[size];
 		inFile.read(buf, 0, size);
 		inFile.close();
-
+					
+		// now encrypt the photo
+		
+		// now send it encrypted
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_PHOTO_MESSAGE,
 				new ArrayList<>(Arrays.asList(groupID)), buf);
 		NetworkMessage msgServer = network.sendAndReceive(msg);
@@ -369,5 +382,32 @@ public class CommandHandler {
 			String fileExtension = fileType.replaceAll(".*/", "");
 			fileToWrite.renameTo(new File(fileToWrite.getPath() + "." + fileExtension));
 		}
+	}
+	
+	/**
+	 * 
+	 * @param groupID The group to get the key
+	 * @return The key of the group encrypted
+	 * @throws MequieException 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	private byte[] getTheKeyFromGroup(String groupID) throws MequieException, ClassNotFoundException, IOException {
+		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_LAST_KEY_OF_GROUP, 
+				new ArrayList<>(Arrays.asList(groupID)));
+		NetworkMessage msgServer = network.sendAndReceive(msg);
+							
+		checkIfMessageIsAnError(msgServer);
+						
+		// get the key from msg
+		byte[] encryptedKey = null;
+		if(msgServer instanceof NetworkMessageResponse) {
+			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
+			encryptedKey = res.getKeyOfGroup();
+			if (encryptedKey.length < 1)
+				throw new MequieException("Error empty key of group.");
+		}
+		
+		return encryptedKey;
 	}
 }
