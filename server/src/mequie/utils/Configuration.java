@@ -75,4 +75,14 @@ public class Configuration {
 		return DATAPATH + USERSFILE;
 	}
 	
+	/**
+	 * 
+	 * @param groupID
+	 * @param userID
+	 * @return path of user encrypted keys within the group
+	 */
+	public static String getLocationUserKeysOfGroupPath(String groupID, String userID) {
+		return getGroupPath(groupID) + userID + "GroupKeys.txt";
+	}
+	
 }
