@@ -20,8 +20,8 @@ public class TextMessage extends Message {
 	 * @param userNotSeenMsg the list of users who have not seen the message
 	 * @param text the data text of the message
 	 */
-	public TextMessage(String msgID, User sender, List<User> userNotSeenMsg, String text) {
-		super(msgID, userNotSeenMsg);
+	public TextMessage(String msgID, int keyID, User sender, List<User> userNotSeenMsg, String text) {
+		super(msgID, keyID, userNotSeenMsg);
 		this.sender = sender;
 		this.text = text;
 	}

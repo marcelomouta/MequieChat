@@ -267,7 +267,7 @@ public class Group {
 	public TextMessage createTextMessage(String text, User sender) {
 		usersReadLock.lock();
 		try {
-			return new TextMessage(getGroupID() + generateMsgID(), sender, new ArrayList<>(users.keySet()), text);
+			return new TextMessage(getGroupID() + generateMsgID(), currentKeyID, sender, new ArrayList<>(users.keySet()), text);
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -282,7 +282,7 @@ public class Group {
 
 		usersReadLock.lock();
 		try {
-			return new PhotoMessage(id, new ArrayList<>(users.keySet()));
+			return new PhotoMessage(id, currentKeyID, new ArrayList<>(users.keySet()));
 		} finally {
 			usersReadLock.unlock();
 		}

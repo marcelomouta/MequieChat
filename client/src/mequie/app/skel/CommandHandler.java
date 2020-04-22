@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.bind.DatatypeConverter;
+
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.MequieException;
 import mequie.app.facade.network.NetworkMessage;
@@ -261,10 +263,11 @@ public class CommandHandler {
 			
 		// now encrypt the message
 		byte[] encryptedMessage = ClientEncryption.encryptMessage(txtMsg.getBytes(), encryptedKey);
+		String encriptedString = DatatypeConverter.printHexBinary(encryptedMessage);
 		
 		// now send it encrypted
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
-				new ArrayList<>(Arrays.asList(groupID, txtMsg)));
+				new ArrayList<>(Arrays.asList(groupID, encriptedString)));
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);
@@ -292,10 +295,11 @@ public class CommandHandler {
 		inFile.close();
 					
 		// now encrypt the photo
+		byte[] encryptedPhoto = ClientEncryption.encryptMessage(buf, encryptedKey);
 		
 		// now send it encrypted
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_PHOTO_MESSAGE,
-				new ArrayList<>(Arrays.asList(groupID)), buf);
+				new ArrayList<>(Arrays.asList(groupID)), encryptedPhoto);
 		NetworkMessage msgServer = network.sendAndReceive(msg);
 
 		checkIfMessageIsAnError(msgServer);

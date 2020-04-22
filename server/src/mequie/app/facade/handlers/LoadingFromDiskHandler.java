@@ -140,6 +140,7 @@ public class LoadingFromDiskHandler {
 			Message m = null;
 			String msgID = msgIDandUsersSplited[0];
 			String flag = msgIDandUsersSplited[1];
+			int keyID = Integer.parseInt(msgIDandUsersSplited[2]);
 			
 			// users who havent read the message yet
 			List<User> usersIDs = getMsgUnseenUsers(msgIDandUsersSplited);
@@ -153,11 +154,11 @@ public class LoadingFromDiskHandler {
 					User sender = UserCatalog.getInstance().getUserById(msgIDandTextSplited[1]);
 					String text = msgIDandTextSplited[2];
 					
-					m = new TextMessage(msgID, sender, usersIDs, text);
+					m = new TextMessage(msgID, keyID, sender, usersIDs, text);
 				}
 			} else if (flag.equals(Configuration.PHOTO_MSG_FLAG)) { // is a photo message
 				
-				m = new PhotoMessage(msgID, usersIDs);
+				m = new PhotoMessage(msgID, keyID, usersIDs);
 			}
 			
 			// add to group g
@@ -183,7 +184,7 @@ public class LoadingFromDiskHandler {
 	private static List<User> getMsgUnseenUsers(String[] msgIDandUsersSplited) {
 		List<User> usersIDs = new ArrayList<>();
 		
-		for (int i = 2; i < msgIDandUsersSplited.length; i++) {
+		for (int i = 3; i < msgIDandUsersSplited.length; i++) {
 			User u = UserCatalog.getInstance().getUserById(msgIDandUsersSplited[i]);
 			if (u != null)
 				usersIDs.add(u);

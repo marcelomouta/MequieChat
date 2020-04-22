@@ -39,10 +39,7 @@ public class GetLastKeyOfGroupHandler {
     	if (!currentGroup.isUserOfGroup(currentUser))
 			throw new UserNotHavePermissionException();
     	
-    	// get the path of the user key file
-    	String userKeyFilePath = currentGroup.getUserKeyFileName(currentUser);
-    	
-    	byte[] key = OperationsToDiskHandler.getFileContent(userKeyFilePath);
+    	byte[] key = OperationsToDiskHandler.readLastUserKey(currentUser, currentGroup);
     	if (key == null)
     		throw new ErrorLoadingKeyException(currentGroup.getGroupID());
     		

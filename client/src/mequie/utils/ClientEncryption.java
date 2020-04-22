@@ -221,7 +221,10 @@ public class ClientEncryption {
 	public static byte[] encryptMessage(byte[] bytes, byte[] encryptedKey) throws MequieException {
 		try {
 			SecretKey key = unwrapKey(encryptedKey);
-			//TODO
+			Cipher c = Cipher.getInstance(ALGORITHM);
+			c.init(Cipher.ENCRYPT_MODE, key);
+			
+			return c.doFinal(bytes);
 			
 		} catch (Exception e) {
 			throw new MequieException("ERROR encrypting message");

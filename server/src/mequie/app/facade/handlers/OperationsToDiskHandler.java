@@ -89,7 +89,7 @@ public class OperationsToDiskHandler {
 		synchronized(messageInfoMutexes.get(g.getGroupID())) {
 			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
-			String messageInfo = String.join(":", m.getMsgID(), flag) + unseenUsers + "\n";
+			String messageInfo = String.join(":", m.getMsgID(), flag, m.getKeyID()+"") + unseenUsers + "\n";
 			writer.saveSimpleString(messageInfo);
 		}
 	}
@@ -364,6 +364,26 @@ public class OperationsToDiskHandler {
 			return true;
 		} catch (IOException | MequieException e) {
 			return false;
+		}
+	}
+
+	public static byte[] readLastUserKey(User u, Group g) {
+		// add encrypted key to his userGroupKeys file
+		try {
+			String keyID = g.getCurrentKeyID() + "";
+			
+			String currentUserGroupKeysPath = Configuration.getLocationUserKeysOfGroupPath(g.getGroupID(), g.getUserKeyFileName(u));
+			
+			ReadFromDisk reader = new ReadFromDisk(currentUserGroupKeysPath, ReadOperation.PLAINTEXT);
+			List<String> lines = reader.readAllLines();
+			
+			String line = lines.stream().filter(s -> s.split(":")[0].equals(keyID)).findFirst().get();
+			
+			//convert array of bytes to String
+			return DatatypeConverter.parseHexBinary(line.split(":")[1]);
+			
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
