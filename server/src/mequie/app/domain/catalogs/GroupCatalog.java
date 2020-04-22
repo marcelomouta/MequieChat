@@ -49,7 +49,7 @@ import mequie.app.domain.Group;
      */
     public Group getGroupByID(String groupID) {
         for (Group g : groups) {
-            if (g.getGoupID().equals(groupID)) {
+            if (g.getGroupID().equals(groupID)) {
                 return g;
             }
         }

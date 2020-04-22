@@ -44,7 +44,7 @@ public class GetLastKeyOfGroupHandler {
     	
     	byte[] key = OperationsToDiskHandler.getFileContent(userKeyFilePath);
     	if (key == null)
-    		throw new ErrorLoadingKeyException(currentGroup.getGoupID());
+    		throw new ErrorLoadingKeyException(currentGroup.getGroupID());
     		
     	return key;
 	}

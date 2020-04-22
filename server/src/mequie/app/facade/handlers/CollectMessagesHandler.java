@@ -76,7 +76,7 @@ public class CollectMessagesHandler {
 			} else if (msg instanceof PhotoMessage) {
 				
 				// ir buscar os bytes
-				byte[] data = OperationsToDiskHandler.getFileContent(Configuration.getPhotoMsgPathName(currentGroup.getGoupID(), msg.getMsgID()));
+				byte[] data = OperationsToDiskHandler.getFileContent(Configuration.getPhotoMsgPathName(currentGroup.getGroupID(), msg.getMsgID()));
 				if (data != null) {
 					photosToAdd.add(data);
 					if (msg.allHaveSeenMessage())

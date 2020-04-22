@@ -37,11 +37,11 @@ public class GetUserInfoHandler{
     	groupsAndOwnedGroupsSeparated.add(new ArrayList<>());
     	
     	for (Group g : currentUser.getAllGroups()) {
-    		groupsAndOwnedGroupsSeparated.get(0).add(g.getGoupID());
+    		groupsAndOwnedGroupsSeparated.get(0).add(g.getGroupID());
     	}
 
     	for (Group g : currentUser.getGroupsWhoUserIsLeader()) {
-    		groupsAndOwnedGroupsSeparated.get(1).add(g.getGoupID());
+    		groupsAndOwnedGroupsSeparated.get(1).add(g.getGroupID());
     	}
     	
     	return groupsAndOwnedGroupsSeparated;

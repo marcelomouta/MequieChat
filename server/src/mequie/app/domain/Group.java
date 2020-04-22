@@ -64,7 +64,7 @@ public class Group {
 	 * 
 	 * @return the groupID of the group
 	 */
-	public String getGoupID() {
+	public String getGroupID() {
 		return this.id;
 	}
 
@@ -264,7 +264,7 @@ public class Group {
 	public TextMessage createTextMessage(String text, User sender) {
 		usersReadLock.lock();
 		try {
-			return new TextMessage(getGoupID() + generateMsgID(), sender, new ArrayList<>(users.keySet()), text);
+			return new TextMessage(getGroupID() + generateMsgID(), sender, new ArrayList<>(users.keySet()), text);
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -275,7 +275,7 @@ public class Group {
 	 * @return a new PhotoMessage
 	 */
 	public PhotoMessage createPhotoMessage() {
-		String id = getGoupID() + generateMsgID();
+		String id = getGroupID() + generateMsgID();
 
 		usersReadLock.lock();
 		try {

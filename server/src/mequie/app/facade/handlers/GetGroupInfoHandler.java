@@ -46,7 +46,7 @@ public class GetGroupInfoHandler{
     public List<String> getInfo() {
     	List<String> info = new ArrayList<String>();
     	
-    	info.add(this.currentGroup.getGoupID());
+    	info.add(this.currentGroup.getGroupID());
     	
     	int user_num = this.currentGroup.getNumberOfUsers();
     	info.add(String.valueOf(user_num));
