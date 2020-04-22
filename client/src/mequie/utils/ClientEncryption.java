@@ -218,5 +218,26 @@ public class ClientEncryption {
 		}
 	}
 
+	public static byte[] encryptMessage(byte[] bytes, byte[] encryptedKey) throws MequieException {
+		try {
+			SecretKey key = unwrapKey(encryptedKey);
+			//TODO
+			
+		} catch (Exception e) {
+			throw new MequieException("ERROR encrypting message");
+		}
+		
+	}
+
+	
+	private static SecretKey unwrapKey(byte[] wrappedKey) throws Exception {
+		PrivateKey pk = getPrivateKey();
+		Cipher c = Cipher.getInstance("RSA");
+        c.init(Cipher.UNWRAP_MODE, pk);
+        
+        return (SecretKey) c.unwrap(wrappedKey, ALGORITHM, Cipher.SECRET_KEY);
+
+	}
+
 
 }

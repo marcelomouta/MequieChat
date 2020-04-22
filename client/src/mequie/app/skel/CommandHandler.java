@@ -260,7 +260,7 @@ public class CommandHandler {
 		byte[] encryptedKey = getTheKeyFromGroup(groupID);
 			
 		// now encrypt the message
-		String encriptedMessage = 
+		byte[] encryptedMessage = ClientEncryption.encryptMessage(txtMsg.getBytes(), encryptedKey);
 		
 		// now send it encrypted
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
