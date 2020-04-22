@@ -31,9 +31,8 @@ public class CreateGroupHandler{
      * @param groupID id of the group to create
      * @param ownerKey 
      */
-    public void makeGrupByID(String groupID, byte[] ownerKey) {
+    public void makeGrupByID(String groupID) {
     	//TODO create keyFile now OR get the path from Configuration and create it on save
-    	String ownerKeyFilePath = OperationsToDiskHandler.createGroupMemberKeyfile(0, ownerKey);
     	currentGroup = currentUser.createGroup(groupID);
     }
     
@@ -53,9 +52,16 @@ public class CreateGroupHandler{
      * Saves Makes the operation persistent on disk
      * @throws ErrorSavingInDiskException
      */
-    public void save() throws ErrorSavingInDiskException {
+    // no SendPhotoMessgeHnadler tambem recebemos um array de bytes no save
+    public void save(byte[] ownerKey) throws ErrorSavingInDiskException {
     	if ( !OperationsToDiskHandler.saveGroupInDisk(currentGroup) )
     		throw new ErrorSavingInDiskException();
+    	
+    	String ownerKeyFilePath = OperationsToDiskHandler.saveUserGroupKeyInDisk(0, ownerKey, currentGroup, currentUser);
+    	if ( ownerKeyFilePath == null )
+    		throw new ErrorSavingInDiskException();
+    	
+    	currentGroup.addUserByID(currentUser, ownerKeyFilePath);
     }
 
 }

@@ -138,9 +138,9 @@ public class MequieSkel {
 			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
 
-			cgh.makeGrupByID(g, usersGroupKeys.get(0).getValue());
+			cgh.makeGrupByID(g);
 			cgh.groupAssociation();
-			cgh.save();
+			cgh.save(usersGroupKeys.get(0).getValue());
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 		

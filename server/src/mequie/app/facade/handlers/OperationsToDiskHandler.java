@@ -1,10 +1,14 @@
 package mequie.app.facade.handlers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
 
 import mequie.app.domain.Group;
 import mequie.app.domain.Message;
@@ -42,9 +46,9 @@ public class OperationsToDiskHandler {
 				// write in messageInfo file
 				saveMessageInfoInDisk(m, Configuration.TXT_MSG_FLAG ,g);
 
-				synchronized(textMessageMutexes.get(g.getGoupID())) {
+				synchronized(textMessageMutexes.get(g.getGroupID())) {
 					// write text message content
-					WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
+					WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGroupID()));
 					String messageContent = m.getInfo() + "\n";
 					writer.saveSimpleString(messageContent);
 				}
@@ -67,7 +71,7 @@ public class OperationsToDiskHandler {
 			// write in messageInfo file
 			saveMessageInfoInDisk(m, Configuration.PHOTO_MSG_FLAG ,g);
 
-			WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), m.getMsgID()));
+			WriteInDisk writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGroupID(), m.getMsgID()));
 			writer.saveBytes(data);
 
 			return true;
@@ -82,8 +86,8 @@ public class OperationsToDiskHandler {
 	 * @param flag message type
 	 */
 	private static void saveMessageInfoInDisk(Message m, String flag, Group g) throws IOException {
-		synchronized(messageInfoMutexes.get(g.getGoupID())) {
-			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+		synchronized(messageInfoMutexes.get(g.getGroupID())) {
+			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
 			String messageInfo = String.join(":", m.getMsgID(), flag) + unseenUsers + "\n";
 			writer.saveSimpleString(messageInfo);
@@ -124,7 +128,7 @@ public class OperationsToDiskHandler {
 			try {
 				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName(), ReadOperation.ENCRYPTEDFILE);
 				List<String> lines = reader.readAllLines();
-				lines.add(g.getGoupID() + ":" + g.getOwner().getUserID() + "\n");
+				lines.add(g.getGroupID() + ":" + g.getOwner().getUserID() + "\n");
 				
 				WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
 				writer.saveEncryptedListOfStringsSeparatedBy(lines, "\n");
@@ -139,8 +143,8 @@ public class OperationsToDiskHandler {
 	 * Initialization of group mutexes
 	 */
 	public static void initializeGroupMutexes(Group g) {
-		messageInfoMutexes.put(g.getGoupID(), new Object());
-		textMessageMutexes.put(g.getGoupID(), new Object());
+		messageInfoMutexes.put(g.getGroupID(), new Object());
+		textMessageMutexes.put(g.getGroupID(), new Object());
 	}
 
 	/**
@@ -160,7 +164,7 @@ public class OperationsToDiskHandler {
 				List<String> toWrite = new ArrayList<>();
 
 				lines.stream().forEach(s -> {
-					if ( s.split(":")[0].equals(g.getGoupID()) )
+					if ( s.split(":")[0].equals(g.getGroupID()) )
 						toWrite.add(s + ":" + u.getUserID());
 					else 
 						toWrite.add(s);
@@ -189,7 +193,7 @@ public class OperationsToDiskHandler {
 				ReadFromDisk reader = new ReadFromDisk(Configuration.getGroupPathName(), ReadOperation.ENCRYPTEDFILE);
 				List<String> lines = reader.readAllLines();
 
-				List<String> toWrite = replaceStringInList(lines, g.getGoupID(), ":" + u.getUserID(), "");
+				List<String> toWrite = replaceStringInList(lines, g.getGroupID(), ":" + u.getUserID(), "");
 
 				// depois escrever a alteracao ao grupo no disco
 				WriteInDisk writer = new WriteInDisk(Configuration.getGroupPathName());
@@ -221,13 +225,13 @@ public class OperationsToDiskHandler {
 		//TODO
 		try {
 			for (Message toRemove : toRemoveList) {
-				ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 				List<String> lines = reader.readAllLines();
 
 				List<String> toWrite = replaceStringInList(lines, toRemove.getMsgID(), ":" + u.getUserID(), "");
 
 				// depois escrever a alteracao ao grupo no disco
-				WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+				WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 				writer.emptyFile();
 				writer.saveListOfStringsSeparatedBy(toWrite, "\n");
 				writer.saveSimpleString("\n");
@@ -265,7 +269,7 @@ public class OperationsToDiskHandler {
 		try {
 			WriteInDisk writer;
 			for (PhotoMessage photo : photosToRemove) {
-				writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGoupID(), photo.getMsgID()));
+				writer = new WriteInDisk(Configuration.getPhotoMsgPathName(g.getGroupID(), photo.getMsgID()));
 				writer.deleteFile();
 			}
 			return true;
@@ -286,14 +290,54 @@ public class OperationsToDiskHandler {
 	}
 
 	/**
-	 * 
+	 * Saves key with id given in the user key file in group
 	 * @param id The id associated with the key
 	 * @param key The key of the id
 	 * @return The path
 	 */
-	public static String createGroupMemberKeyfile(int id, byte[] key) {
-		// TODO Auto-generated method stub
-		return null;
+	public static String saveUserGroupKeyInDisk(int keyID, byte[] key, Group g, User u) {
+		try {
+			// access keyLocation.txt where it exists lines such as "userID:userGroupKeysPath"
+			// there is one keyLocation.txt for each group
+			ReadFromDisk readerKeyLocation = new ReadFromDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()), ReadOperation.PLAINTEXT);
+			List<String> linesKeyLocation = readerKeyLocation.readAllLines();
+			
+			// getUserGroupKeysPath
+			String currentUserGroupKeysPath = null;
+			for(String line : linesKeyLocation) {
+				String[] idAndPath =  line.split(":");
+				String userID = idAndPath[0];
+				String userGroupKeysPath = idAndPath[1];
+				if ( userID.equals(u.getUserID()) )
+					currentUserGroupKeysPath = userGroupKeysPath;
+			}
+			
+			// the user isnt in the keyLocation.txt so we'll create his usergGoupKeys file and add that to keyLocation.txt
+			if(currentUserGroupKeysPath == null) {
+				// create his userGroupKeys file
+				currentUserGroupKeysPath = Configuration.getLocationUserKeysOfGroupPath(g.getGroupID(), u.getUserID());
+				File f = new File(currentUserGroupKeysPath);
+				f.getParentFile().mkdirs();
+				f.createNewFile();
+				
+				// add encrypted key to his userGroupKeys file
+				WriteInDisk writerUserGroupKeys = new WriteInDisk(currentUserGroupKeysPath);
+				//convert array of bytes to String
+				String keyString = DatatypeConverter.printHexBinary(key);
+				// save line in the format userID:keyString
+				writerUserGroupKeys.saveTwoStringsSeparatedBy(u.getUserID(), keyString, ":");
+				
+				// "add" userGroupKeys file to keyLocation.txt
+				linesKeyLocation.add(u.getUserID() + ":" + currentUserGroupKeysPath + "\n");
+				
+				WriteInDisk writerKeyLocation = new WriteInDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()));
+				writerKeyLocation.saveEncryptedListOfStringsSeparatedBy(linesKeyLocation, "\n");
+			}
+			
+			return currentUserGroupKeysPath;
+		} catch (IOException | MequieException e) {
+			return null;
+		}
 	}
 
 }

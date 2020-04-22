@@ -109,12 +109,12 @@ public class LoadingFromDiskHandler {
 	private static void getAllMessagesFromDisk(Group g) throws IOException, MequieException {
 		
 		// all messages id and user who not read the message
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGoupID()));
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 		List<String> allMsgsIDandUsers = reader.readAllLines();		
 		Iterator<String> it = allMsgsIDandUsers.iterator();
 
 		// text messages content
-		reader = new ReadFromDisk(Configuration.getTextMessagesPathName(g.getGoupID()));
+		reader = new ReadFromDisk(Configuration.getTextMessagesPathName(g.getGroupID()));
 		List<String> msgsIDandTexts = reader.readAllLines();
 		Iterator<String> itTxt = msgsIDandTexts.iterator();
 
@@ -157,7 +157,7 @@ public class LoadingFromDiskHandler {
 		
 		// sets group MsgNumberId it has loaded messages from disk
 		if (lastMsgID != null) {
-			int lastMsgIDNumber = Integer.parseInt(lastMsgID.replace(g.getGoupID(), ""));
+			int lastMsgIDNumber = Integer.parseInt(lastMsgID.replace(g.getGroupID(), ""));
 			g.setMsgNumberID(lastMsgIDNumber+1);			
 		}
 	}
