@@ -1,5 +1,8 @@
 package mequie.app.facade.handlers;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
@@ -61,17 +64,27 @@ public class AddUserToGroupHandler{
     	if (!currentGroup.getOwner().equals(currentUser))
     		throw new UserNotHavePermissionException();
     	
-    	if ( !currentGroup.addUserByID(currentUserToAdd) )
+    	//Generate user keys filename
+    	String userKeysFileName = (currentGroup.getCurrentKeyID() + 1) + "";
+    	
+    	if ( !currentGroup.addUserByID(currentUserToAdd, userKeysFileName) )
             throw new ErrorAddingUserToGroupException();
     }
     
     /**
      * Saves Makes the operation persistent on disk
+     * @param usersGroupKeys 
      * @throws ErrorSavingInDiskException
      */
-    public void save() throws ErrorSavingInDiskException {
+    public void save(List<SimpleEntry<String, byte[]>> usersGroupKeys) throws ErrorSavingInDiskException {
   		if ( !OperationsToDiskHandler.saveUserToGroupInDisk(currentUserToAdd, currentGroup) )
   			throw new ErrorSavingInDiskException();
+  		
+  		for (SimpleEntry<String, byte[]> e : usersGroupKeys) {
+  			User user = UserCatalog.getInstance().getUserById(e.getKey());
+  			if (!OperationsToDiskHandler.saveUserGroupKeyInDisk(e.getValue(), currentGroup, user, user.equals(currentUserToAdd)))
+  				throw new ErrorSavingInDiskException();
+  		}
     }
 
 }

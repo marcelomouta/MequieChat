@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -16,10 +17,16 @@ import java.security.SignedObject;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import mequie.app.facade.exceptions.MequieException;
@@ -47,7 +54,13 @@ public class ClientEncryption {
 	/**
 	 * KeyStore path
 	 */
+	private static final String USER_CERTIFICATES_PATH = "PubKeys/";
+
+	/**
+	 * KeyStore path
+	 */
 	private static String keystore;
+	
 
 	/**
 	 * The password for the keystore
@@ -134,10 +147,7 @@ public class ClientEncryption {
 			SecretKey groupKey = generateNewSecretKey();
 			PublicKey pk = getCertificate().getPublicKey();
 			
-	        Cipher c = Cipher.getInstance("RSA");
-	        c.init(Cipher.WRAP_MODE, pk);
-
-	        return c.wrap(groupKey);
+	        return wrapKey(groupKey, pk);
 
 	        
 		} catch (Exception e) {
@@ -148,6 +158,19 @@ public class ClientEncryption {
 	}
 
 	/**
+	 * @param groupKey
+	 * @param pk
+	 * @return
+	 * @throws Exception
+	 */
+	private static byte[] wrapKey(SecretKey groupKey, PublicKey pk) throws Exception {
+		Cipher c = Cipher.getInstance("RSA");
+		c.init(Cipher.WRAP_MODE, pk);
+
+		return c.wrap(groupKey);
+	}
+
+	/**
 	 * @return 
 	 * @throws NoSuchAlgorithmException
 	 */
@@ -155,6 +178,44 @@ public class ClientEncryption {
 		KeyGenerator kg = KeyGenerator.getInstance("AES");
         kg.init(128);
         return kg.generateKey();
+	}
+
+	public static ArrayList<SimpleEntry<String, byte[]>> generateAndWrapUsersGroupKeys(List<String> groupMembers) throws MequieException {
+		
+		try {
+			ArrayList<SimpleEntry<String, byte[]>> wrappedKeys = new ArrayList<>();
+			
+			SecretKey groupKey = generateNewSecretKey();
+			
+			for (String user : groupMembers) {
+				PublicKey pk = loadUserCertificate(user).getPublicKey();
+				
+				byte[] wrappedKey = wrapKey(groupKey, pk);
+				
+				wrappedKeys.add(new SimpleEntry<>(user, wrappedKey));
+
+			}
+			
+			return wrappedKeys;
+	        
+		} catch (Exception e) {
+			throw new MequieException("ERROR could not generate and wrap the users group key");
+		}
+	}
+	
+	/**
+	 * Load the certificate of a user from a file
+	 * @param certPath The path of the certificate file
+	 * @return certificate from certPath
+	 * @throws MequieException 
+	 */
+	public static Certificate loadUserCertificate(String user) throws MequieException {
+		try(FileInputStream in1 = new FileInputStream(USER_CERTIFICATES_PATH + user + ".cert")) {
+			CertificateFactory cf = CertificateFactory.getInstance("X.509");
+			return cf.generateCertificate(in1);
+		} catch (IOException | CertificateException e) {
+			throw new MequieException("ERROR loading user certificate");
+		}
 	}
 
 

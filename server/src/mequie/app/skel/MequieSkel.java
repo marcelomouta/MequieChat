@@ -131,7 +131,7 @@ public class MequieSkel {
 			List<String> args = msg.getArguments();
 			List<SimpleEntry<String, byte[]>> usersGroupKeys = msg.getUsersGroupKeys();
 			
-			if (args.isEmpty() || usersGroupKeys.isEmpty())
+			if (args == null || args.isEmpty() || usersGroupKeys.isEmpty())
 				throw new ErrorInsufficientArgumentsException();
 			
 			String g = args.get(0);
@@ -160,8 +160,9 @@ public class MequieSkel {
 			
 			// list of arguments
 			List<String> args = msg.getArguments();
+			List<SimpleEntry<String, byte[]>> usersGroupKeys = msg.getUsersGroupKeys();
 			
-			if (args.size() < 2)
+			if (args == null || args.size() < 2 || usersGroupKeys.isEmpty())
 				throw new ErrorInsufficientArgumentsException();
 			
 			String u = args.get(0);
@@ -176,7 +177,7 @@ public class MequieSkel {
 			
 			augh.getGroupByID(g);
 			augh.addNewUserToGroup();
-			augh.save();
+			augh.save(usersGroupKeys);
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
@@ -198,8 +199,9 @@ public class MequieSkel {
 			
 			// list of arguments
 			List<String> args = msg.getArguments();
+			List<SimpleEntry<String, byte[]>> usersGroupKeys = msg.getUsersGroupKeys();
 			
-			if (args.size() < 2)
+			if (args == null || args.size() < 2 || usersGroupKeys.isEmpty())
 				throw new ErrorInsufficientArgumentsException();
 			
 			String u = args.get(0);
@@ -214,7 +216,7 @@ public class MequieSkel {
 			
 			rugh.indicateGroupID(g);
 			rugh.removeUserFromGroup();
-			rugh.save();
+			rugh.save(usersGroupKeys);
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			

@@ -54,14 +54,9 @@ public class CreateGroupHandler{
      */
     // no SendPhotoMessgeHnadler tambem recebemos um array de bytes no save
     public void save(byte[] ownerKey) throws ErrorSavingInDiskException {
-    	if ( !OperationsToDiskHandler.saveGroupInDisk(currentGroup) )
+    	if ( !OperationsToDiskHandler.saveGroupInDisk(currentGroup) || !OperationsToDiskHandler.saveUserGroupKeyInDisk(ownerKey, currentGroup, currentUser, true))
     		throw new ErrorSavingInDiskException();
-    	
-    	String ownerKeyFilePath = OperationsToDiskHandler.saveUserGroupKeyInDisk(0, ownerKey, currentGroup, currentUser);
-    	if ( ownerKeyFilePath == null )
-    		throw new ErrorSavingInDiskException();
-    	
-    	currentGroup.addUserByID(currentUser, ownerKeyFilePath);
+
     }
 
 }

@@ -288,55 +288,82 @@ public class OperationsToDiskHandler {
 			return path;
 
 	}
-
+	
 	/**
 	 * Saves key with id given in the user key file in group
 	 * @param id The id associated with the key
 	 * @param key The key of the id
+	 * @param u 
 	 * @return The path
 	 */
-	public static String saveUserGroupKeyInDisk(int keyID, byte[] key, Group g, User u) {
+	public static boolean saveUserGroupKeyInDisk(byte[] key, Group g, User u, boolean isNewUser) {
+		
+		// add encrypted key to his userGroupKeys file
 		try {
-			// access keyLocation.txt where it exists lines such as "userID:userGroupKeysPath"
-			// there is one keyLocation.txt for each group
-			ReadFromDisk readerKeyLocation = new ReadFromDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()), ReadOperation.PLAINTEXT);
-			List<String> linesKeyLocation = readerKeyLocation.readAllLines();
 			
-			// getUserGroupKeysPath
-			String currentUserGroupKeysPath = null;
-			for(String line : linesKeyLocation) {
-				String[] idAndPath =  line.split(":");
-				String userID = idAndPath[0];
-				String userGroupKeysPath = idAndPath[1];
-				if ( userID.equals(u.getUserID()) )
-					currentUserGroupKeysPath = userGroupKeysPath;
+			int keyID = g.getCurrentKeyID();
+			
+			String currentUserGroupKeysPath = Configuration.getLocationUserKeysOfGroupPath(g.getGroupID(), g.getUserKeyFileName(u));
+			
+			WriteInDisk writerUserGroupKeys = new WriteInDisk(currentUserGroupKeysPath);
+			
+			//convert array of bytes to String
+			String keyString = DatatypeConverter.printHexBinary(key);
+			writerUserGroupKeys.saveTwoStringsSeparatedBy(keyID +  "", keyString, ":");
+			writerUserGroupKeys.saveSimpleString("\n");
+			
+			if (isNewUser) {
+				// read all current lines of keyLocation.txt
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()), ReadOperation.ENCRYPTEDFILE);
+				List<String> lines = reader.readAllLines();
+				
+				//update keyID
+				if (!lines.isEmpty()) 
+					lines.set(0, keyID+"");
+				else
+					lines.add(keyID+"");
+				
+				// "add" user:userGroupKeysFile to keyLocation.txt
+				lines.add(u.getUserID() + ":" + g.getUserKeyFileName(u) + "\n");				
+
+				WriteInDisk writer = new WriteInDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()));
+				writer.saveEncryptedListOfStringsSeparatedBy(lines, "\n");
+				
 			}
 			
-			// the user isnt in the keyLocation.txt so we'll create his usergGoupKeys file and add that to keyLocation.txt
-			if(currentUserGroupKeysPath == null) {
-				// create his userGroupKeys file
-				currentUserGroupKeysPath = Configuration.getLocationUserKeysOfGroupPath(g.getGroupID(), u.getUserID());
-				File f = new File(currentUserGroupKeysPath);
-				f.getParentFile().mkdirs();
-				f.createNewFile();
-				
-				// add encrypted key to his userGroupKeys file
-				WriteInDisk writerUserGroupKeys = new WriteInDisk(currentUserGroupKeysPath);
-				//convert array of bytes to String
-				String keyString = DatatypeConverter.printHexBinary(key);
-				// save line in the format userID:keyString
-				writerUserGroupKeys.saveTwoStringsSeparatedBy(u.getUserID(), keyString, ":");
-				
-				// "add" userGroupKeys file to keyLocation.txt
-				linesKeyLocation.add(u.getUserID() + ":" + currentUserGroupKeysPath + "\n");
-				
-				WriteInDisk writerKeyLocation = new WriteInDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()));
-				writerKeyLocation.saveEncryptedListOfStringsSeparatedBy(linesKeyLocation, "\n");
-			}
-			
-			return currentUserGroupKeysPath;
+			return true;
 		} catch (IOException | MequieException e) {
-			return null;
+			return false;
+		}
+	}
+
+	public static boolean saveRemovedUserGroupKeyInDisk(byte[] key, Group g, User u, String removedUserKeyfile) {
+
+		try {
+			
+			int keyID = g.getCurrentKeyID();
+			
+			// read all current lines of keyLocation.txt
+			ReadFromDisk reader = new ReadFromDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()), ReadOperation.ENCRYPTEDFILE);
+			List<String> lines = reader.readAllLines();
+
+			//update keyID
+			lines.set(0, keyID+"");
+
+			// remove user:userGroupKeysFile in keyLocation.txt
+			lines.removeIf(s -> s.split(":")[0].equals(u.getUserID()));			
+
+			WriteInDisk writer = new WriteInDisk(Configuration.getLocationKeysOfGroupPath(g.getGroupID()));
+			writer.saveEncryptedListOfStringsSeparatedBy(lines, "\n");
+			
+			//delete removed user keyfile 
+			String removedUserGroupKeysPath = Configuration.getLocationUserKeysOfGroupPath(g.getGroupID(), removedUserKeyfile);
+			WriteInDisk remover = new WriteInDisk(removedUserGroupKeysPath);
+			remover.deleteFile();
+
+			return true;
+		} catch (IOException | MequieException e) {
+			return false;
 		}
 	}
 

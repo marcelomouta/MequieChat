@@ -12,6 +12,7 @@ import java.util.List;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.MequieException;
 import mequie.app.facade.network.NetworkMessage;
+import mequie.app.facade.network.NetworkMessage.Opcode;
 import mequie.app.facade.network.NetworkMessageError;
 import mequie.app.facade.network.NetworkMessageRequest;
 import mequie.app.facade.network.NetworkMessageResponse;
@@ -112,13 +113,45 @@ public class CommandHandler {
 	 */
 	public void add(String userID, String groupID) throws MequieException, ClassNotFoundException, IOException {
 		
-		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.ADD_USER_TO_GROUP,
-				new ArrayList<>(Arrays.asList(userID, groupID)));
-		NetworkMessage msgServer = network.sendAndReceive(msg);
+		addOrRemove(userID, groupID, NetworkMessage.Opcode.ADD_USER_TO_GROUP);
 
-		checkIfMessageIsAnError(msgServer);
+	}
 
-		printResult(msgServer);
+	/**
+	 * @param userID
+	 * @param groupID
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws MequieException
+	 */
+	private void addOrRemove(String userID, String groupID, Opcode flag)
+			throws IOException, ClassNotFoundException, MequieException {
+		NetworkMessage msgServer = groupInfoMessage(groupID);
+		
+		if(msgServer instanceof NetworkMessageResponse) {
+			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
+			List<String> groupInfo = res.getMsgs();
+			
+			boolean userIsOwner = groupInfo.size() > 2;
+			if (!userIsOwner)
+				throw new MequieException("ERROR the user is not the owner of this group");
+			
+			List<String> groupMembers = groupInfo.subList(2, groupInfo.size());
+			// user to add is not in groupInfo
+			groupMembers.add(userID);
+			
+			ArrayList<SimpleEntry<String,byte[]>> usersWrappedGroupKeys = ClientEncryption.generateAndWrapUsersGroupKeys(groupMembers);
+			
+			
+			NetworkMessageRequest msg = new NetworkMessageRequest(flag,
+					new ArrayList<>(Arrays.asList(userID, groupID)), usersWrappedGroupKeys);
+			
+			msgServer = network.sendAndReceive(msg);
+			
+			checkIfMessageIsAnError(msgServer);
+			
+			printResult(msgServer);
+		}
 	}
 
 	/**
@@ -130,13 +163,9 @@ public class CommandHandler {
 	 * @throws MequieException
 	 */
 	public void remove(String userID, String groupID) throws ClassNotFoundException, IOException, MequieException {
-		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.REMOVE_USER_FROM_GROUP,
-				new ArrayList<>(Arrays.asList(userID, groupID)));
-		NetworkMessage msgServer = network.sendAndReceive(msg);
-
-		checkIfMessageIsAnError(msgServer);
-
-		printResult(msgServer);
+	
+		addOrRemove(userID, groupID, NetworkMessage.Opcode.REMOVE_USER_FROM_GROUP);
+		
 	}
 
 	/**
@@ -147,11 +176,7 @@ public class CommandHandler {
 	 * @throws MequieException
 	 */
 	public void groupInfo(String groupID) throws ClassNotFoundException, IOException, MequieException {
-		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_GROUP_INFO,
-				new ArrayList<>(Arrays.asList(groupID)));
-		NetworkMessage msgServer = network.sendAndReceive(msg);
-
-		checkIfMessageIsAnError(msgServer);
+		NetworkMessage msgServer = groupInfoMessage(groupID);
 
 		if(msgServer instanceof NetworkMessageResponse) {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
@@ -159,6 +184,23 @@ public class CommandHandler {
 			printFormatedGroupInfo(groupInfo);
 			
 		}
+	}
+
+	/**
+	 * @param groupID
+	 * @return
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws MequieException
+	 */
+	private NetworkMessage groupInfoMessage(String groupID)
+			throws IOException, ClassNotFoundException, MequieException {
+		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.GET_GROUP_INFO,
+				new ArrayList<>(Arrays.asList(groupID)));
+		NetworkMessage msgServer = network.sendAndReceive(msg);
+
+		checkIfMessageIsAnError(msgServer);
+		return msgServer;
 	}
 	
 	private void printFormatedGroupInfo(List<String> groupInfo) {
@@ -218,6 +260,7 @@ public class CommandHandler {
 		byte[] encryptedKey = getTheKeyFromGroup(groupID);
 			
 		// now encrypt the message
+		String encriptedMessage = 
 		
 		// now send it encrypted
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
@@ -404,7 +447,7 @@ public class CommandHandler {
 		if(msgServer instanceof NetworkMessageResponse) {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
 			encryptedKey = res.getKeyOfGroup();
-			if (encryptedKey.length < 1)
+			if (encryptedKey == null || encryptedKey.length == 0)
 				throw new MequieException("Error empty key of group.");
 		}
 		

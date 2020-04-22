@@ -23,7 +23,7 @@ public class Group {
 	// generic data about the group
 	private String id;
 	private User owner;
-	// map with the users of this group and the path to their key files
+	// map with the users of this group and the name of their key files
 	private Map<User,String> users = new HashMap<>();
 	// the ID of the current key being used to encrypt group messages
 	private int currentKeyID;
@@ -58,6 +58,7 @@ public class Group {
 		this.id = id;
 		this.owner = owner;
 		this.setCurrentKeyID(0);
+		this.users.put(owner, this.currentKeyID + "");
 	}
 
 	/**
@@ -84,7 +85,7 @@ public class Group {
 		return this.users.size();
 	}
 	
-	public String getUserKeyFilePath(User u) {
+	public String getUserKeyFileName(User u) {
 		return this.users.get(u);
 	}
 
@@ -176,7 +177,10 @@ public class Group {
 		doneCorrectly = userToAdd.addGroupToBelongedGroups(this);
 
 		// rollback the process
-		if (!doneCorrectly) removeUserByID(userToAdd);
+		if (!doneCorrectly)
+			removeUserByID(userToAdd);
+		else
+			currentKeyID++;
 
 		return doneCorrectly;
 	}
@@ -186,36 +190,35 @@ public class Group {
 	 * @param userToRemove the user to remove from this group
 	 * @return true if the user was successfully removed from this group
 	 */
-	public boolean removeUserByID(User userToRemove) {
+	public String removeUserByID(User userToRemove) {
 		if (userToRemove.equals(owner))
-			return false;
+			return null;
 
-		boolean doneCorrectly = false;
-		String path;
+		String removedUserKeyfile = null;
 
 		// remove user from users group
 		usersWriteLock.lock();
 		try {
-			if ((path = this.users.remove(userToRemove)) != null)
-				doneCorrectly = true;
+			removedUserKeyfile = this.users.remove(userToRemove);
 		} finally {
 			usersWriteLock.unlock();
 		}
-		if (!doneCorrectly) return false;
+		if (removedUserKeyfile == null) return null;
 
-		doneCorrectly = userToRemove.removeGroupFromBelongedGroups(this);
+		boolean doneCorrectly = userToRemove.removeGroupFromBelongedGroups(this);
 
 		// rollback the process
 		if (!doneCorrectly) {
 			usersWriteLock.lock();
 			try {
-				this.users.put(userToRemove, path);
+				this.users.put(userToRemove, removedUserKeyfile);
 			} finally {
 				usersWriteLock.unlock();
 			}
-		}
+		} else
+			currentKeyID++;
 		
-		return doneCorrectly;
+		return removedUserKeyfile;
 	}
 
 	/**

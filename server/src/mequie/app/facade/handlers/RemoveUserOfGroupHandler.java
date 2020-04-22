@@ -1,5 +1,8 @@
 package mequie.app.facade.handlers;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+
 import mequie.app.domain.Group;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
@@ -24,6 +27,8 @@ public class RemoveUserOfGroupHandler{
     private User currentUserToRemove;
     // group that the user wants to add users
     private Group currentGroup;
+
+	private String removedUserKeyfile;
 
     /**
      * @param s session to be used in this handler
@@ -56,10 +61,9 @@ public class RemoveUserOfGroupHandler{
     	if (!currentGroup.getOwner().equals(currentUser))
     		throw new UserNotHavePermissionException();
     	
-    	if ( !currentGroup.removeUserByID(currentUserToRemove) ) {
+    	if ((removedUserKeyfile = currentGroup.removeUserByID(currentUserToRemove)) == null) {
     		
     		if (currentUser.equals(currentUserToRemove)) {
-    			System.out.println("\n\nENTROU\n\n");
     			throw new ErrorRemovingUserOfGroupException("ERROR removing user from group. Owner cannot remove himself");
     		}
     		
@@ -69,12 +73,25 @@ public class RemoveUserOfGroupHandler{
     
     /**
      * Saves Makes the operation persistent on disk
+     * @param usersGroupKeys 
      * @throws ErrorSavingInDiskException
      */
-    public void save() throws ErrorSavingInDiskException {
+    public void save(List<SimpleEntry<String, byte[]>> usersGroupKeys) throws ErrorSavingInDiskException {
     	if ( !OperationsToDiskHandler.saveRemoveUserFromGroup(currentUserToRemove, currentGroup) )
     		throw new ErrorSavingInDiskException();
-    
+    	
+    	for (SimpleEntry<String, byte[]> e : usersGroupKeys) {
+  			User user = UserCatalog.getInstance().getUserById(e.getKey());
+  			boolean savedWithSucess;
+  			if (user.equals(currentUserToRemove))
+  				savedWithSucess = OperationsToDiskHandler.saveRemovedUserGroupKeyInDisk(e.getValue(), currentGroup, user, removedUserKeyfile);
+  			else
+  				savedWithSucess = OperationsToDiskHandler.saveUserGroupKeyInDisk(e.getValue(), currentGroup, user, false);
+  			
+  			if (!savedWithSucess)
+  				throw new ErrorSavingInDiskException();
+  		}
+    	
     }
 
 }

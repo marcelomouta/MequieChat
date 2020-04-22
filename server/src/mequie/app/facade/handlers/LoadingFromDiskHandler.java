@@ -74,11 +74,24 @@ public class LoadingFromDiskHandler {
 			owner.addGroupToOwnededGroups(g);
 			owner.addGroupToBelongedGroups(g);
 			
-			// add the users of group in group
-			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
-				String userID = groupIDandUsersIDSplited[i];
-				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
+			ReadFromDisk readerKeys = new ReadFromDisk(Configuration.getLocationKeysOfGroupPath(groupID), ReadOperation.ENCRYPTEDFILE);
+			List<String> usersAndKeys = readerKeys.readAllLines();
+			
+			for (int i = 2; i < usersAndKeys.size(); i++) {
+				String[] usersWithKeys = usersAndKeys.get(i).split(":");
+				String userID = usersWithKeys[0];
+				String keyFileName = usersWithKeys[1];
+				g.addUserByID(UserCatalog.getInstance().getUserById(userID), keyFileName);
 			}
+			
+			// add the users of group in group
+//			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
+//				String userID = groupIDandUsersIDSplited[i];
+//				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
+//			}
+			
+			// sets keyID to correct saved value
+			g.setCurrentKeyID(Integer.parseInt(usersAndKeys.get(0)));
 			
 			// add the group to group list
 			groups.add(g);
