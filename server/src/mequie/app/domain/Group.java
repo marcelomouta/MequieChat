@@ -54,10 +54,9 @@ public class Group {
 	 * @param id the id of the group
 	 * @param owner the owner of the group
 	 */
-	public Group(String id, User owner, String ownerKeysPath) {
+	public Group(String id, User owner) {
 		this.id = id;
 		this.owner = owner;
-		this.users.put(owner, ownerKeysPath);
 		this.setCurrentKeyID(0);
 	}
 
