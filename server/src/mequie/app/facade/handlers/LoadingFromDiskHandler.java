@@ -69,7 +69,7 @@ public class LoadingFromDiskHandler {
 			String ownerID = groupIDandUsersIDSplited[1];
 			User owner = UserCatalog.getInstance().getUserById(ownerID);
 			
-			Group g = owner.createGroup(groupID, Configuration.getUserCertPath(ownerID));
+			Group g = owner.createGroup(groupID);
 			
 			owner.addGroupToOwnededGroups(g);
 			owner.addGroupToBelongedGroups(g);
@@ -77,7 +77,7 @@ public class LoadingFromDiskHandler {
 			// add the users of group in group
 			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
 				String userID = groupIDandUsersIDSplited[i];
-				g.addUserByID(UserCatalog.getInstance().getUserById(userID), Configuration.getUserCertPath(userID));
+				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
 			}
 			
 			// add the group to group list
