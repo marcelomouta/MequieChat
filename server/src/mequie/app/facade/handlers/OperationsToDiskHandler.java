@@ -394,7 +394,7 @@ public class OperationsToDiskHandler {
 			List<String> lines = reader.readAllLines();
 			
 			HashMap<Integer, byte[]> userKeys = new HashMap<>();
-			lines.subList(0, lines.size()-1).forEach(l -> {
+			lines.forEach(l -> {
 				String[] splittedLine = l.split(":");
 				byte[] key = DatatypeConverter.parseHexBinary(splittedLine[1]);
 				userKeys.put(Integer.parseInt(splittedLine[0]), key);

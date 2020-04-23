@@ -255,7 +255,7 @@ public class ClientEncryption {
 			Cipher c = Cipher.getInstance(ALGORITHM);
 			c.init(Cipher.DECRYPT_MODE, key);
 			
-			return c.doFinal();
+			return c.doFinal(encryptedMsg);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new MequieException("ERROR decrypting message");

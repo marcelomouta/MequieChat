@@ -398,8 +398,9 @@ public class CommandHandler {
 			Map<Integer, byte[]> keys = res.getUserKeys();
 			
 			if (!history.isEmpty())
+				
 				history.forEach(entry -> {
-
+					
 					byte[] key = keys.get(entry.getKey());
 					if (key != null) {
 						
