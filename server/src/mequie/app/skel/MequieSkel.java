@@ -4,6 +4,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import mequie.app.Mequie;
@@ -365,11 +366,12 @@ public class MequieSkel {
 			
 			cmh.indicateGroupID(g);
 			List<List<? extends Object>> msgs = cmh.getNotSeenMessages();
-			ArrayList<String> info1 = new ArrayList<>((Collection<? extends String>) msgs.get(0));
-			ArrayList<byte[]> info2 = new ArrayList<>((Collection<? extends byte[]>) msgs.get(1));
+			ArrayList<SimpleEntry<Integer,String>> info1 = new ArrayList<>((Collection<SimpleEntry<Integer,String>>) msgs.get(0));
+			ArrayList<SimpleEntry<Integer,byte[]>> info2 = new ArrayList<>((Collection<SimpleEntry<Integer,byte[]>>) msgs.get(1));
+			HashMap<Integer,byte[]> userKeys = cmh.getUserKeys();
 			cmh.save();
 			
-			return new NetworkMessageResponse(msg.getOp(), "OK", info1, info2);
+			return new NetworkMessageResponse(msg.getOp(), "OK", info1, info2, userKeys);
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);
@@ -396,9 +398,10 @@ public class MequieSkel {
 				throw new ErrorInsufficientArgumentsException();
 			
 			mhgh.indicateGroupID(g);
-			List<String> msgs = mhgh.getHistory();
+			ArrayList<SimpleEntry<Integer,String>> msgs = mhgh.getHistory();
+			HashMap<Integer,byte[]> userKeys = mhgh.getUserKeys();
 			
-			return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(msgs));
+			return new NetworkMessageResponse(msg.getOp(), "OK", msgs, userKeys);
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);

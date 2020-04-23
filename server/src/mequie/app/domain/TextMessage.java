@@ -45,7 +45,7 @@ public class TextMessage extends Message {
 
 	@Override
 	public String toString() {
-		return getMsgID() + ":" + sender.toString() + ": " + text;
+		return getMsgID() + ":" + sender.toString() + ":" + text;
 	}
 
 }

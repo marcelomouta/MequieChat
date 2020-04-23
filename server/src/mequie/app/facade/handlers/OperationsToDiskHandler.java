@@ -387,4 +387,24 @@ public class OperationsToDiskHandler {
 		}
 	}
 
+	public static HashMap<Integer, byte[]> getUserGroupKeys(User u, Group g) {
+		try {
+			String currentUserGroupKeysPath = Configuration.getLocationUserKeysOfGroupPath(g.getGroupID(), g.getUserKeyFileName(u));
+			ReadFromDisk reader = new ReadFromDisk(currentUserGroupKeysPath, ReadOperation.PLAINTEXT);
+			List<String> lines = reader.readAllLines();
+			
+			HashMap<Integer, byte[]> userKeys = new HashMap<>();
+			lines.subList(0, lines.size()-1).forEach(l -> {
+				String[] splittedLine = l.split(":");
+				byte[] key = DatatypeConverter.parseHexBinary(splittedLine[1]);
+				userKeys.put(Integer.parseInt(splittedLine[0]), key);
+			});
+			
+			return userKeys;
+			
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 }

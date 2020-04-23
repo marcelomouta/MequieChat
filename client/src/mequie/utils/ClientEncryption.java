@@ -242,5 +242,26 @@ public class ClientEncryption {
 
 	}
 
+	/**
+	 * Decrypts a given encrypted message with its wrapped key
+	 * @param encryptedMsg 
+	 * @param wrappedKey
+	 * @return decrypted message
+	 * @throws MequieException
+	 */
+	public static byte[] decryptMessage(byte[] encryptedMsg, byte[] wrappedKey) throws MequieException {
+		try {
+			SecretKey key = unwrapKey(wrappedKey);
+			Cipher c = Cipher.getInstance(ALGORITHM);
+			c.init(Cipher.DECRYPT_MODE, key);
+			
+			return c.doFinal();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MequieException("ERROR decrypting message");
+			
+		}
+	}
+
 
 }

@@ -1,7 +1,9 @@
 package mequie.app.facade.handlers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.AbstractMap.SimpleEntry;
 
 import mequie.app.domain.Group;
 import mequie.app.domain.Message;
@@ -11,6 +13,7 @@ import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.utils.Configuration;
 import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.ErrorRetrievingUserKeysException;
 import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.UserNotHavePermissionException;
@@ -60,9 +63,9 @@ public class CollectMessagesHandler {
 		List<List<? extends Object>> msgsAndPhotosSeparated = new ArrayList<>(2);
 
 		// inicializacao da lista de msgs
-		List<String> msgsToAdd = new ArrayList<>();
+		List<SimpleEntry<Integer,String>> msgsToAdd = new ArrayList<>();
 		// inicializacao da lista de photos
-		List<byte[]> photosToAdd = new ArrayList<>();
+		List<SimpleEntry<Integer,byte[]>> photosToAdd = new ArrayList<>();
 
 		readMsgs = currentGroup.collectMessagesUnseenByUser(currentUser);
 
@@ -71,14 +74,14 @@ public class CollectMessagesHandler {
 				currentGroup.moveToHistory(msg);
 
 			if (msg instanceof TextMessage) {
-				msgsToAdd.add(msg.getInfo());
+				msgsToAdd.add(new SimpleEntry<>(msg.getKeyID(),msg.getInfo()));
 
 			} else if (msg instanceof PhotoMessage) {
 				
 				// ir buscar os bytes
 				byte[] data = OperationsToDiskHandler.getFileContent(Configuration.getPhotoMsgPathName(currentGroup.getGroupID(), msg.getMsgID()));
 				if (data != null) {
-					photosToAdd.add(data);
+					photosToAdd.add(new SimpleEntry<>(msg.getKeyID() ,data));
 					if (msg.allHaveSeenMessage())
 						photosToRemove.add((PhotoMessage) msg);
 				}
@@ -100,5 +103,12 @@ public class CollectMessagesHandler {
 		
 		if ( !OperationsToDiskHandler.removeSeenPhotos(photosToRemove, currentGroup) )
 			throw new ErrorSavingInDiskException();
+	}
+
+	public HashMap<Integer, byte[]> getUserKeys() throws ErrorRetrievingUserKeysException {
+		HashMap<Integer, byte[]> keys = OperationsToDiskHandler.getUserGroupKeys(currentUser, currentGroup);
+		if (keys == null)
+			throw new ErrorRetrievingUserKeysException();
+		return keys;
 	}
 }

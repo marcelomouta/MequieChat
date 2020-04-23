@@ -7,7 +7,9 @@ import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -323,23 +325,44 @@ public class CommandHandler {
 
 		NetworkMessageResponse msgResponse = (NetworkMessageResponse) msgServer; 
 		
-		List<String> msgsToRead = msgResponse.getMsgs();
-		List<byte[]> photos = msgResponse.getPhotos();
+		List<SimpleEntry<Integer, String>> msgsToRead = msgResponse.getTextMsgs();
+		List<SimpleEntry<Integer, byte[]>> photos = msgResponse.getPhotos();
+		Map<Integer, byte[]> keys = msgResponse.getUserKeys();
 		
 		if (msgsToRead.isEmpty() && photos.isEmpty())
 			printEmptyCollectMsgs(groupID, "");
 		else {
 			if (!msgsToRead.isEmpty())
-				msgsToRead.forEach(text -> System.out.println(text) );
+				msgsToRead.forEach(entry -> {
+					byte[] key = keys.get(entry.getKey());
+					String[] msgInfo = entry.getValue().split(":",3);
+					byte[] encryptedMsg = DatatypeConverter.parseHexBinary(msgInfo[2]);
+					
+					byte[] decryptedMsg;
+					try {
+						decryptedMsg = ClientEncryption.decryptMessage(encryptedMsg, key);
+						System.out.println(msgInfo[1] + ": " + new String(decryptedMsg)); 
+					} catch (MequieException e) {
+						System.out.println("ERROR could not decrypt this message");
+					}
+				});
 			else
 				printEmptyCollectMsgs(groupID, "text ");
 			
 			if (!photos.isEmpty()) {
-				for (byte[] photo : photos) {
-	                String path = "ClientData/photos_" + groupID + "/" + (generator++);
-	                System.out.println("Photo: " + path);
-	                writePhoto(photo, path);
-				}
+				photos.forEach(entry -> {
+					byte[] key = keys.get(entry.getKey());
+					byte[] photo;
+					try {
+						photo = ClientEncryption.decryptMessage(entry.getValue(), key);
+						String path = "ClientData/photos_" + groupID + "/" + (generator++);
+						System.out.println("Photo: " + path);
+						writePhoto(photo, path);
+					} catch (MequieException e) {
+						System.out.println("ERROR could not decrypt this photo");
+					}
+					
+				}); 
 			} else
 				printEmptyCollectMsgs(groupID, "photo ");
 		}
@@ -371,9 +394,27 @@ public class CommandHandler {
 
 		if(msgServer instanceof NetworkMessageResponse) {
 			NetworkMessageResponse res = (NetworkMessageResponse) msgServer;
-			List<String> history = res.getMsgs();
+			List<SimpleEntry<Integer, String>> history = res.getTextMsgs();
+			Map<Integer, byte[]> keys = res.getUserKeys();
+			
 			if (!history.isEmpty())
-				history.forEach(text -> System.out.println(text) );
+				history.forEach(entry -> {
+
+					byte[] key = keys.get(entry.getKey());
+					if (key != null) {
+						
+						String[] msgInfo = entry.getValue().split(":",3);
+						byte[] encryptedMsg = DatatypeConverter.parseHexBinary(msgInfo[2]);
+						
+						byte[] decryptedMsg;
+						try {
+							decryptedMsg = ClientEncryption.decryptMessage(encryptedMsg, key);
+							System.out.println(msgInfo[1] + ": " + new String(decryptedMsg));
+						} catch (MequieException e) {
+							System.out.println("ERROR could not decrypt this message");
+						}
+					}
+				});
 			else 
 				System.out.println("Group '" + groupID + "' does not have a message history yet.");
 		}
