@@ -219,7 +219,7 @@ public class Encryption {
 			return new CipherOutputStream(fos, c);
 		}catch (Exception e) {
 			e.printStackTrace();
-			throw new MequieException("ERROR getting a Cipher Input Stream");
+			throw new MequieException("ERROR getting a Cipher Output Stream");
 		}
 	}
 
@@ -259,6 +259,18 @@ public class Encryption {
 
 		} catch(NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
 			return false;
+		}
+	}
+
+	public static String encryptString(String line) throws MequieException {
+		try {
+			Cipher c = Cipher.getInstance(ALGORITHM);
+			c.init(Cipher.ENCRYPT_MODE, key);
+			byte[] encryptedString = c.doFinal(line.getBytes());
+					
+			return new String(encryptedString);
+		}catch (Exception e) {
+			throw new MequieException("ERROR encrypting a string");
 		}
 	}
 	

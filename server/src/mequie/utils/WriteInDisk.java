@@ -37,15 +37,6 @@ public class WriteInDisk {
 		}
 	}
 	
-	public boolean saveEncryptedSimpleString(String info) throws MequieException {
-		try (CipherOutputStream cos = Encryption.getCipherOutputStream(new FileOutputStream(fileToWrite, true))){
-			cos.write(info.getBytes());
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
 	/**
 	 * Write an array of bytes in the file
 	 * @param data the array of bytes to write in the file
@@ -54,22 +45,6 @@ public class WriteInDisk {
 	public boolean saveBytes(byte[] data) {
 		try(FileOutputStream writer = new FileOutputStream(fileToWrite)) {
 			writer.write(data);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * Write a string separated by other string in the file
-	 * Example: (sep + string)
-	 * @param toSave the string to write in the file
-	 * @param sep the string separator
-	 * @return true if the string was successfully written in the file separated by sep
-	 */
-	public boolean saveStringSeparatedBy(String toSave, String sep) {
-		try(FileWriter writer = new FileWriter(fileToWrite, true)) {
-			writer.write(sep + toSave);
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -87,28 +62,6 @@ public class WriteInDisk {
 	public boolean saveTwoStringsSeparatedBy(String toSave1, String toSave2, String sep) {
 		try(FileWriter writer = new FileWriter(fileToWrite, true)) {
 			writer.write(toSave1 + sep + toSave2);
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * Write multiple strings separated by other string in the file
-	 * Example: (string[0] + sep + string[1] + sep ... + string[n]), n = list.size()
-	 * @param itemsToSave list of strings to write in the file
-	 * @param sep the string separator
-	 * @return true if the list of strings was successfully written in the file separated by sep
-	 */
-	public boolean saveListOfStringsSeparatedBy(List<String> itemsToSave, String sep) {
-		StringBuilder sb = new StringBuilder();
-		try(FileWriter writer = new FileWriter(fileToWrite, true)) {
-			for (String item : itemsToSave) {
-				sb.append(item + sep);
-			}
-			sb.deleteCharAt(sb.length() - 1); //remove the last ':'
-			
-			writer.write(sb.toString());
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -151,6 +104,32 @@ public class WriteInDisk {
 	 */
 	public boolean emptyFile() {
 		try (FileWriter writer = new FileWriter(fileToWrite)) {
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
+	public boolean saveEncryptedLine(String line) throws MequieException {
+		try(FileWriter writer = new FileWriter(fileToWrite, true)) {
+			String encryptedLine = Encryption.encryptString(line) + "\n";
+			writer.write(encryptedLine);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+		
+	}
+
+	public boolean saveEncryptedLines(List<String> linesToSave) throws MequieException {
+		StringBuilder sb = new StringBuilder();
+		try(FileWriter writer = new FileWriter(fileToWrite, true)) {
+			for (String line : linesToSave) {
+				String encryptedLine = Encryption.encryptString(line) + "\n";
+				sb.append(encryptedLine);
+			}
+			
+			writer.write(sb.toString());
 			return true;
 		} catch (IOException e) {
 			return false;

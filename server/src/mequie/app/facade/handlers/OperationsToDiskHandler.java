@@ -54,7 +54,7 @@ public class OperationsToDiskHandler {
 				}
 
 				return true;
-			} catch (IOException e) {
+			} catch (IOException | MequieException e) {
 				return false;
 			}
 	}
@@ -75,7 +75,7 @@ public class OperationsToDiskHandler {
 			writer.saveBytes(data);
 
 			return true;
-		} catch (IOException e) {
+		} catch (IOException | MequieException e) {
 			return false;
 		}
 	}
@@ -84,13 +84,14 @@ public class OperationsToDiskHandler {
 	 * Saves the message in disk
 	 * @param m message to write in disk
 	 * @param flag message type
+	 * @throws MequieException 
 	 */
-	private static void saveMessageInfoInDisk(Message m, String flag, Group g) throws IOException {
+	private static void saveMessageInfoInDisk(Message m, String flag, Group g) throws IOException, MequieException {
 		synchronized(messageInfoMutexes.get(g.getGroupID())) {
 			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
 			String messageInfo = String.join(":", m.getMsgID(), flag, m.getKeyID()+"") + unseenUsers + "\n";
-			writer.saveSimpleString(messageInfo);
+			writer.saveEncryptedLine(messageInfo);
 		}
 	}
 
@@ -233,8 +234,7 @@ public class OperationsToDiskHandler {
 				// depois escrever a alteracao ao grupo no disco
 				WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 				writer.emptyFile();
-				writer.saveListOfStringsSeparatedBy(toWrite, "\n");
-				writer.saveSimpleString("\n");
+				writer.saveEncryptedLines(toWrite);
 			}
 
 			return true;
