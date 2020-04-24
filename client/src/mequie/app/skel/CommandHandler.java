@@ -265,7 +265,7 @@ public class CommandHandler {
 			
 		// now encrypt the message
 		byte[] encryptedMessage = ClientEncryption.encryptMessage(txtMsg.getBytes(), encryptedKey);
-		String encriptedString = DatatypeConverter.printHexBinary(encryptedMessage);
+		String encriptedString = convertEncryptedBytesToString(encryptedMessage);
 		
 		// now send it encrypted
 		NetworkMessageRequest msg = new NetworkMessageRequest(NetworkMessage.Opcode.SEND_TEXT_MESSAGE,
@@ -335,16 +335,7 @@ public class CommandHandler {
 			if (!msgsToRead.isEmpty())
 				msgsToRead.forEach(entry -> {
 					byte[] key = keys.get(entry.getKey());
-					String[] msgInfo = entry.getValue().split(":",3);
-					byte[] encryptedMsg = DatatypeConverter.parseHexBinary(msgInfo[2]);
-					
-					byte[] decryptedMsg;
-					try {
-						decryptedMsg = ClientEncryption.decryptMessage(encryptedMsg, key);
-						System.out.println(msgInfo[1] + ": " + new String(decryptedMsg)); 
-					} catch (MequieException e) {
-						System.out.println("ERROR could not decrypt this message");
-					}
+					decryptAndDisplayMsg(entry, key);
 				});
 			else
 				printEmptyCollectMsgs(groupID, "text ");
@@ -367,6 +358,39 @@ public class CommandHandler {
 				printEmptyCollectMsgs(groupID, "photo ");
 		}
 		
+	}
+
+	/**
+	 * @param entry
+	 * @param key
+	 */
+	private void decryptAndDisplayMsg(SimpleEntry<Integer, String> entry, byte[] key) {
+		String[] msgInfo = entry.getValue().split(":",3);
+		byte[] encryptedMsg = convertEncryptedStringToBytes(msgInfo[2]);
+		
+		byte[] decryptedMsg;
+		try {
+			decryptedMsg = ClientEncryption.decryptMessage(encryptedMsg, key);
+			System.out.println(msgInfo[1] + ": " + new String(decryptedMsg)); 
+		} catch (MequieException e) {
+			System.out.println("ERROR could not decrypt this message");
+		}
+	}
+
+	/**
+	 * @param encryptedString
+	 * @return
+	 */
+	private byte[] convertEncryptedStringToBytes(String encryptedString) {
+		return DatatypeConverter.parseBase64Binary(encryptedString);
+	}
+	
+	/**
+	 * @param encryptedBytes
+	 * @return
+	 */
+	private String convertEncryptedBytesToString(byte[] encryptedBytes) {
+		return DatatypeConverter.printBase64Binary(encryptedBytes);
 	}
 
 	/**
@@ -404,16 +428,7 @@ public class CommandHandler {
 					byte[] key = keys.get(entry.getKey());
 					if (key != null) {
 						
-						String[] msgInfo = entry.getValue().split(":",3);
-						byte[] encryptedMsg = DatatypeConverter.parseHexBinary(msgInfo[2]);
-						
-						byte[] decryptedMsg;
-						try {
-							decryptedMsg = ClientEncryption.decryptMessage(encryptedMsg, key);
-							System.out.println(msgInfo[1] + ": " + new String(decryptedMsg));
-						} catch (MequieException e) {
-							System.out.println("ERROR could not decrypt this message");
-						}
+						decryptAndDisplayMsg(entry, key);
 					}
 				});
 			else 
