@@ -90,7 +90,7 @@ public class OperationsToDiskHandler {
 		synchronized(messageInfoMutexes.get(g.getGroupID())) {
 			WriteInDisk writer = new WriteInDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
 			String unseenUsers = m.allHaveSeenMessage() ? "" : ":" + String.join(":", m.getUsersWhoNotReadMessages());
-			String messageInfo = String.join(":", m.getMsgID(), flag, m.getKeyID()+"") + unseenUsers + "\n";
+			String messageInfo = String.join(":", m.getMsgID(), flag, m.getKeyID()+"") + unseenUsers;
 			writer.saveEncryptedLine(messageInfo);
 		}
 	}
@@ -305,7 +305,7 @@ public class OperationsToDiskHandler {
 			WriteInDisk writerUserGroupKeys = new WriteInDisk(currentUserGroupKeysPath);
 			
 			//convert array of bytes to String
-			String keyString = DatatypeConverter.printHexBinary(key);
+			String keyString = bytesToString(key);
 			writerUserGroupKeys.saveTwoStringsSeparatedBy(keyID +  "", keyString, ":");
 			writerUserGroupKeys.saveSimpleString("\n");
 			
@@ -333,6 +333,7 @@ public class OperationsToDiskHandler {
 			return false;
 		}
 	}
+
 
 	public static boolean saveRemovedUserGroupKeyInDisk(byte[] key, Group g, User u, String removedUserKeyfile) {
 
@@ -377,7 +378,7 @@ public class OperationsToDiskHandler {
 			String line = lines.stream().filter(s -> s.split(":")[0].equals(keyID)).findFirst().get();
 			
 			//convert array of bytes to String
-			return DatatypeConverter.parseHexBinary(line.split(":")[1]);
+			return stringToBytes(line.split(":")[1]);
 			
 		} catch (Exception e) {
 			return null;
@@ -393,7 +394,7 @@ public class OperationsToDiskHandler {
 			HashMap<Integer, byte[]> userKeys = new HashMap<>();
 			lines.forEach(l -> {
 				String[] splittedLine = l.split(":");
-				byte[] key = DatatypeConverter.parseHexBinary(splittedLine[1]);
+				byte[] key = stringToBytes(splittedLine[1]);
 				userKeys.put(Integer.parseInt(splittedLine[0]), key);
 			});
 			
@@ -402,6 +403,22 @@ public class OperationsToDiskHandler {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	private static String bytesToString(byte[] bytes) {
+		return DatatypeConverter.printBase64Binary(bytes);
+	}
+
+	/**
+	 * @param s
+	 * @return
+	 */
+	private static byte[] stringToBytes(String s) {
+		return DatatypeConverter.parseBase64Binary(s);
 	}
 
 }
