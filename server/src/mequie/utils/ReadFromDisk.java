@@ -18,6 +18,7 @@ public class ReadFromDisk {
 
 	private Scanner sc;
 	private FileInputStream in;
+	private ReadOperation flag;
 
 	/**
 	 * Create a ReadFromDisk with a default flag: will use Scanner
@@ -32,8 +33,9 @@ public class ReadFromDisk {
 	 * @throws MequieException 
 	 */
 	public ReadFromDisk(String fileLocation, ReadOperation flag) throws IOException, MequieException {
+		this.flag = flag;
 		try {
-			if (flag.equals(ReadOperation.PLAINTEXT))
+			if (flag.equals(ReadOperation.PLAINTEXT) || flag.equals(ReadOperation.ENCRYPTEDLINES))
 				sc = new Scanner(new File(fileLocation));
 			else
 				in = new FileInputStream(fileLocation);
@@ -47,7 +49,7 @@ public class ReadFromDisk {
 			f.getParentFile().mkdirs();
 			f.createNewFile();
 
-			if (flag.equals(ReadOperation.PLAINTEXT))
+			if (flag.equals(ReadOperation.PLAINTEXT) || flag.equals(ReadOperation.ENCRYPTEDLINES))
 				sc = new Scanner(f);
 			else
 				in = new FileInputStream(f);
@@ -70,16 +72,21 @@ public class ReadFromDisk {
 	/**
 	 * Read the next line
 	 * @return the next line of the file
+	 * @throws MequieException 
 	 */
-	public String readLine() {
-		return sc.nextLine();
+	public String readLine() throws MequieException {
+		String line = sc.nextLine();
+		if (flag.equals(ReadOperation.ENCRYPTEDLINES))
+			line = Encryption.decryptString(line);
+		return line;
 	}
 
 	/**
 	 * Read all line of the file
 	 * @return a list with all lines of the file
+	 * @throws MequieException 
 	 */
-	public List<String> readAllLines() {
+	public List<String> readAllLines() throws MequieException {
 		List<String> lines = new ArrayList<>();
 		while ( hasNextLine() ) {
 			lines.add( readLine() );

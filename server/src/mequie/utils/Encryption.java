@@ -24,6 +24,7 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
+import javax.xml.bind.DatatypeConverter;
 
 import mequie.app.facade.exceptions.MequieException;
 
@@ -262,16 +263,43 @@ public class Encryption {
 		}
 	}
 
-	public static String encryptString(String line) throws MequieException {
+	public static String encryptString(String s) throws MequieException {
 		try {
 			Cipher c = Cipher.getInstance(ALGORITHM);
 			c.init(Cipher.ENCRYPT_MODE, key);
-			byte[] encryptedString = c.doFinal(line.getBytes());
+			byte[] encryptedString = c.doFinal(s.getBytes());
 					
-			return new String(encryptedString);
+			return convertBytesToString(encryptedString);
 		}catch (Exception e) {
 			throw new MequieException("ERROR encrypting a string");
 		}
 	}
-	
+
+	/**
+	 * @param encryptedString
+	 * @return
+	 */
+	private static String convertBytesToString(byte[] encryptedString) {
+		return DatatypeConverter.printBase64Binary(encryptedString);
+	}
+
+	/**
+	 * @param s
+	 * @return
+	 */
+	private static byte[] convertStringToBytes(String s) {
+		return DatatypeConverter.parseBase64Binary(s);
+	}
+
+	public static String decryptString(String s) throws MequieException {
+		try {
+			Cipher c = Cipher.getInstance(ALGORITHM);
+			c.init(Cipher.DECRYPT_MODE, key);
+			byte[] decryptedString = c.doFinal(convertStringToBytes(s));
+					
+			return new String(decryptedString);
+		}catch (Exception e) {
+			throw new MequieException("ERROR decrypting a string");
+		}
+	}
 }

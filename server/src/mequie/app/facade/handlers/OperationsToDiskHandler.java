@@ -49,8 +49,8 @@ public class OperationsToDiskHandler {
 				synchronized(textMessageMutexes.get(g.getGroupID())) {
 					// write text message content
 					WriteInDisk writer = new WriteInDisk(Configuration.getTextMessagesPathName(g.getGroupID()));
-					String messageContent = m.getInfo() + "\n";
-					writer.saveSimpleString(messageContent);
+					
+					writer.saveEncryptedLine(m.getInfo());
 				}
 
 				return true;
@@ -103,14 +103,11 @@ public class OperationsToDiskHandler {
 	 */
 	public static synchronized boolean saveUserInDisk(User u) {
 		try {
-			ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName(), ReadOperation.ENCRYPTEDFILE);
-			List<String> lines = reader.readAllLines();
-			lines.add(u.getUserID() + ":" + u.getPublicKey() + "\n");
-			
 			WriteInDisk writer = new WriteInDisk(Configuration.getUsersPathName());
-			writer.saveEncryptedListOfStringsSeparatedBy(lines, "\n");
 			
-			return true;
+			String userLine = u.getUserID() + ":" + u.getPublicKey();
+			return writer.saveEncryptedLine(userLine);
+			
 		} catch (IOException | MequieException e) {
 			return false;
 		}
@@ -226,7 +223,7 @@ public class OperationsToDiskHandler {
 		//TODO
 		try {
 			for (Message toRemove : toRemoveList) {
-				ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
+				ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGroupID()), ReadOperation.ENCRYPTEDLINES);
 				List<String> lines = reader.readAllLines();
 
 				List<String> toWrite = replaceStringInList(lines, toRemove.getMsgID(), ":" + u.getUserID(), "");
