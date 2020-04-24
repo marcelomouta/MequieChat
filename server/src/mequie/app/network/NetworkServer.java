@@ -34,6 +34,7 @@ public class NetworkServer {
 
 	public void start() {
 		System.setProperty("javax.net.ssl.keyStore", this.keystorePath);
+		System.setProperty("javax.net.ssl.keyStoreType", "JCEKS");
 		System.setProperty("javax.net.ssl.keyStorePassword", this.keystorePasswd);
 		
 		ServerSocketFactory ssf = SSLServerSocketFactory.getDefault( );

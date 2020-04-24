@@ -1,21 +1,18 @@
 package mequie.utils;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -24,12 +21,15 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.xml.bind.DatatypeConverter;
 
 import mequie.app.facade.exceptions.MequieException;
 
 public class Encryption {
 
+	private Encryption() { }
+	
 	/**
 	 * The algorythm used on the signature
 	 */
@@ -39,31 +39,36 @@ public class Encryption {
 	 * The algorithm used to encrypt and decrypt
 	 */
 	public static final String ALGORITHM = "AES";
-
-	/**
-	 * The file ENCRYPTED with the Secret Key (secalhar mover para config)
-	 */
-	private static final String FILEWITHSECRETKEY = "Data/a.key";
 	
 	/**
-	 * The name of the server RSA key used to encrypt the secret key
+	 * The alias of the secret key used to encrypt server files
 	 */
-	private static final String RSA_KEY_NAME = "keyRSA";
+	private static final String SECRET_KEY_ALIAS = "serverFilesKey";
+	
+	/**
+	 * The type of the keystore
+	 */
+	private static final String KEYSTORE_TYPE = "JCEKS";
 
 	/**
-	 * KeyStore path
+	 * Server KeyStore
 	 */
-	private static String keystore;
+	private static KeyStore keystore;
+	
+	/**
+	 * The path of the keystore
+	 */
+	private static String keystorePath;
 
 	/**
-	 * The password fot he keystore
+	 * The password for the keystore
 	 */
-	private static String passwordKeystore;
+	private static char[] psswdArray;
 
 	/**
 	 * The Secret key in memory for faster operations
 	 */
-	protected static Key key;
+	protected static SecretKey key;
 
 	/**
 	 * Load a Secret Key to use in encrypt/decrypt processes
@@ -73,21 +78,33 @@ public class Encryption {
 	 * @throws MequieException
 	 */
 	public static void loadSecretKey(String ks, String passwdKeystore) throws MequieException {
-		keystore = ks;
-		passwordKeystore = passwdKeystore;
+		keystorePath = ks;
+		psswdArray = passwdKeystore.toCharArray();
+		loadKeyStore();
 		
-		// no Mequie não vai ser key == null mas sim se existe o ficheiro blah.key (que
-		// irá estar cifrado com a chave publica do servidor ISTO PARA que quem possa 
-		// decifra-la seja unicamente o Servido
-		if ( !(new File(FILEWITHSECRETKEY).exists()) ) {
-			if (!generateRandomSecretKey())
-				throw new MequieException("ERROR generating new System Secret key.");
+		try {
+			if ( !keystore.containsAlias(SECRET_KEY_ALIAS) ) {
+				if (!generateRandomSecretKey())
+					throw new MequieException("ERROR generating new System Secret key.");
 
-			encryptSecretKey();
-		} 
-		else { // if exists only loads to memory
-			loadExistingSecretKey();
+				saveSecretKey();
+			
+			} else { // if exists only loads to memory
+				loadExistingSecretKey();
+			}
+		} catch (KeyStoreException e) {
+			// will not get here because keystore is always loaded first
 		}
+	}
+
+	private static void loadKeyStore() throws MequieException {
+		try (FileInputStream kfile = new FileInputStream(keystorePath)) {
+			KeyStore kstore = KeyStore.getInstance(KEYSTORE_TYPE);
+			kstore.load(kfile, psswdArray);
+			keystore = kstore;
+		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
+			throw new MequieException("ERROR loading keystore");
+		}  
 	}
 
 	/**
@@ -114,45 +131,26 @@ public class Encryption {
 	}
 
 	/**
-	 * Encrypt the Secret key with the public key of the server
-	 * BECAUSE with this ONLY the Server can decrypt the secret
-	 * key because only the server has the private key necessary
-	 * to decrypt the Secret Key
+	 * Saves the system secret key used for file encryption in the server's keystore
 	 * 
 	 * @throws MequieException
 	 */
-	private static void encryptSecretKey() throws MequieException {
+	private static void saveSecretKey() throws MequieException {
 
 		try {
+			KeyStore.SecretKeyEntry secret = new KeyStore.SecretKeyEntry(key);
+			KeyStore.ProtectionParameter password = new KeyStore.PasswordProtection(psswdArray);
+			keystore.setEntry(SECRET_KEY_ALIAS, secret, password);
+			
+			try (OutputStream os = new FileOutputStream(keystorePath)) {
+	            keystore.store(os, psswdArray);
+			}
 
-			//3. obter chave publica para cifrar a chave secreta
-			//3.1 obter chave publica da keystore
-			FileInputStream kfile = new FileInputStream(keystore);  //keystore
-			KeyStore kstore = KeyStore.getInstance("JKS");
-			kstore.load(kfile, passwordKeystore.toCharArray());           //password
-			Certificate cert = kstore.getCertificate(RSA_KEY_NAME);  //alias do utilizador
-			PublicKey ku = cert.getPublicKey();
-
-			//3.2 cifrar chave secreta com chave publica
-
-			Cipher c = Cipher.getInstance("RSA");
-			c.init(Cipher.WRAP_MODE, ku);
-
-			byte[] wrappedKey = c.wrap(key);
-
-
-			// escreve wrapped key em ficheiro (a.key)
-			FileOutputStream kos = new FileOutputStream(FILEWITHSECRETKEY);
-			ObjectOutputStream oos = new ObjectOutputStream(kos);
-			oos.writeObject(wrappedKey);
-			oos.close();
-			kos.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new MequieException("ERROR encrypting the System secret key file. Try again.");
+		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
+			throw new MequieException("ERROR saving the System secret key in the keystore. Try again.");
 		}
 	}
+
 
 	/**
 	 * Decrypt the Secret key with the private key of the server
@@ -167,39 +165,11 @@ public class Encryption {
 
 		try {
 
-			//1. decifrar a chave secreta
-			//1.1 ler wrapped key do ficheiro (a.key)
-			FileInputStream kis = new FileInputStream(FILEWITHSECRETKEY);
-			ObjectInputStream ois = new ObjectInputStream(kis);
+			key = (SecretKey) keystore.getKey(SECRET_KEY_ALIAS, psswdArray);
 
-			byte[] wrappedKey = (byte[]) ois.readObject(); // lido do ficheiro
-
-			ois.close();
-			kis.close();
-
-			//1.2 obter chave privada
-			FileInputStream kfile = new FileInputStream(keystore);  //keystore
-			KeyStore kstore = KeyStore.getInstance("JKS");
-			kstore.load(kfile, passwordKeystore.toCharArray());
-			Key kr = kstore.getKey(RSA_KEY_NAME, passwordKeystore.toCharArray());
-
-			//1.3 fazer unwrap da chave secreta
-			Cipher c = Cipher.getInstance("RSA");
-			c.init(Cipher.UNWRAP_MODE, kr);
-			key = c.unwrap(wrappedKey, "AES", Cipher.SECRET_KEY);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new MequieException("ERROR encrypting the System secret key file. Try again.");
+		} catch (KeyStoreException | UnrecoverableKeyException | NoSuchAlgorithmException e) {
+			throw new MequieException("ERROR loeading the System secret key from the keystore. Try again.");
 		}
-	}
-
-	/**
-	 * 
-	 * @return the Secret key used in the system
-	 */
-	public static Key getKey() {
-		return key;
 	}
 
 	public static CipherInputStream getCipherInputStream(FileInputStream in) throws MequieException {
@@ -208,7 +178,6 @@ public class Encryption {
 			d.init(Cipher.DECRYPT_MODE, key);
 			return new CipherInputStream(in, d);
 		}catch (Exception e) {
-			e.printStackTrace();
 			throw new MequieException("ERROR getting a Cipher Input Stream");
 		}
 	}
@@ -219,7 +188,6 @@ public class Encryption {
 			c.init(Cipher.ENCRYPT_MODE, key);
 			return new CipherOutputStream(fos, c);
 		}catch (Exception e) {
-			e.printStackTrace();
 			throw new MequieException("ERROR getting a Cipher Output Stream");
 		}
 	}
@@ -299,6 +267,7 @@ public class Encryption {
 					
 			return new String(decryptedString);
 		}catch (Exception e) {
+			e.printStackTrace();
 			throw new MequieException("ERROR decrypting a string");
 		}
 	}
