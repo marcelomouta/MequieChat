@@ -34,7 +34,7 @@ public class LoadingFromDiskHandler {
 	 * @throws MequieException 
 	 */
 	private static List<User> getAllUsersFromDisk() throws IOException, MequieException {
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName(), ReadOperation.ENCRYPTEDFILE);
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getUsersPathName(), ReadOperation.ENCRYPTEDLINES);
 		
 		List<String> idOfUsersAndPass = reader.readAllLines();
 		List<User> users = new ArrayList<>();
@@ -122,12 +122,12 @@ public class LoadingFromDiskHandler {
 	private static void getAllMessagesFromDisk(Group g) throws IOException, MequieException {
 		
 		// all messages id and user who not read the message
-		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGroupID()));
+		ReadFromDisk reader = new ReadFromDisk(Configuration.getMessageInfoPathName(g.getGroupID()), ReadOperation.ENCRYPTEDLINES);
 		List<String> allMsgsIDandUsers = reader.readAllLines();		
 		Iterator<String> it = allMsgsIDandUsers.iterator();
 
 		// text messages content
-		reader = new ReadFromDisk(Configuration.getTextMessagesPathName(g.getGroupID()));
+		reader = new ReadFromDisk(Configuration.getTextMessagesPathName(g.getGroupID()), ReadOperation.ENCRYPTEDLINES);
 		List<String> msgsIDandTexts = reader.readAllLines();
 		Iterator<String> itTxt = msgsIDandTexts.iterator();
 
