@@ -29,6 +29,11 @@ public class RemoveUserOfGroupHandler{
     private Group currentGroup;
 
 	private String removedUserKeyfile;
+	
+	/**
+	 * Collect handler to see the messages of the remove user
+	 */
+	private CollectMessagesHandler cmh;
 
     /**
      * @param s session to be used in this handler
@@ -45,6 +50,8 @@ public class RemoveUserOfGroupHandler{
     	currentUserToRemove = UserCatalog.getInstance().getUserById(userID);
         if (currentUserToRemove == null)
             throw new NotExistingUserException();
+        
+        cmh = new CollectMessagesHandler(currentUserToRemove);
     }
     
     /**
@@ -55,9 +62,11 @@ public class RemoveUserOfGroupHandler{
     	currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
     	if  (currentGroup == null) 
             throw new NotExistingGroupException();
+    	
+    	cmh.indicateGroupID(groupID);
     }
     
-    public void removeUserFromGroup() throws ErrorRemovingUserOfGroupException, UserNotHavePermissionException, Exception {
+    public void removeUserFromGroup() throws ErrorRemovingUserOfGroupException, UserNotHavePermissionException {
     	if (!currentGroup.getOwner().equals(currentUser))
     		throw new UserNotHavePermissionException();
     	
@@ -69,6 +78,9 @@ public class RemoveUserOfGroupHandler{
     		
             throw new ErrorRemovingUserOfGroupException();
     	}
+    	
+    	// it's necessary to collect the message by the user
+    	cmh.readMessagesAndPhotos();
     }
     
     /**
@@ -79,6 +91,9 @@ public class RemoveUserOfGroupHandler{
     public void save(List<SimpleEntry<String, byte[]>> usersGroupKeys) throws ErrorSavingInDiskException {
     	if ( !OperationsToDiskHandler.saveRemoveUserFromGroup(currentUserToRemove, currentGroup) )
     		throw new ErrorSavingInDiskException();
+    	
+    	// save the collect made to persist the data
+    	cmh.save();
     	
     	for (SimpleEntry<String, byte[]> e : usersGroupKeys) {
   			User user = UserCatalog.getInstance().getUserById(e.getKey());

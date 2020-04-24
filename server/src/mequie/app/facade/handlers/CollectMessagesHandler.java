@@ -40,6 +40,14 @@ public class CollectMessagesHandler {
 	public CollectMessagesHandler(Session s) {
 		currentUser = GetUserFromSessionHandler.getUserFromSession(s);
 	}
+	
+	/**
+	 * 
+	 * @param u The current user
+	 */
+	public CollectMessagesHandler(User u) {
+		currentUser = u;
+	}
 
     /**
      * @param groupID group id of the group
@@ -91,6 +99,25 @@ public class CollectMessagesHandler {
 		msgsAndPhotosSeparated.add(photosToAdd);
 		
 		return msgsAndPhotosSeparated;
+	}
+	
+	/**
+	 * Sets the readMessages and photos to delete from server
+	 */
+	public void readMessagesAndPhotos() {
+		readMsgs = currentGroup.collectMessagesUnseenByUser(currentUser);
+		
+		for(Message msg : readMsgs) {
+			if (msg.allHaveSeenMessage())
+				currentGroup.moveToHistory(msg);
+
+			if (msg instanceof TextMessage) {
+				// empty
+			} else if (msg instanceof PhotoMessage) {
+				if (msg.allHaveSeenMessage())
+					photosToRemove.add((PhotoMessage) msg);
+			}
+		}
 	}
 
     /**

@@ -84,12 +84,6 @@ public class LoadingFromDiskHandler {
 				g.addUserByID(UserCatalog.getInstance().getUserById(userID), keyFileName);
 			}
 			
-			// add the users of group in group
-//			for (int i = 2; i < groupIDandUsersIDSplited.length; i++) {
-//				String userID = groupIDandUsersIDSplited[i];
-//				g.addUserByID(UserCatalog.getInstance().getUserById(userID));
-//			}
-			
 			// sets keyID to correct saved value
 			g.setCurrentKeyID(Integer.parseInt(usersAndKeys.get(0)));
 			

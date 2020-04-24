@@ -184,8 +184,6 @@ public class MequieSkel {
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);
-		} catch (Exception e) {
-			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
 	}
 	
@@ -223,8 +221,6 @@ public class MequieSkel {
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);
-		} catch (Exception e) {
-			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
 	}
 	
