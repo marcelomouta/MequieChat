@@ -1,6 +1,8 @@
 package mequie.app.facade.handlers;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mequie.app.domain.Group;
@@ -8,6 +10,7 @@ import mequie.app.domain.Message;
 import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.facade.Session;
+import mequie.app.facade.exceptions.ErrorRetrievingUserKeysException;
 import mequie.app.facade.exceptions.NotExistingGroupException;
 import mequie.app.facade.exceptions.UserNotHavePermissionException;
 
@@ -45,18 +48,25 @@ public class MessageHistoryOfGroupHandler{
      * @return list of the text messages in group's history
      * @throws UserNotHavePermissionException
      */
-    public List<String> getHistory() throws UserNotHavePermissionException {
+    public ArrayList<SimpleEntry<Integer,String>> getHistory() throws UserNotHavePermissionException {
     	if (!currentGroup.isUserOfGroup(currentUser))
     		throw new UserNotHavePermissionException();
     	
-    	List<String> textOfMsgs = new ArrayList<>();
+    	ArrayList<SimpleEntry<Integer,String>> textOfMsgs = new ArrayList<>();
     	List<Message> msgSeen = currentGroup.getHistory();
     	
     	for (Message m : msgSeen) {
-    		textOfMsgs.add(m.toString());
+    		textOfMsgs.add(new SimpleEntry<>(m.getKeyID(), m.toString()));
     	}
     	
     	return textOfMsgs;
     }
+
+	public HashMap<Integer, byte[]> getUserKeys() throws ErrorRetrievingUserKeysException {
+		HashMap<Integer, byte[]> keys = OperationsToDiskHandler.getUserGroupKeys(currentUser, currentGroup);
+		if (keys == null)
+			throw new ErrorRetrievingUserKeysException();
+		return keys;
+	}
 
 }

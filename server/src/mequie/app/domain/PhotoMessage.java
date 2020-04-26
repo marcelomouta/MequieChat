@@ -15,8 +15,8 @@ public class PhotoMessage extends Message {
 	 * @param msgID the id of the message - the name of the file in disk
 	 * @param userNotSeenMsg the list of users who have not seen the message
 	 */
-	public PhotoMessage(String msgID, List<User> userNotSeenMsg) {
-		super(msgID, userNotSeenMsg);
+	public PhotoMessage(String msgID, int keyID, List<User> userNotSeenMsg) {
+		super(msgID, keyID, userNotSeenMsg);
 	}
 	
 	/**

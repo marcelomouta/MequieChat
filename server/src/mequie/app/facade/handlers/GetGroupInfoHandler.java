@@ -8,6 +8,7 @@ import mequie.app.domain.User;
 import mequie.app.domain.catalogs.GroupCatalog;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.NotExistingGroupException;
+import mequie.app.facade.exceptions.UserNotHavePermissionException;
 
 /**
 * @author 51021 Pedro Marques,51110 Marcelo Mouta,51468 Bruno Freitas
@@ -32,10 +33,13 @@ public class GetGroupInfoHandler{
      * @param groupID group id of the group
      * @throws NotExistingGroupException if the groupID doesn't match any existing group
      */
-    public void indicateGroupID(String groupID) throws NotExistingGroupException {
+    public void indicateGroupID(String groupID) throws NotExistingGroupException, UserNotHavePermissionException {
     	this.currentGroup = GroupCatalog.getInstance().getGroupByID(groupID);
         if  (this.currentGroup == null)
             throw new NotExistingGroupException();
+        
+        if (!this.currentGroup.isUserOfGroup(currentUser))
+        	throw new UserNotHavePermissionException();
     }
     
     /**
@@ -46,7 +50,7 @@ public class GetGroupInfoHandler{
     public List<String> getInfo() {
     	List<String> info = new ArrayList<String>();
     	
-    	info.add(this.currentGroup.getGoupID());
+    	info.add(this.currentGroup.getGroupID());
     	
     	int user_num = this.currentGroup.getNumberOfUsers();
     	info.add(String.valueOf(user_num));

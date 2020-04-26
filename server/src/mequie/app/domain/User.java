@@ -19,7 +19,7 @@ import mequie.app.domain.Group;
 public class User {
 	// generic data about the user
 	private String userID;
-	private String password;
+	private String publicKey;
 	// groups of this user
 	private Set<Group> groups = new HashSet<>();
 	// groups owned by this user
@@ -40,8 +40,8 @@ public class User {
 	 * @param username the username of user
 	 * @param pass the password of the user
 	 */
-	public User(String username, String pass) {
-		this.userID = username; this.password = pass;
+	public User(String username, String publickey) {
+		this.userID = username; this.publicKey = publickey;
 	}
 
 	/**
@@ -56,13 +56,14 @@ public class User {
 	 * 
 	 * @return the password of the user
 	 */
-	public String getPassword() {
-		return password;
+	public String getPublicKey() {
+		return publicKey;
 	}
 
 	/**
 	 * 
 	 * @param groupID a string representing the id of the group
+	 * @param ownerKeysPath 
 	 * @return a group with groupID id and this user as owner
 	 */
 	public Group createGroup(String groupID) {

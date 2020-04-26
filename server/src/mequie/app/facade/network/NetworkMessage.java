@@ -19,7 +19,8 @@ public abstract class NetworkMessage implements Serializable{
 		SEND_PHOTO_MESSAGE,
 		COLLECT_NOT_VIEWED_MESSAGES_OF_GROUP,
 		MESSAGE_HISTORY_OF_GROUP,
-		AUTH
+		AUTH,
+		GET_LAST_KEY_OF_GROUP
 	}
 	
 	private Opcode op;

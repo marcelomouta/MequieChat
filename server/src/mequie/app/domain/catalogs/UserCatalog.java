@@ -34,12 +34,12 @@ public class UserCatalog {
     
     /**
      * 
-     * @param username the username of the user
-     * @param passwd the password of the user
+     * @param username The username of the user
+     * @param publicKey The path of the users public key
      * @return new User with username username and password passwd
      */
-    public User createUser(String username, String passwd) {
-		return new User(username, passwd);
+    public User createUser(String username, String publicKey) {
+		return new User(username, publicKey);
     }
     
     /**

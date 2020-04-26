@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public abstract class Message {
 	// generic data about the message
 	private String msgID;
+	private int keyID;
 	// Set of users that not read the message
 	protected Set<User> usersWhoNotReadMessages;
 	
@@ -26,9 +27,11 @@ public abstract class Message {
     /**
      *
      * @param msgID the id of the message
+     * @param keyID the id of the key used to encrypt the message
      */
-	protected Message(String msgID, List<User> userNotSeenMsg) {
+	protected Message(String msgID, int keyID, List<User> userNotSeenMsg) {
 		this.msgID = msgID;
+		this.keyID = keyID;
 		this.usersWhoNotReadMessages = new HashSet<>(userNotSeenMsg);
 	}
 
@@ -40,6 +43,13 @@ public abstract class Message {
 		return msgID;
 	}
 
+
+	/**
+	 * @return the keyID
+	 */
+	public int getKeyID() {
+		return keyID;
+	}
 
 	/**
 	 *

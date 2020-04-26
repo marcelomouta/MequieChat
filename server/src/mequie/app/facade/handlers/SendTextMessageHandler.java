@@ -41,7 +41,7 @@ public class SendTextMessageHandler{
     
     public void createMessage(String text) throws UserNotHavePermissionException {
     	if (!currentGroup.isUserOfGroup(currentUser))
-			throw new UserNotHavePermissionException();
+    		throw new UserNotHavePermissionException();
     	
     	currentMsg = currentGroup.createTextMessage(text, currentUser);
     }

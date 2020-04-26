@@ -4,6 +4,10 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import mequie.app.facade.Session;
 import mequie.app.facade.network.NetworkMessage;
 
@@ -25,7 +29,7 @@ public class NetworkClient {
 		return INSTANCE;
 	}
 
-	private Socket echoSocket;
+	private SSLSocket echoSocket;
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 
@@ -37,10 +41,11 @@ public class NetworkClient {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public void connectToServer(String host, int port) throws UnknownHostException, IOException {
-
-
-		this.echoSocket = new Socket(host, port);
+	public void connectToServer(String host, int port, String truststore) throws UnknownHostException, IOException {
+		System.setProperty("javax.net.ssl.trustStore", truststore);
+		
+		SocketFactory sf = SSLSocketFactory.getDefault();
+		this.echoSocket = (SSLSocket) sf.createSocket(host, port);
 
 		this.in = new ObjectInputStream(this.echoSocket.getInputStream());
 		this.out = new ObjectOutputStream(this.echoSocket.getOutputStream());
@@ -63,8 +68,25 @@ public class NetworkClient {
 	}
 	
 	/**
-	 * Tries to authenticate the current user on the server
-	 * @param session containing current user credentials
+	 * Starts the authentication process, sendig a session to the server with the users ID and receiving a nonce
+	 * @param session Session with users id
+	 * @return session with nonce and unknown user flag
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	public Session startAuthentication(Session session) throws ClassNotFoundException, IOException {
+
+		out.writeObject(session);
+		out.flush();
+		
+		return (Session) in.readObject();
+	}
+
+	/**
+	 * Tries to authenticate the current user on the server,
+	 *  sending a session with the necessary proof that the user is who says it is
+	 *  and receives the servers answer with the authentication result
+	 * @param session containing cifred nonce with user private key 
 	 * @return response from the server
 	 * @throws IOException
 	 * @throws ClassNotFoundException
@@ -73,8 +95,8 @@ public class NetworkClient {
 		
 		out.writeObject(session);
 		out.flush();
-		NetworkMessage msgResponse = (NetworkMessage) in.readObject();
-		return  msgResponse;
+		
+		return (NetworkMessage) in.readObject();
 	}
 
 
@@ -92,5 +114,7 @@ public class NetworkClient {
 
 		this.echoSocket.close();
 	}
+
+
 
 }

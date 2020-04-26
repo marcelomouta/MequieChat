@@ -1,7 +1,9 @@
 package mequie.app.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -21,8 +23,10 @@ public class Group {
 	// generic data about the group
 	private String id;
 	private User owner;
-	// all the users of this group
-	private Set<User> users = new HashSet<>();
+	// map with the users of this group and the name of their key files
+	private Map<User,String> users = new HashMap<>();
+	// the ID of the current key being used to encrypt group messages
+	private int currentKeyID;
 	// the messages (text or photos) that were not seen by all users
 	private List<Message> messages = new ArrayList<>();
 	// the messages (only text) that were seen by all users
@@ -53,14 +57,15 @@ public class Group {
 	public Group(String id, User owner) {
 		this.id = id;
 		this.owner = owner;
-		this.users.add(owner);
+		this.setCurrentKeyID(0);
+		this.users.put(owner, this.currentKeyID + "");
 	}
 
 	/**
 	 * 
 	 * @return the groupID of the group
 	 */
-	public String getGoupID() {
+	public String getGroupID() {
 		return this.id;
 	}
 
@@ -79,6 +84,24 @@ public class Group {
 	public int getNumberOfUsers() {
 		return this.users.size();
 	}
+	
+	public String getUserKeyFileName(User u) {
+		return this.users.get(u);
+	}
+
+	/**
+	 * @return the currentKeyID
+	 */
+	public int getCurrentKeyID() {
+		return currentKeyID;
+	}
+
+	/**
+	 * @param currentKeyID the currentKeyID to set
+	 */
+	public void setCurrentKeyID(int currentKeyID) {
+		this.currentKeyID = currentKeyID;
+	}
 
 	/**
 	 * 
@@ -87,7 +110,7 @@ public class Group {
 	public List<User> getAllUsers() {
 		usersReadLock.lock();
 		try {
-			return new ArrayList<>(this.users);
+			return new ArrayList<>(this.users.keySet());
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -114,7 +137,7 @@ public class Group {
 	public boolean isUserOfGroup(User u) {
 		usersReadLock.lock();
 		try {
-			return users.contains(u);
+			return users.containsKey(u);
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -134,13 +157,17 @@ public class Group {
 	 * @param userToAdd the user to add to this group
 	 * @return true if the user was successfully added to this group
 	 */
-	public boolean addUserByID(User userToAdd){
+	public boolean addUserByID(User userToAdd, String userKeysPath){
 		boolean doneCorrectly = false;
 
 		// add user to users group
 		usersWriteLock.lock();
 		try {
-			doneCorrectly = this.users.add(userToAdd);
+			if (!users.containsKey(userToAdd)) {
+				this.users.put(userToAdd, userKeysPath);
+				doneCorrectly = true;
+			}
+				
 		} finally {
 			usersWriteLock.unlock();
 		}
@@ -150,7 +177,10 @@ public class Group {
 		doneCorrectly = userToAdd.addGroupToBelongedGroups(this);
 
 		// rollback the process
-		if (!doneCorrectly) removeUserByID(userToAdd);
+		if (!doneCorrectly)
+			removeUserByID(userToAdd);
+		else
+			currentKeyID++;
 
 		return doneCorrectly;
 	}
@@ -160,27 +190,35 @@ public class Group {
 	 * @param userToRemove the user to remove from this group
 	 * @return true if the user was successfully removed from this group
 	 */
-	public boolean removeUserByID(User userToRemove) {
+	public String removeUserByID(User userToRemove) {
 		if (userToRemove.equals(owner))
-			return false;
+			return null;
 
-		boolean doneCorrectly = false;
+		String removedUserKeyfile = null;
 
 		// remove user from users group
 		usersWriteLock.lock();
 		try {
-			doneCorrectly = this.users.remove(userToRemove);
+			removedUserKeyfile = this.users.remove(userToRemove);
 		} finally {
 			usersWriteLock.unlock();
 		}
-		if (!doneCorrectly) return false;
+		if (removedUserKeyfile == null) return null;
 
-		doneCorrectly = userToRemove.removeGroupFromBelongedGroups(this);
+		boolean doneCorrectly = userToRemove.removeGroupFromBelongedGroups(this);
 
 		// rollback the process
-		if (!doneCorrectly) this.users.add(userToRemove);
-
-		return doneCorrectly;
+		if (!doneCorrectly) {
+			usersWriteLock.lock();
+			try {
+				this.users.put(userToRemove, removedUserKeyfile);
+			} finally {
+				usersWriteLock.unlock();
+			}
+		} else
+			currentKeyID++;
+		
+		return removedUserKeyfile;
 	}
 
 	/**
@@ -229,7 +267,7 @@ public class Group {
 	public TextMessage createTextMessage(String text, User sender) {
 		usersReadLock.lock();
 		try {
-			return new TextMessage(getGoupID() + generateMsgID(), sender, new ArrayList<>(users), text);
+			return new TextMessage(getGroupID() + generateMsgID(), currentKeyID, sender, new ArrayList<>(users.keySet()), text);
 		} finally {
 			usersReadLock.unlock();
 		}
@@ -240,11 +278,11 @@ public class Group {
 	 * @return a new PhotoMessage
 	 */
 	public PhotoMessage createPhotoMessage() {
-		String id = getGoupID() + generateMsgID();
+		String id = getGroupID() + generateMsgID();
 
 		usersReadLock.lock();
 		try {
-			return new PhotoMessage(id, new ArrayList<>(users));
+			return new PhotoMessage(id, currentKeyID, new ArrayList<>(users.keySet()));
 		} finally {
 			usersReadLock.unlock();
 		}

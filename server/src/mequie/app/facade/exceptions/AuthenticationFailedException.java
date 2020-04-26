@@ -10,7 +10,7 @@ package mequie.app.facade.exceptions;
 public class AuthenticationFailedException extends MequieException {
 
 	public AuthenticationFailedException(){
-		super("ERROR authentication failed. Wrong username or password");
+		super("ERROR authentication failed. User authenticity could not be verified");
 	}
 }
 

@@ -1,7 +1,10 @@
 package mequie.app.skel;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import mequie.app.Mequie;
@@ -9,6 +12,7 @@ import mequie.app.facade.handlers.AddUserToGroupHandler;
 import mequie.app.facade.handlers.CollectMessagesHandler;
 import mequie.app.facade.handlers.CreateGroupHandler;
 import mequie.app.facade.handlers.GetGroupInfoHandler;
+import mequie.app.facade.handlers.GetLastKeyOfGroupHandler;
 import mequie.app.facade.handlers.GetUserFromSessionHandler;
 import mequie.app.facade.handlers.GetUserInfoHandler;
 import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
@@ -22,6 +26,7 @@ import mequie.app.facade.network.NetworkMessageResponse;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
 import mequie.app.facade.exceptions.ErrorInsufficientArgumentsException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.exceptions.MequieException;
 
 /**
@@ -50,16 +55,22 @@ public class MequieSkel {
 	}
 	
 	/**
+	 * Checks if a given user exists
+	 * @param userID The username of the user
+	 * @return true if the user exist on the system, false otherwise
+	 */
+	public static boolean userExists(String userID) {
+		return GetUserFromSessionHandler.userExists(userID);
+	}
+	
+	/**
 	 * Authentication of a client
 	 * @return a NetworkMessage to sent to client with authentication OK or an Error if authentication failed
+	 * @throws ErrorSavingInDiskException 
 	 */
-	public NetworkMessage autentication() throws AuthenticationFailedException {
-		try {
-			GetUserFromSessionHandler.authenticateSession(currentSession);
-			return new NetworkMessageResponse(NetworkMessage.Opcode.AUTH, "OK");
-		} catch (MequieException e) {
-			return new NetworkMessageError(NetworkMessage.Opcode.AUTH, e);
-		}
+	public NetworkMessage autentication() throws AuthenticationFailedException, ErrorSavingInDiskException {
+		GetUserFromSessionHandler.authenticateSession(currentSession);
+		return new NetworkMessageResponse(NetworkMessage.Opcode.AUTH, "OK");
 	}
 	
 	/**
@@ -98,6 +109,9 @@ public class MequieSkel {
 		case MESSAGE_HISTORY_OF_GROUP:
 			response = history(msg);
 			break;
+		case GET_LAST_KEY_OF_GROUP:
+			response = getLastKeyOfGroup(msg);
+			break;
 		default:
 			response = new NetworkMessageError(msg.getOp(), new MequieException("ERROR invalid operation"));
 		}
@@ -116,17 +130,18 @@ public class MequieSkel {
 			
 			// list of arguments
 			List<String> args = msg.getArguments();
+			List<SimpleEntry<String, byte[]>> usersGroupKeys = msg.getUsersGroupKeys();
 			
-			if (args.isEmpty())
+			if (args == null || args.isEmpty() || usersGroupKeys.isEmpty())
 				throw new ErrorInsufficientArgumentsException();
 			
 			String g = args.get(0);
 			if (g.equals(""))
 				throw new ErrorInsufficientArgumentsException();
-			
+
 			cgh.makeGrupByID(g);
 			cgh.groupAssociation();
-			cgh.save();
+			cgh.save(usersGroupKeys.get(0).getValue());
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 		
@@ -146,8 +161,9 @@ public class MequieSkel {
 			
 			// list of arguments
 			List<String> args = msg.getArguments();
+			List<SimpleEntry<String, byte[]>> usersGroupKeys = msg.getUsersGroupKeys();
 			
-			if (args.size() < 2)
+			if (args == null || args.size() < 2 || usersGroupKeys.isEmpty())
 				throw new ErrorInsufficientArgumentsException();
 			
 			String u = args.get(0);
@@ -162,14 +178,12 @@ public class MequieSkel {
 			
 			augh.getGroupByID(g);
 			augh.addNewUserToGroup();
-			augh.save();
+			augh.save(usersGroupKeys);
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);
-		} catch (Exception e) {
-			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
 	}
 	
@@ -184,8 +198,9 @@ public class MequieSkel {
 			
 			// list of arguments
 			List<String> args = msg.getArguments();
+			List<SimpleEntry<String, byte[]>> usersGroupKeys = msg.getUsersGroupKeys();
 			
-			if (args.size() < 2)
+			if (args == null || args.size() < 2 || usersGroupKeys.isEmpty())
 				throw new ErrorInsufficientArgumentsException();
 			
 			String u = args.get(0);
@@ -200,14 +215,12 @@ public class MequieSkel {
 			
 			rugh.indicateGroupID(g);
 			rugh.removeUserFromGroup();
-			rugh.save();
+			rugh.save(usersGroupKeys);
 			
 			return new NetworkMessageResponse(msg.getOp(), "OK");
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);
-		} catch (Exception e) {
-			return new NetworkMessageError(msg.getOp(), new MequieException("ERROR not defined"));
 		}
 	}
 	
@@ -349,11 +362,12 @@ public class MequieSkel {
 			
 			cmh.indicateGroupID(g);
 			List<List<? extends Object>> msgs = cmh.getNotSeenMessages();
-			ArrayList<String> info1 = new ArrayList<>((Collection<? extends String>) msgs.get(0));
-			ArrayList<byte[]> info2 = new ArrayList<>((Collection<? extends byte[]>) msgs.get(1));
+			ArrayList<SimpleEntry<Integer,String>> info1 = new ArrayList<>((Collection<SimpleEntry<Integer,String>>) msgs.get(0));
+			ArrayList<SimpleEntry<Integer,byte[]>> info2 = new ArrayList<>((Collection<SimpleEntry<Integer,byte[]>>) msgs.get(1));
+			HashMap<Integer,byte[]> userKeys = cmh.getUserKeys();
 			cmh.save();
 			
-			return new NetworkMessageResponse(msg.getOp(), "OK", info1, info2);
+			return new NetworkMessageResponse(msg.getOp(), "OK", info1, info2, userKeys);
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);
@@ -380,9 +394,33 @@ public class MequieSkel {
 				throw new ErrorInsufficientArgumentsException();
 			
 			mhgh.indicateGroupID(g);
-			List<String> msgs = mhgh.getHistory();
+			ArrayList<SimpleEntry<Integer,String>> msgs = mhgh.getHistory();
+			HashMap<Integer,byte[]> userKeys = mhgh.getUserKeys();
 			
-			return new NetworkMessageResponse(msg.getOp(), "OK", new ArrayList<String>(msgs));
+			return new NetworkMessageResponse(msg.getOp(), "OK", msgs, userKeys);
+			
+		} catch (MequieException e) {
+			return new NetworkMessageError(msg.getOp(), e);
+		}
+	}
+	
+	private NetworkMessage getLastKeyOfGroup(NetworkMessageRequest msg) {
+		try {
+			GetLastKeyOfGroupHandler gkg = new GetLastKeyOfGroupHandler(currentSession);
+			
+			// list of arguments
+			List<String> args = msg.getArguments();
+			
+			if (args.isEmpty())
+				throw new ErrorInsufficientArgumentsException();
+			
+			String g = args.get(0);
+			if (g == null || g.equals(""))
+				throw new ErrorInsufficientArgumentsException();
+			
+			byte[] encryptedKey = gkg.getLastKeyOfGroup(g);
+			
+			return new NetworkMessageResponse(msg.getOp(), "OK", null, new ArrayList<byte[]>(Arrays.asList(encryptedKey)));
 			
 		} catch (MequieException e) {
 			return new NetworkMessageError(msg.getOp(), e);

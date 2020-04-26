@@ -6,10 +6,16 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 //import java.nio.charset.StandardCharsets;
+import java.util.Random;
+
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 
 import mequie.app.skel.MequieSkel;
 import mequie.app.facade.Session;
 import mequie.app.facade.exceptions.AuthenticationFailedException;
+import mequie.app.facade.exceptions.ErrorSavingInDiskException;
 import mequie.app.facade.network.NetworkMessage;
 import mequie.app.facade.network.NetworkMessageError;
 import mequie.app.facade.network.NetworkMessageRequest;
@@ -17,17 +23,27 @@ import mequie.app.facade.network.NetworkMessageRequest;
 public class NetworkServer {
 
 	private int port;
+	private String keystorePath;
+	private String keystorePasswd;
 
-	public NetworkServer(int port) {
+	public NetworkServer(int port, String keystorePath, String keystorePasswd) {
 		this.port = port;
+		this.keystorePath = keystorePath;
+		this.keystorePasswd = keystorePasswd;
 	}
 
 	public void start() {
-		try (ServerSocket sSoc = new ServerSocket(port)){
+		System.setProperty("javax.net.ssl.keyStore", this.keystorePath);
+		System.setProperty("javax.net.ssl.keyStoreType", "JCEKS");
+		System.setProperty("javax.net.ssl.keyStorePassword", this.keystorePasswd);
+		
+		ServerSocketFactory ssf = SSLServerSocketFactory.getDefault( );
+		
+		try (SSLServerSocket ss = (SSLServerSocket) ssf.createServerSocket(this.port)){
 
 			while(true) {
 				try {
-					Socket inSoc = sSoc.accept();
+					Socket inSoc = ss.accept();
 					ServerThread newServerThread = new ServerThread(inSoc);
 					newServerThread.start();
 				}
@@ -37,6 +53,7 @@ public class NetworkServer {
 			}
 
 		} catch (IllegalArgumentException | IOException e) {
+			e.printStackTrace();
 			System.out.println("Erro ao abrir porto do servidor.");
 			System.err.println(e.getMessage());
 			System.exit(-1);
@@ -61,9 +78,26 @@ public class NetworkServer {
 				outStream = new ObjectOutputStream(socket.getOutputStream());
 				inStream = new ObjectInputStream(socket.getInputStream());
 
-				// Receive the session to authenticate client
+				// receives a Session with only the username of the user trying to authenticate
+				sessao = (Session) inStream.readObject();
+				
+				// sends Session object to the client with nonce + unknown flag
+				long nonce = new Random().nextLong();
+				sessao.setNonce(nonce);
+				
+				boolean existsFlag = MequieSkel.userExists(sessao.getUsername());
+				sessao.setUnknownUserFlag(!existsFlag);
+				
+				outStream.writeObject(sessao);
+				outStream.flush();
+				
+				// Receive the session with the clients signature
 				sessao = (Session) inStream.readObject();
 
+				// resets session initial nonce + flag in case user changed them (safety precaution)
+				sessao.setNonce(nonce);
+				sessao.setUnknownUserFlag(!existsFlag);
+				
 				// Initialization of Skell
 				MequieSkel skel = new MequieSkel(sessao);
 
@@ -84,7 +118,7 @@ public class NetworkServer {
 
 			} catch (AuthenticationFailedException e) { // username and password doesnt match
 				try {
-					System.out.println("Autenticacao falhou: username ou password incorretos");
+					System.out.println("Authentication Failed");
 					sendMessage(new NetworkMessageError(NetworkMessage.Opcode.AUTH, new AuthenticationFailedException()));
 				} catch (IOException e1) {
 					// Do nothing because finally will be called
@@ -93,6 +127,8 @@ public class NetworkServer {
 				System.out.println("Invalid Message received");
 			} catch (IOException e) {
 				// Do nothing because finally will be called
+			} catch (ErrorSavingInDiskException e) {
+				System.out.println(e.getMessage());
 			} finally {
 				disconnect();
 			}
@@ -113,7 +149,7 @@ public class NetworkServer {
 		 * Disconnect the client
 		 */
 		private void disconnect() {
-			System.out.println("User " + sessao.getUsername() + " disconnected from server.");
+			System.out.println("User " + (sessao == null ? "" : sessao.getUsername()) + " disconnected from server.");
 			try {
 				outStream.close();
 				inStream.close();
