@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# copy necessary common files from server to client
+mkdir client/src/mequie/app/facade/ && cp -r server/src/mequie/app/facade/* client/src/mequie/app/facade/
+
 # mkdir if folder doen not exists
 mkdir -p server/bin
 mkdir -p client/bin
