@@ -1,13 +1,13 @@
-Mequie - Trabalho de Segurança e Confiabilidade - Fase 1
+Mequie - Trabalho de Segurança e Confiabilidade - Fase 2
 
 Grupo 37
 * 51021 - Pedro Marques
 * 51110 - Marcelo Mouta
 * 51468 - Bruno Freitas
 
-Abra o terminal dentro da pasta 'SegC-grupo37-proj1' para executar os próximos comandos.
+Abra o terminal dentro da pasta 'SegC-grupo37-proj1-2' para executar os próximos comandos.
 Pode deslocar-se para lá fazendo:
-    cd $HOME/SegC-grupo37-proj1
+    cd $HOME/SegC-grupo37-proj1-2
 
 
 BUILD
@@ -24,15 +24,19 @@ e finalmente:
 
 RUN
 
-Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: $HOME/SegC-grupo37-proj1
+Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: $HOME/SegC-grupo37-proj1-2
 
 Servidor:
-    java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer <port>
+    java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer <port> <keystore> <keystore-password>
+
+exemplo:
+    java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer 6011 server/Data/keystore.server admin123
 
 Cliente:
-    java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <hostname:port> <username> [password]
+    java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <serverAddress> <truststore> <keystore> <keystore-password> <localUserID>
 
-(A password é opcional, sendo que é pedida pelo o programa caso não venha explícita nos argumentos.)
+exemplo:
+    java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie localhost:6011 client/truststore.client client/keystore.client admin123 pedrom
 
 
 LIMITAÇÕES
@@ -51,7 +55,7 @@ O cliente apenas reconhece os seguintes comandos/atalhos:
     history/h
     exit
 
-* Para enviar uma foto é preciso indicar o filepath da mesma, com este pertencendo ao SegC-grupo37-proj1/ já que apenas é permitido ler aí pela policy. Apenas se aceitam ficheiros até 2GB.
+* Para enviar uma foto é preciso indicar o filepath da mesma, com este pertencendo ao SegC-grupo37-proj1-2/ já que apenas é permitido ler aí pela policy. Apenas se aceitam ficheiros até 2GB.
 
 * Ao fazer collect, as fotos serão colocadas num diretório 'ClientData' sobre uma pasta com o nome do grupo onde se enviou essa foto, que será gerado no diretório, de dados,principal do programa.
 
