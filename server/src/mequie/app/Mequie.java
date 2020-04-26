@@ -1,14 +1,14 @@
 package mequie.app;
 
-import mequie.app.facade.handlers.AddUserToGroupHandler;
-import mequie.app.facade.handlers.CollectMessagesHandler;
-import mequie.app.facade.handlers.CreateGroupHandler;
-import mequie.app.facade.handlers.GetGroupInfoHandler;
-import mequie.app.facade.handlers.GetUserInfoHandler;
-import mequie.app.facade.handlers.MessageHistoryOfGroupHandler;
-import mequie.app.facade.handlers.RemoveUserOfGroupHandler;
-import mequie.app.facade.handlers.SendPhotoMessageHandler;
-import mequie.app.facade.handlers.SendTextMessageHandler;
+import mequie.app.domain.handlers.AddUserToGroupHandler;
+import mequie.app.domain.handlers.CollectMessagesHandler;
+import mequie.app.domain.handlers.CreateGroupHandler;
+import mequie.app.domain.handlers.GetGroupInfoHandler;
+import mequie.app.domain.handlers.GetUserInfoHandler;
+import mequie.app.domain.handlers.MessageHistoryOfGroupHandler;
+import mequie.app.domain.handlers.RemoveUserOfGroupHandler;
+import mequie.app.domain.handlers.SendPhotoMessageHandler;
+import mequie.app.domain.handlers.SendTextMessageHandler;
 import mequie.app.facade.Session;
 
 /**

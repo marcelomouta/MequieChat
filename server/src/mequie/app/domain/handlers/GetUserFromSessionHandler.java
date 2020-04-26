@@ -1,4 +1,4 @@
-package mequie.app.facade.handlers;
+package mequie.app.domain.handlers;
 
 import java.io.IOException;
 import java.security.cert.Certificate;

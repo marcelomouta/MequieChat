@@ -1,4 +1,4 @@
-package mequie.app.facade.handlers;
+package mequie.app.domain.handlers;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
