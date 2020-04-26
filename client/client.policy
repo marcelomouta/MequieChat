@@ -1,7 +1,8 @@
-grant codeBase "file:${user.home}/SegC-grupo37-proj1/-"{
-	permission java.net.SocketPermission "*:1024-", "connect,resolve";
+grant codeBase "file:${user.home}/SegC-grupo37-proj1-2/-"{
+permission java.net.SocketPermission "*:1024-", "connect,resolve";
 	permission java.io.FilePermission "ClientData/-","write,read";
 	permission java.io.FilePermission "*","write";
 	permission java.io.FilePermission "-","read";
-	permission java.util.PropertyPermission "user.dir", "read";
+	permission java.util.PropertyPermission "*", "write, read";
+
 };
