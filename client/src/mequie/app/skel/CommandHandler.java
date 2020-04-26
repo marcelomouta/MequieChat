@@ -346,7 +346,7 @@ public class CommandHandler {
 					byte[] photo;
 					try {
 						photo = ClientEncryption.decryptMessage(entry.getValue(), key);
-						String path = "ClientData/photos_" + groupID + "/" + (generator++);
+						String path = "ClientData/" + userID + "/photos_" + groupID + "/" + (generator++);
 						System.out.println("Photo: " + path);
 						writePhoto(photo, path);
 					} catch (MequieException e) {
