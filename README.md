@@ -8,34 +8,24 @@
 ## RUN
 Abra o terminal dentro da pasta 'SegC-grupo37-proj2' para executar os próximos comandos.
 Pode deslocar-se para lá fazendo:
-```
-cd $HOME/SegC-grupo37-proj2
-```
+`cd $HOME/SegC-grupo37-proj2`
 
 ### BUILD
 
 Para compilar o projeto temos de executar o script bash build.sh
 Antes de executar aconselhamos a executar primeiro:
-```
-chmod +x ./build.sh
-```
+`chmod +x ./build.sh`
 e finalmente:
-```
-./build.sh
-```
+`./build.sh`
 
 ### RUN
 
-Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: $HOME/SegC-grupo37-proj1-2
+Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: `$HOME/SegC-grupo37-proj1-2`
 
 #### Servidor:
-```
-java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer <port> <keystore> <keystore-password>
-```
+`java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer <port> <keystore> <keystore-password>`
 #### Cliente:
-```
-java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <serverAddress> <truststore> <keystore> <keystore-password> <localUserID>
-```
+`java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <serverAddress> <truststore> <keystore> <keystore-password> <localUserID>`
 ## Detalhes de implementação
 ![Drag Racing](Mequie.png)
 ```java
