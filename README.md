@@ -61,7 +61,7 @@ Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do 
 ## Gestão de dados cifrados (persistência em disco)
 
 ### Servidor
-* Organização: O servidor contem os dados na pasta Data.
+* Organização: O servidor contem os dados na pasta Data.  
 Dentro do Data existe dois ficheiros base do servidor:
     * `groups.txt`: contem todos os grupos e quem pertence ao grupo, sendo o owner do grupo o primeiro utilizador a aparecer
     * `passwd.txt`: contem o utilizador e a sua password <username>:<password>
@@ -73,16 +73,24 @@ Cada grupo contem a sua pasta dentro do Data (Data/<group>) que contem 2 ficheir
 Com esta organização, o load do sistema e as operacoes de escrita em disco sao mais eficientes mas a memória ocupada é maior por haver conteúdo repetido.
 
 
-## Comunicação segura e limitações
+## Comunicação segura
 
-### LIMITAÇÕES
 
-#### Cliente:
 
-* Para enviar uma foto é preciso indicar o filepath da mesma, com este pertencendo ao SegC-grupo37-proj1/ já que apenas é permitido ler aí pela policy. Apenas se aceitam ficheiros até 2GB.
+## Limitações 
 
-* Ao fazer collect, as fotos serão colocadas num diretório 'ClientData' sobre uma pasta com o nome do grupo onde se enviou essa foto, que será gerado no diretório, de dados,principal do programa.
+### Cliente:
 
-#### Servidor:
+* Para se autenticar com sucesso, é necessário que tenha na sua truststore o certificado do servidor, assim como o seu par de chaves assimétricas RSA na sua keystore.
+
+* Para adicionar um utilizador a um grupo, é necessário que a chave pública do mesmo (no formato `<username>.cert`) esteja presente no diretório `client/PubKeys`.
+
+* Para enviar uma foto é preciso indicar o filepath da mesma, com este pertencendo ao `SegC-grupo37-proj1/` já que apenas é permitido ler aí pela _policy_. Apenas se aceitam ficheiros até 2GB.
+
+* Ao fazer collect, as fotos serão colocadas num diretório `ClientData` sobre uma pasta com o nome do grupo onde se enviou essa foto, que será gerado no diretório onde o programa cliente está a ser executado.
+
+### Servidor:
+
+* Apesar de todos os ficheiros com informação sensível estarem devidamente cifrados, os nomes dos diretórios presentes em `Data/` revelam os nomes dos grupos.
 
 * Não é possível eliminar grupos.
