@@ -48,16 +48,28 @@ Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do 
 ## Gestão de dados cifrados (persistência em disco)
 
 ### Servidor
-* Organização: O servidor contem os dados na pasta Data.  
-Dentro do Data existe dois ficheiros base do servidor:
-    * `groups.txt`: contem todos os grupos e quem pertence ao grupo, sendo o owner do grupo o primeiro utilizador a aparecer
-    * `passwd.txt`: contem o utilizador e a sua password <username>:<password>
-Cada grupo contem a sua pasta dentro do Data (Data/<group>) que contem 2 ficheiros base + photos:
-    * `messages_info.txt`: todas as mensages (photos ou texto) enviadas no grupo, contendo o ID, se eh p (photo) ou t (texto) e quem falta ler
-    * `text_messages.txt`: todas as mensagens de texto enviadas no grupo, o seu ID, quem enviou e o conteúdo
-    * Irá ter todas as photos que forem enviadas para o grupo e que nao tenham sido vistas por todos os utilizadores do grupo
 
-Com esta organização, o load do sistema e as operacoes de escrita em disco sao mais eficientes mas a memória ocupada é maior por haver conteúdo repetido.
+```
+Data
+│   users.txt
+│   group.txt - contem todos os grupos e quem pertence ao grupo, owner em 1o lugar
+|   keystore.server
+│
+└───groupExampleFolder - Cada grupo tem a sua pasta
+    │   keyLocation.txt
+    │   message_info.txt - mensagens do grupo com ID, p (se é photo) ou t (texto) e quem falta ler
+    |   text_messages.txt - mensagens de texto enviadas no grupo, o seu ID, quem enviou e o conteúdo
+    |   groupExample1 - ficheiro de bytes que representam uma foto
+    |   ...
+    |   groupExamplen
+    |   0 - ficheiro de utilizador com chaves de grupo com ID e bytes da chave em 
+    |   ...
+    |   n
+PubKeys
+|   certMequieServer.cer
+|   userExampleCertificate.cer
+```
+    * Irá ter todas as photos que forem enviadas para o grupo e que nao tenham sido vistas por todos os utilizadores do grupo
 
 
 ## Comunicação segura
@@ -88,6 +100,8 @@ O cliente apenas reconhece os seguintes comandos/atalhos:
 * Para enviar uma foto é preciso indicar o filepath da mesma, com este pertencendo ao `SegC-grupo37-proj1/` já que apenas é permitido ler aí pela _policy_. Apenas se aceitam ficheiros até 2GB.
 
 * Ao fazer collect, as fotos serão colocadas num diretório `ClientData` sobre uma pasta com o nome do grupo onde se enviou essa foto, que será gerado no diretório onde o programa cliente está a ser executado.
+
+* Com a organização que usamos, o load do sistema e as operacoes de escrita em disco sao mais eficientes mas a memória ocupada é maior por haver conteúdo repetido.
 
 ### Servidor:
 
