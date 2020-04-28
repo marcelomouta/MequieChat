@@ -51,18 +51,18 @@ Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do 
 
 ```
 Data
-│   users.txt - contem todos os utilizadores e a localização da seu certificado
-│   group.txt - contem todos os grupos e quem pertence ao grupo, owner em 1o lugar
+│   users.txt - todos os utilizadores e a localização da seu certificado
+│   group.txt - todos os grupos e quem pertence ao grupo, owner em 1o
 |   keystore.server - guarda a chave privada do servidor no fomato JCEKS 
 │
 └───groupExample - Cada grupo tem a sua pasta
-    │   keyLocation.txt - guarda para cada user o username : localização das suas chaves de grupo
-    │   message_info.txt - mensagens do grupo com ID, p (se é photo) ou t (texto) e quem falta ler
-    |   text_messages.txt - mensagens de texto enviadas no grupo, o seu ID, quem enviou e o conteúdo
+    │   keyLocation.txt - com username:localização das chaves grupo
+    │   message_info.txt - MessageID:p(photo) ou t(texto):quem falta ler
+    |   text_messages.txt - MessageID:quem enviou:conteúdo text message
     |   groupExample1 - ficheiro de bytes que representam uma foto
     |   ...
     |   groupExampleN
-    |   0 - ficheiro do owner do grupo com chaves de grupo com ID e bytes da chave cifrados em base64
+    |   0 - ficheiro do owner IDChaveGrupo:bytes da chave em base64
     |   1 - ficheiro de um membro do grupo que não é owner
     |   ...
     |   N
