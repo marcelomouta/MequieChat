@@ -6,45 +6,41 @@
 * 51468 - Bruno Freitas
 
 ## RUN
-Abra o terminal dentro da pasta 'SegC-grupo37-proj1' para executar os próximos comandos.
+Abra o terminal dentro da pasta 'SegC-grupo37-proj2' para executar os próximos comandos.
 Pode deslocar-se para lá fazendo:
-    cd $HOME/SegC-grupo37-proj1
-
+```
+cd $HOME/SegC-grupo37-proj2
+```
 
 ### BUILD
 
 Para compilar o projeto temos de executar o script bash build.sh
 Antes de executar aconselhamos a executar primeiro:
-
-    chmod +x ./build.sh
-
+```
+chmod +x ./build.sh
+```
 e finalmente:
-
-    ./build.sh
-
+```
+./build.sh
+```
 
 ### RUN
 
 Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: $HOME/SegC-grupo37-proj1-2
 
-Servidor:
-    java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer <port> <keystore> <keystore-password>
-
-exemplo:
-    java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer 6011 server/Data/keystore.server admin123
-
-Cliente:
-    java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <serverAddress> <truststore> <keystore> <keystore-password> <localUserID>
-
-exemplo:
-    java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie localhost:6011 client/truststore.client client/keystore.client admin123 pedrom
-
+#### Servidor:
+```
+java -Djava.security.manager -Djava.security.policy=server/server.policy -cp server/bin/ mequie.main.MequieServer <port> <keystore> <keystore-password>
+```
+#### Cliente:
+```
+java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <serverAddress> <truststore> <keystore> <keystore-password> <localUserID>
+```
 ## Detalhes de implementação
-
+![Drag Racing](Mequie.png)
 ```java
 //TODO
 ```
-
 ## Gestão de dados cifrados (persistência em disco)
 
 ### Servidor
