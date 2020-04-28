@@ -5,8 +5,8 @@
 * 51110 - Marcelo Mouta
 * 51468 - Bruno Freitas
 
-## RUN
-Abra o terminal dentro da pasta 'SegC-grupo37-proj2' para executar os próximos comandos.
+## Como executar o projeto
+Abra o terminal dentro da pasta 'SegC-grupo37-proj2' para executar os próximos comandos.  
 Pode deslocar-se para lá fazendo:
 `cd $HOME/SegC-grupo37-proj2`
 
@@ -14,10 +14,10 @@ Pode deslocar-se para lá fazendo:
 
 Para compilar o projeto temos de executar o script bash build.sh
 
-Antes de executar aconselhamos a executar primeiro:
+Antes de executar aconselhamos a executar primeiro:  
 `chmod +x ./build.sh`
 
-E finalmente:
+E finalmente:  
 `./build.sh`
 
 ### RUN
@@ -25,11 +25,34 @@ E finalmente:
 Para correr o programa com os ficheiros de permissões corretamente é necessario e que este se encontre localizado na home do utilizador: `$HOME/SegC-grupo37-proj1-2`
 
 #### Servidor:
-`cd server/`
-
+`cd server/`  
 `java -Djava.security.manager -Djava.security.policy=server.policy -cp bin/ mequie.main.MequieServer <port> <keystore> <keystore-password>`
 #### Cliente:
 `java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <serverAddress> <truststore> <keystore> <keystore-password> <localUserID>`
+
+O cliente apenas reconhece os seguintes comandos/atalhos:
+
+    create/c
+    addu/a
+    removeu/r
+    ginfo/g
+    uinfo/u
+    msg/m
+    photo/p
+    collect/co
+    history/h
+    exit
+    
+#### Keystores:
+Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do cliente (`client/keystore.client`) utilizam a mesma password: *admin123*
+
+#### Exemplo de utilização:
+##### Servidor:  
+   `cd server/`  
+   `java -Djava.security.manager -Djava.security.policy=server.policy -cp bin/ mequie.main.MequieServer 5001 Data/keystore.server admin123`  
+##### Cliente:    
+   `java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie localhost:5001 client/truststore.client client/keystore.client admin123 user01`
+
 ## Detalhes de implementação
 ![Drag Racing](Mequie.png)
 ```java
@@ -55,18 +78,6 @@ Com esta organização, o load do sistema e as operacoes de escrita em disco sao
 ### LIMITAÇÕES
 
 #### Cliente:
-
-O cliente apenas reconhece os seguintes comandos/atalhos:
-    create/c
-    addu/a
-    removeu/r
-    ginfo/g
-    uinfo/u
-    msg/m
-    photo/p
-    collect/co
-    history/h
-    exit
 
 * Para enviar uma foto é preciso indicar o filepath da mesma, com este pertencendo ao SegC-grupo37-proj1/ já que apenas é permitido ler aí pela policy. Apenas se aceitam ficheiros até 2GB.
 
