@@ -29,19 +29,6 @@ Para correr o programa com os ficheiros de permissões corretamente é necessari
 `java -Djava.security.manager -Djava.security.policy=server.policy -cp bin/ mequie.main.MequieServer <port> <keystore> <keystore-password>`
 #### Cliente:
 `java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie <serverAddress> <truststore> <keystore> <keystore-password> <localUserID>`
-
-O cliente apenas reconhece os seguintes comandos/atalhos:
-
-    create/c
-    addu/a
-    removeu/r
-    ginfo/g
-    uinfo/u
-    msg/m
-    photo/p
-    collect/co
-    history/h
-    exit
     
 #### Keystores:
 Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do cliente (`client/keystore.client`) utilizam a mesma password: *admin123*
@@ -53,7 +40,7 @@ Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do 
 ##### Cliente:    
    `java -Djava.security.manager -Djava.security.policy=client/client.policy -cp client/bin/:server/bin/ mequie.main.Mequie localhost:5001 client/truststore.client client/keystore.client admin123 user01`
 
-## Detalhes de implementação
+## Arquitetura do Software
 ![Drag Racing](Mequie.png)
 ```java
 //TODO
@@ -81,7 +68,20 @@ Com esta organização, o load do sistema e as operacoes de escrita em disco sao
 
 ### Cliente:
 
-* Para se autenticar com sucesso, é necessário que tenha na sua truststore o certificado do servidor, assim como o seu par de chaves assimétricas RSA na sua keystore.
+O cliente apenas reconhece os seguintes comandos/atalhos:
+
+    create/c
+    addu/a
+    removeu/r
+    ginfo/g
+    uinfo/u
+    msg/m
+    photo/p
+    collect/co
+    history/h
+    exit
+    
+* Para o cliente se autenticar com sucesso, é necessário que tenha na sua truststore o certificado do servidor, assim como o seu par de chaves assimétricas RSA na sua keystore.
 
 * Para adicionar um utilizador a um grupo, é necessário que a chave pública do mesmo (no formato `<username>.cert`) esteja presente no diretório `client/PubKeys`.
 
