@@ -72,6 +72,19 @@ PubKeys
 ```
     * Irá ter todas as photos que forem enviadas para o grupo e que nao tenham sido vistas por todos os utilizadores do grupo
 
+### Cliente
+
+```
+keystore.client - guarda a chave privada do cliente no fomato JCEKS
+truststore.client - trust store do cliente
+ClientData
+│
+└───photos_groupExample - Cada grupo tem a sua pasta de fotos
+    |   groupExample1 - ficheiro de bytes que representam uma foto
+PubKeys
+|   certMequieServer.cer - certificado do servidor
+|   userExampleCertificate.cer - certificado para um user do sistema
+```
 
 ## Comunicação segura
 
