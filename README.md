@@ -42,23 +42,21 @@ Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do 
 
 ## Arquitetura do Software
 ![Drag Racing](Mequie.png)
-```java
-//TODO
-```
+
 ## Gestão de dados cifrados (persistência em disco)
 
 ### Servidor
 
 ```
 Data
-│   users.txt - todos os utilizadores e a localização da seu certificado
-│   group.txt - todos os grupos e quem pertence ao grupo, owner em 1o
-|   keystore.server - guarda a chave privada do servidor no fomato JCEKS 
+│   users.txt - todos os utilizadores e a localização da seu certificado*
+│   group.txt - todos os grupos e quem pertence ao grupo, owner em 1o*
+|   keystore.server - guarda a chave privada do servidor no fomato JCEKS
 │
 └───groupExample - Cada grupo tem a sua pasta
-    │   keyLocation.txt - com username:localização das chaves grupo
-    │   message_info.txt - MessageID:p(photo) ou t(texto):quem falta ler
-    |   text_messages.txt - MessageID:quem enviou:conteúdo text message
+    │   keyLocation.txt - com username:localização das chaves grupo*
+    │   message_info.txt - MessageID:p(photo) ou t(texto):quem falta ler*
+    |   text_messages.txt - MessageID:quem enviou:conteúdo text message*
     |   groupExample1 - ficheiro de bytes que representam uma foto
     |   ...
     |   groupExampleN
@@ -71,6 +69,8 @@ PubKeys
 |   userExampleCertificate.cer - certificado para um user do sistema
 ```
     * Irá ter todas as photos que forem enviadas para o grupo e que nao tenham sido vistas por todos os utilizadores do grupo
+
+Nota: (*) significa que o ficheiro está cifrado
 
 ### Cliente
 
@@ -86,8 +86,15 @@ PubKeys
 |   userExampleCertificate.cer - certificado para um user do sistema
 ```
 
-## Comunicação segura
-
+### Troca de Mensagens
+* Autenticação é um 4-way handshake:
+    1. Cliente: Enviado Session com username para indicar ao servidor que quer autenticar-se
+    2. Servidor: Servidor envia a classe Session com mais o nonce e uma flag a indicar se o user é conhecido ou não
+    3. Cliente: Assina o nonce (e envia o certificado se a falg vier a true)
+    4. Servidor: Servidor envia uma NetworkMessage a dizer se foi autenticado com sucesso podendo começar a comunicação
+    
+* Depois da autenticação:
+    Troca de mensagens (NetworkMessages) com os resultados dos comandos ou erros (enviado exceptions)
 
 
 ## Limitações 
@@ -120,5 +127,7 @@ O cliente apenas reconhece os seguintes comandos/atalhos:
 ### Servidor:
 
 * Apesar de todos os ficheiros com informação sensível estarem devidamente cifrados, os nomes dos diretórios presentes em `Data/` revelam os nomes dos grupos.
+
+* Apesar de todos os ficheiros com informação sensível estarem devidamente cifrados, os nomes dos ficheiros de certificados revelam os nomes dos users.
 
 * Não é possível eliminar grupos.
