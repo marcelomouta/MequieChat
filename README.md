@@ -51,23 +51,24 @@ Tanto a keystore presente no servidor (`server/Data/keystore.server`) como a do 
 
 ```
 Data
-│   users.txt
+│   users.txt - contem todos os utilizadores e a localização da seu certificado
 │   group.txt - contem todos os grupos e quem pertence ao grupo, owner em 1o lugar
-|   keystore.server
+|   keystore.server - guarda a chave privada do servidor no fomato JCEKS 
 │
-└───groupExampleFolder - Cada grupo tem a sua pasta
-    │   keyLocation.txt
+└───groupExample - Cada grupo tem a sua pasta
+    │   keyLocation.txt - guarda para cada user o username : localização das suas chaves de grupo
     │   message_info.txt - mensagens do grupo com ID, p (se é photo) ou t (texto) e quem falta ler
     |   text_messages.txt - mensagens de texto enviadas no grupo, o seu ID, quem enviou e o conteúdo
     |   groupExample1 - ficheiro de bytes que representam uma foto
     |   ...
-    |   groupExamplen
-    |   0 - ficheiro de utilizador com chaves de grupo com ID e bytes da chave em 
+    |   groupExampleN
+    |   0 - ficheiro do owner do grupo com chaves de grupo com ID e bytes da chave cifrados em base64
+    |   1 - ficheiro de um membro do grupo que não é owner
     |   ...
-    |   n
+    |   N
 PubKeys
-|   certMequieServer.cer
-|   userExampleCertificate.cer
+|   certMequieServer.cer - certificado do servidor
+|   userExampleCertificate.cer - certificado para um user do sistema
 ```
     * Irá ter todas as photos que forem enviadas para o grupo e que nao tenham sido vistas por todos os utilizadores do grupo
 
